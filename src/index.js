@@ -1,12 +1,33 @@
+// imports
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import App from './Components/App/App';
+import { 
+  BrowserRouter as Router,
+} from 'react-router-dom';
+import ProtectedRoute from './helpers/ProtectedRoute';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+// style files
+import './css/App.scss';
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+
+
+// Main App Container Component
+
+function MainAppContainer(){
+  return(
+    <div className="mainAppContainer">
+      <Router>
+        {/* Only go to app Route if Authorised*/}
+        <ProtectedRoute path = "/app" >
+          {/*App component that contains other Components*/}
+          <App/>
+        </ProtectedRoute>
+      </Router>
+    </div>
+  )
+}
+
+
+
+ReactDOM.render(<MainAppContainer />, document.getElementById('root'));

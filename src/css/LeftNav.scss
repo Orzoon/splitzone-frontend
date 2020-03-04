@@ -1,0 +1,164 @@
+$navTextColor: #1C2483;
+$navSideBarWidth: 6px;
+$navSideBarBorderRadius: 0px;
+
+.leftNavContainer{
+
+    ul{
+        margin-top: 30px;
+        display: flex;
+        list-style: none;
+        width: 100%;
+        flex-direction: column;
+
+        li{
+            display: flex;
+            width: 100%;
+            height: 50px;
+            text-align: left;
+            a{
+                position: relative;
+                text-decoration: none;
+                font-size: 18px;
+                height: 100%;
+                width: 100%;
+                padding: 8px 20px;
+                color: rgb(107, 109, 109);
+                font-weight: bold;
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+
+               &:hover:after{
+                   position: absolute;
+                   content: '';
+                   height: 0%;
+                   width: $navSideBarWidth;
+                   background: $navTextColor;
+                   left: 0;
+                   top: 50%;
+                   border-radius: $navSideBarBorderRadius;
+                   transform: translateY(-50%);
+                   animation: navLinkHeight .25s ease-in forwards;
+               }
+
+               &:hover {
+                   color: $navTextColor;
+                   border-radius: $navSideBarBorderRadius;
+               }
+            }
+
+        }
+
+    }
+}
+
+.leftNavActive{
+    position: relative;
+    //color: #065AFA !important;
+    color: $navTextColor !important;
+    &:after{
+        position: absolute;
+        content: '';
+        height: 100%;
+        width: $navSideBarWidth;
+        background: $navTextColor;
+        left: 0;
+        top: 0;
+        border-radius: $navSideBarBorderRadius;
+    }
+}
+
+
+
+.leftNavIcons {
+    margin-right: 3px;
+    color: inherit; 
+    transition:all .2s ease-in;
+}
+
+.leftNavIconsActive{
+    color: $navTextColor !important; 
+    width: 25px;
+    height: 25px;
+    margin-right: 5px;
+    transition:all .2s ease-in;
+}
+
+
+// ANIMATIONS
+@keyframes navLinkHeight{
+
+    0% {}
+    100%{
+        height: 100%;
+    }
+}
+
+
+// between 320 and 479
+@media only screen and (min-width: 320px) and (max-width: 479px){
+
+ }
+
+// between 480 and 767
+@media only screen and (min-width: 480px) and (max-width: 767px){  
+
+
+}
+
+// between 768 and 991
+@media only screen and (min-width: 768px) and (max-width: 991px){
+
+
+ }
+
+// between 992 and 1199
+@media only screen and (min-width: 992px) and (max-width: 1199px){ 
+    
+
+}
+
+// above 1200
+@media only screen and (min-width: 1200px){
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// TEMPLATE
+// between 320 and 479
+@media only screen and (min-width: 320px) and (max-width: 479px){
+
+}
+
+// between 480 and 767
+@media only screen and (min-width: 480px) and (max-width: 767px){  
+
+
+}
+
+// between 768 and 991
+@media only screen and (min-width: 768px) and (max-width: 991px){
+
+
+}
+// between 992 and 1199
+@media only screen and (min-width: 992px) and (max-width: 1199px){ 
+   
+
+}
+// above 1200
+@media only screen and (min-width: 1200px){
+
+
+}
