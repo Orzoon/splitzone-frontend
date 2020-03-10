@@ -1,9 +1,7 @@
 import React, {useState, useEffect} from 'react';
-
+import {useHistory, useRouteMatch} from "react-router-dom";
 import {serverURI} from "../../helpers/GlobalVar"
 import Token from "../../helpers/token"
-
-
 
 // icons
 import {MdAddCircleOutline} from "react-icons/md";
@@ -15,6 +13,8 @@ import "../../css/Groups.scss";
  * 
  *************/
 export default function Groups(){
+    const {url} = useRouteMatch();
+    const history = useHistory();
     const [isloading, setisLoading] = useState(true);
     const [error, setError] = useState(null);
     const [groups, setGroups] = useState([]);
@@ -24,6 +24,7 @@ export default function Groups(){
             setisLoading(true);
             const token = Token.getLocalStorageData('splitzoneToken');
             try{
+
                 const response = await fetch(`${serverURI}/api/app/groups`, {
                                     method: "GET",
                                     headers: {
@@ -36,7 +37,6 @@ export default function Groups(){
                 }
                 const data = await response.json();
                 setGroups(data)
-                console.log(data)
                 setError(null)
                 setTimeout(() => {
                     setisLoading(false)
@@ -48,6 +48,10 @@ export default function Groups(){
         getGroups();
     }, [])
 
+    function ToBills(groupID){
+        history.push(url + "/" + groupID);
+    }
+
 
     return (
         <div className = "groupsContainer">
@@ -58,14 +62,12 @@ export default function Groups(){
 
                 {/* Rest components to show */}
                 {!isloading && <li><CreateGroupButton /></li>}
-                {!isloading && <GroupList groups = {groups}></GroupList>}
+                {!isloading && <GroupList groups = {groups} ToBills = {ToBills}></GroupList>}
                 
             </ul>
         </div>
     )
 }
-
-
 
 function CreateGroupButton(){
     return(
@@ -77,8 +79,6 @@ function CreateGroupButton(){
         </button>
     ) 
 }
-
-
 
 function GroupLoader(){
     return (
@@ -141,7 +141,6 @@ function GroupLoader(){
 
 }
 
-
 function GroupList(props){
     return props.groups.map(groupListItem => {
         const date = new Date(groupListItem.createdAt);
@@ -149,7 +148,7 @@ function GroupList(props){
         const month = monthArray[date.getMonth()];
         const monthDate = date.getDate();
         const membersLength = groupListItem.members.length - 1;
-        return(<li className = "GListSIContainer" key = {groupListItem._id}>
+        return(<li className = "GListSIContainer" key = {groupListItem._id} onClick = {() => {props.ToBills(groupListItem._id)}} >
                     {/* <div>{groupListItem.createdBy}</div>
                     <div>{groupListItem.members.length}</div> */}
                 <div className = "GLi_groupName">

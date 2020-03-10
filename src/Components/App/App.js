@@ -11,7 +11,7 @@ import Token from '../../helpers/token'
 // importing ServerURIS
 import {serverURI} from '../../helpers/GlobalVar'
 
-const AppUserContext = createContext(null);
+export const AppUserContext = createContext();
 
 
 function App(){

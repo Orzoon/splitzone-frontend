@@ -12,6 +12,7 @@ import
 import Dashboard from '../MidSection/Dashboard';
 import Friends from '../MidSection/Friends';
 import Groups from '../MidSection/Groups';
+import Bills from '../MidSection/Bills';
 import News from '../MidSection/News';
 import Profile from '../MidSection/Profile';
 
@@ -38,6 +39,7 @@ function CustomNavLink({activeOnlyWhenExact, to, linkName, children}){
                className: `${match ? "leftNavIconsActive" : "leftNavIcons "}`
             }}>
                 {children}
+
             </IconContext.Provider>
             {linkName}
             </Link>)
@@ -80,7 +82,6 @@ export default function LeftNaV(props) {
                         </CustomNavLink>
                     </li>
                 </ul>
-
             </div>
 
             {/* MID CONTAINER*/}
@@ -92,10 +93,11 @@ export default function LeftNaV(props) {
                         }}/>
                     </Route>
                     <Route path = {`${path}/dashboard`} component = {Dashboard} />
-                    <Route path =  {`${path}/groups/:groupId`} component = {() => {
-                        return <div>Hello from bils</div>
-                    }} />
+
+                    {/* GROUPS ROUTES */}
+                    <Route path =  {`${path}/groups/:groupID`} component = {Bills} />
                     <Route path =  {`${path}/groups`} component = {Groups} />
+
                     <Route path =  {`${path}/friends`} component = {Friends} />
                     <Route path =  {`${path}/profile`} component = {Profile} />
                     <Route path =  {`${path}/news`} component = {News}/>  
