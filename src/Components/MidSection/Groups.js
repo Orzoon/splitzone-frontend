@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {useHistory, useRouteMatch} from "react-router-dom";
 import {serverURI} from "../../helpers/GlobalVar"
 import Token from "../../helpers/token"
@@ -18,6 +18,7 @@ export default function Groups(){
     const [isloading, setisLoading] = useState(true);
     const [error, setError] = useState(null);
     const [groups, setGroups] = useState([]);
+    const [createGroup, setCreateGroup] = useState(false);
 
     useEffect(() => {
         async function getGroups(){
@@ -40,7 +41,7 @@ export default function Groups(){
                 setError(null)
                 setTimeout(() => {
                     setisLoading(false)
-                }, 2000)
+                },0)
             }catch(error){
                 setError(error)
             }
@@ -52,6 +53,9 @@ export default function Groups(){
         history.push(url + "/" + groupID);
     }
 
+    function createGroupClickHandler(){
+        setCreateGroup(!createGroup)
+    }
 
     return (
         <div className = "groupsContainer">
@@ -61,17 +65,20 @@ export default function Groups(){
                 {isloading && <GroupLoader/>}
 
                 {/* Rest components to show */}
-                {!isloading && <li><CreateGroupButton /></li>}
+                {!isloading && <li><CreateGroupButton createGroupClickHandler = {createGroupClickHandler}/></li>}
                 {!isloading && <GroupList groups = {groups} ToBills = {ToBills}></GroupList>}
                 
             </ul>
+
+            {createGroup && <CreateGroupComponent createGroupClickHandler = {createGroupClickHandler} />}
+
         </div>
     )
 }
 
-function CreateGroupButton(){
+function CreateGroupButton({createGroupClickHandler}){
     return(
-        <button className = "createGButton">
+        <button className = "createGButton" onClick = {createGroupClickHandler}>
             <span className = "createGButtonIconC">
                 <MdAddCircleOutline/>
             </span>
@@ -170,4 +177,78 @@ function GroupList(props){
                 </div>
                 </li>)
     })
+}
+
+function CreateGroupComponent({createGroupClickHandler}){
+    const history = useHistory(); 
+    const createGroupRef = useRef();
+    const [groupName, setGroupName] = useState("");
+
+
+    function outsideClickHandler(e){
+        if(createGroupRef.current && !createGroupRef.current.contains(e.target)){
+            createGroupClickHandler()
+        }
+        else {
+            return
+        }
+    }
+    useEffect(() => {
+
+            window.addEventListener("click", outsideClickHandler, false);
+            
+        return (() => {
+            window.removeEventListener("click", outsideClickHandler, false);
+        })
+    })
+
+    async function createGroupButtonHandler(e){
+        e.preventDefault();
+        if(!groupName || groupName.trim().length <= 0){
+            // set Error
+            return
+        }
+
+        const groupData = {
+            groupName : groupName
+        }
+        const token = Token.getLocalStorageData('splitzoneToken');
+        try{
+
+            const response = await fetch(`${serverURI}/api/app/group`, {
+                                method: "POST",
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': 'Bearer '+ token
+                                }, 
+                                body: JSON.stringify(groupData)
+                            })
+            if(!response.status === 200){
+                // false response
+            }
+            const data = await response.json();
+            console.log(data);
+            history.push('/temp');
+            history.goBack();
+           
+        }catch(error){
+            console.log(error)
+        }  
+    }
+
+    return (
+        <div className = "GCreateContainer">
+            <div className="createGroup" ref = {createGroupRef}>
+                <h3>Enter Group Name</h3>
+                <input 
+                    type="text" 
+                    name="groupName" 
+                    id="groupNameInput" 
+                    value = {groupName}
+                    onChange = {(e) => setGroupName(e.target.value)}
+                />
+                <button onClick = {createGroupButtonHandler}>Create</button>
+            </div>
+        </div>
+    )
 }

@@ -80,6 +80,7 @@ $color: #392CDE;
 
 
     & .BGContainer{
+        position: relative;
         margin: 0 auto;
         height: 130px;
         width: $BillsCommonWidth;
@@ -421,6 +422,109 @@ $color: #392CDE;
             }
 
         }
+    }
+}
+
+
+/* 
+ADD REMOVE FREINDS OVERLAP
+*/
+.billsContainer {
+
+    & .B_editRemoveMembersC {
+        position:absolute;
+        height : 100%;
+        width: 100%;
+        background: rgba(255, 255, 255, .9);
+        top: 0;
+        left: 0;
+        z-index: 6;
+
+
+        & ul {
+            list-style-type: none;
+            width: 280px;
+            height: auto;
+            background: #fff;
+            border: $testBorder;
+            margin: 40px auto;
+
+            & li {
+                border-bottom: $testBorder;
+            }
+        }
+    }
+}
+
+// BillsMenu Component
+.BGContainer {
+    & .showBillsMenu {
+        position: absolute;
+        height: auto;
+        width: 200px;
+        right: 0;
+        top: 0;
+        border: $testBorder;
+        z-index: 6;
+        background: #ffff;
+
+        & ul {
+            list-style-type: none;
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            width: 100%;
+
+
+            & li {
+                display: flex;
+                height: auto;
+                width: auto;
+                justify-content: center;
+                align-items: center;
+
+
+                & button {
+                    text-align: center;
+                    height: 50px;
+                    width: 100%;
+                }
+            }
+        }
+    } 
+}
+
+// BIll _Form
+.billsContainer{
+
+    & .Bill_Form_Container{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        background: rgba(255,255,255, .7);
+        z-index: 6;
+        & form.Bill_Form{
+            position: relative;
+            margin: 20px auto;
+            height: auto;
+            width: 400px;
+            height: 500px;
+            border: $testBorder;
+            background: #fff;
+            overflow: hidden;
+
+            & .Bill_Form_Close{
+                position: absolute;
+                right: 0px;
+                top: 0;
+                width: 60px;
+                height: 30px;
+            }
+
+        }
+
     }
 
 }

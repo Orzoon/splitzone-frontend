@@ -1,0 +1,40 @@
+
+
+
+
+
+.friendsContainer{
+    position: relative;
+
+    & ul {
+        display: grid;
+        grid-auto-flow: row;
+        grid-auto-rows: 200px;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 10px;
+        padding: 30px;
+
+        & li {
+            list-style-type: none;
+            position: relative;
+            overflow: visible;
+            display: block;
+            height: 100%;
+            max-width: 100%;
+            overflow: hidden;
+            background: #fff;
+        }
+    }
+}
+
+.friendsContainer .addNewFriend{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background: rgba(247, 245, 245, .8);
+    top: 0 ;
+    left: 0;
+    z-index: 6;
+
+    // form
+} 
