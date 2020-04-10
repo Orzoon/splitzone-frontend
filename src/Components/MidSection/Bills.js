@@ -81,7 +81,36 @@ export default function Bills(props){
     function showEditRemoveMembersBHandler(){
         setShowEditRemoveMembersB(!showEditRemoveMembersB)
     }
+    async function removeBillHandler(_id){
+        const token = Token.getLocalStorageData('splitzoneToken');
+        const billID = _id;
 
+        try{
+           
+            const billDeleteResponse = await fetch(`${serverURI}/api/app/bill/${groupID}/${billID}`, {
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer '+ token
+                }
+            })
+
+
+            if(billDeleteResponse.status !== 200){
+                // throe code for an error
+                console.log("error occured")
+                return
+            }
+
+            const billsCopy = [...bills];
+            const filteredBill = billsCopy.filter(bill => bill._id !== billID)
+            setBills(filteredBill);
+
+        }
+        catch(error){
+            console.log(error)
+        }
+    }
 
     if(isLoading){
         return (
@@ -102,9 +131,16 @@ export default function Bills(props){
 
             {/* conditional Details */}
             {showDetails && <BillsGroupDetails hideShowDetails = {HideShowDetailsHandler}/>}
+            <BillsSummary 
+                bills = {bills} 
+                groupMembers = {group.members}
+            />
             <BillsFilter/>
             {/* <BillsTitle/> */}
-            <BillsComponent bills = {bills}/>
+            <BillsComponent 
+                bills = {bills}
+                removeBillHandler = {removeBillHandler}
+            />
             {showEditRemoveMembersB && <EditRemoveMembers 
                             showEditRemoveMembersBHandler = {showEditRemoveMembersBHandler} 
                             groupID = {groupID}
@@ -117,7 +153,6 @@ export default function Bills(props){
         </div>
     )
 }
-
 
 
 /*--------------
@@ -230,6 +265,9 @@ function BillsGroup(props){
                         <button>Edit Grup</button>
                     </li>
                     <li>
+                        <button>Summary Report</button>
+                    </li>
+                    <li>
                         <button onClick = {props.showBillFormToggleHandler}>add a bill</button>
                     </li>
                 </ul>
@@ -264,7 +302,169 @@ function BillsGroupDetails(props){
 }
 
 
+/*--------------
+ BILLS SUMMARY
+----------------*/
 
+function BillsSummary(props){
+    const {bills, groupMembers} = props;
+    console.log("bills", bills)
+    const user = useContext(AppUserContext)
+    const summaryOptions = {
+        _id : "groupId",
+        options: [{
+            fullMonth : true,
+            date: "month_year",
+            splitMonth: [{from: "", to: ""}, {check_for_last_months: ""}]
+        }]
+    }
+
+    const onlyUserBills = bills.filter(bill => {
+        return bill.paidBy._id === user._id || bill.splittedAmongMembers.some(id => user._id === id);
+    })
+
+    let summaryDetails = [];
+    
+    onlyUserBills.forEach(bill => {
+   
+        // paidBy user and including user
+        /* lent */
+        if((bill.paidBy._id === user._id && bill.splittedAmongMembers.some(id => user._id === id)) || (bill.paidBy._id === user._id && bill.splittedAmongMembers.some(id => user._id !== id))){
+
+                // divided equally
+                if(bill.dividedEqually){
+                    const amountValue = bill.paidAmount/bill.splittedAmongMembers.length;
+                    // check summaryDetails Length
+                    const filteredMemberIds = bill.splittedAmongMembers.filter(memberId => memberId !== user._id)
+
+                    filteredMemberIds.forEach(memberIds => {
+                        const memberName = groupMembers.filter(member => member._id === memberIds)[0].name;
+                        const index = summaryDetails.findIndex(item => item._id === memberIds) ;
+                        if(index !== - 1){
+                            const prevValue = summaryDetails[index].youLent;
+                            summaryDetails[index].youLent = prevValue + amountValue;
+                        }
+                        else {
+                            const summaryDetailsCopy = [...summaryDetails];
+                            const newObj = {
+                                _id: memberIds,
+                                name: memberName,
+                                youLent: amountValue,
+                                youOwe: 0
+                            }
+
+                            // pushing new object
+                            summaryDetailsCopy.push(newObj)
+                            summaryDetails = summaryDetailsCopy
+                        }
+                    })
+                }
+
+                // divided unequally
+                if(!bill.dividedEqually){
+        
+                    //only members except others
+                    const filteredMemberIds = bill.splittedAmongMembers.filter(memberId => memberId !== user._id)
+
+                    filteredMemberIds.forEach(memberIds => {
+
+                        
+                        const memberName = groupMembers.filter(member => member._id === memberIds)[0].name;
+                        // finding index of a member from divided prop
+                        const dividedIndex = bill.divided.findIndex(item => item._id === memberIds);
+                        // getting amount
+                        const amountValue = bill.divided[dividedIndex].amount;
+
+                        // now into SumaryDetails
+                        const index = summaryDetails.findIndex(item => item._id === memberIds);
+                        if(index !== - 1){
+                            const prevValue = summaryDetails[index].youLent;
+                            summaryDetails[index].youLent = prevValue + amountValue;
+                        }
+                        else {
+                            const summaryDetailsCopy = [...summaryDetails];
+                            const newObj = {
+                                _id: memberIds,
+                                name: memberName,
+                                youLent: amountValue,
+                                youOwe: 0
+                            }
+
+                            summaryDetailsCopy.push(newObj)
+                            summaryDetails = summaryDetailsCopy
+                        }
+                    })
+                }
+        }
+
+        // paid by others including user
+        /* Owe */
+        if(bill.paidBy._id !== user._id){
+                // divided equally
+                if(bill.dividedEqually){
+
+                const memberName = groupMembers.filter(member => member._id === bill.paidBy._id)[0].name;
+                const amountValue = bill.paidAmount/bill.splittedAmongMembers.length;
+               
+
+                const index = summaryDetails.findIndex(item => item._id === bill.paidBy._id);
+                    if(index !== - 1){
+                        const prevValue = summaryDetails[index].youOwe;
+                        summaryDetails[index].youOwe = prevValue + amountValue;
+                    }
+                    else {
+                        const summaryDetailsCopy = [...summaryDetails];
+                        const newObj = {
+                            _id: bill.paidBy._id,
+                            name: memberName,
+                            youLent: 0,
+                            youOwe: amountValue
+                        }
+
+                        // pushing new object
+                        summaryDetailsCopy.push(newObj)
+                        summaryDetails = summaryDetailsCopy
+                    }
+         
+                }
+
+                if(!bill.dividedEqually){
+                    const memberName = groupMembers.filter(member => member._id ===  bill.paidBy._id)[0].name;
+                    // find the amount associated with the user
+                    const amountValue = bill.divided.filter(item => item._id === user._id)[0].amount;
+                   
+                    const index = summaryDetails.findIndex(item => item._id === bill.paidBy._id);
+                        if(index !== - 1){
+                            const prevValue = summaryDetails[index].youOwe;
+                            summaryDetails[index].youOwe = prevValue + amountValue;
+                        }
+                        else {
+                            const summaryDetailsCopy = [...summaryDetails];
+                            const newObj = {
+                                _id: bill.paidBy._id,
+                                name: memberName,
+                                youLent: 0,
+                                youOwe: amountValue
+                            }
+        
+                            // pushing new object
+                            summaryDetailsCopy.push(newObj)
+                            summaryDetails = summaryDetailsCopy
+                        }
+             
+                    }
+        }
+
+    })
+
+    console.log("summaryDetails", summaryDetails)
+    return (
+        <div className = "BSummary"> 
+
+        </div>
+
+    )
+}
 
 /*--------------
  BILLS FILTER
@@ -285,21 +485,25 @@ function BillsFilter(){
 }
 
 /*--------------
- BILLS TITLE
+ BILLS and Bill List Component
 ----------------*/
 
-function BillsComponent({bills}){
+function BillsComponent({bills, removeBillHandler}){
     return (
         <ul className = "BComponent">
             {bills.map(billItem => {
-                return <ListComponent  key= {billItem._id} bill = {billItem}/>
+                return <ListComponent  
+                            key= {billItem._id} 
+                            bill = {billItem}
+                            removeBillHandler = {removeBillHandler}
+                        />
             })}
         </ul>
     )
 }
 
 
-function ListComponent({bill}){
+function ListComponent({bill, removeBillHandler}){
     const user = useContext(AppUserContext);
     const monthArray = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug','Sep', 'Oct', 'Nov', 'Dec'];
     return (
@@ -315,7 +519,7 @@ function ListComponent({bill}){
                     <p><span className = "paid_by">Paid by</span><span className = "paidByName">{bill.paidBy.name}</span></p>
                 </li>
                 <li className = "BULN_Details">
-                    {bill.splittedAmongMembers.every(item => item === user._id) && 
+                    {bill.splittedAmongMembers.some(item => item === user._id) && 
                         <p className = "including"><span>including</span> you</p>
                     }
                         <p className = "divided"><span>divided</span> {bill.dividedEqually ? "equally": " "}</p>
@@ -325,7 +529,7 @@ function ListComponent({bill}){
                     {bill.paidBy._id === user._id && <p className = "lentOwnTitle">you lent</p> }
                     {bill.paidBy._id === user._id &&
                         <p className = "lentOwnAmount">
-                            {bill.splittedAmongMembers.every(member => member === user._id) ? 
+                            {bill.splittedAmongMembers.some(member => member === user._id) ? 
                                 // divided equally
                                 bill.dividedEqually ? (bill.paidAmount - (bill.paidAmount/bill.splittedAmongNumber)).toFixed(2) : bill.divided.reduce((total, object) => {
                                     if(object._id === user._id){
@@ -343,15 +547,15 @@ function ListComponent({bill}){
                             }
                         </p>
                     }
-                    {bill.paidBy._id !== user._id && bill.splittedAmongMembers.every(item => item === user._id) && <p className = "lentOwnTitle">you owe</p>}
-                    {bill.paidBy._id !== user._id && bill.splittedAmongMembers.every(item => item === user._id) &&
+                    {bill.paidBy._id !== user._id && bill.splittedAmongMembers.some(item => item === user._id) && <p className = "lentOwnTitle">you owe</p>}
+                    {bill.paidBy._id !== user._id && bill.splittedAmongMembers.some(item => item === user._id) &&
                         <p className = "lentOwnAmount">
                             {bill.dividedEqually ? (bill.paidAmount/bill.splittedAmongNumber).toFixed(2) : bill.divided.find(object => object._id === user._id).amount }
                         </p>
                     }
                 </li>
                 <li className = "BULN_button">
-                    <button className = "deleteBillButton">
+                    <button className = "deleteBillButton" onClick = {(e) => removeBillHandler(bill._id)}>
                         <MdAdd/>
                     </button>
                 </li>
