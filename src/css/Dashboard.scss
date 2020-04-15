@@ -1,3 +1,4 @@
+
 .dashboardContainer{
     position: relative;
     height: 100%;
@@ -14,7 +15,19 @@
 
 
 .DLineChart_container{
-    height: 50px;
+    height: 250px;
     width: 90%;
+    border: 5px solid green;
+}
+
+.DDChart_container{
+    height: 250px;
+    width: 50%;
     border: 5px solid red;
+}
+
+.DPieChart_container{
+    height: 250px;
+    width: 50%;
+    border: 5px solid blue;
 }
