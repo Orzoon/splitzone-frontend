@@ -55,6 +55,11 @@ function LoginForm(){
                     value = "Login"
                 />
             </form>
+            <button>
+                <a href = "http://localhost:5000/auth/google">
+                    LOGIN WITH GOOGLE
+                </a>
+            </button>
         </div>
     )
 }
