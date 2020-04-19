@@ -1,33 +1,77 @@
 
+%marginAuto {
+    margin: 0 auto;
+}
+
 .dashboardContainer{
     position: relative;
     height: 100%;
     width:100%;
-    color: red;
+    padding-top: 20px;
 }
 
-
+/* STANDALONE MAINCOMPONENTS */
 .DBanner_container{
-    height: 50px;
-    width: 90%;
-    border: 5px solid red;
+    height: 80px;
+    width: 96%;
+    box-shadow: 0px 2px 3px #b7afee;
+    background: #fff;
+    @extend %marginAuto;
 }
 
+.DS_container{
+    margin-top: 15px; // remove later
+    height: 100px;
+    width: 96%;
+    @extend %marginAuto;
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    grid-template-rows: 1fr;
+    grid-gap: 20px;
+
+    & div {
+        height: 100%;
+        width: 100%;
+        box-shadow: 0px 2px 3px #b7afee;
+        background: #fff;
+    }
+
+}
 
 .DLineChart_container{
+    margin-top: 15px;
     height: 250px;
-    width: 90%;
-    border: 5px solid green;
+    width: 96%;
+    box-shadow: 0px 3px 3px #b7afee;
+    background: #fff;
+    @extend %marginAuto;
 }
 
+
+.DDP_container{
+    margin-top: 15px;
+    width: 96%;
+    height: 250px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 1fr;
+    grid-gap: 15px;
+    @extend %marginAuto;
+    overflow: hidden;
+
+}
+/* DDP_container firstChild */
 .DDChart_container{
-    height: 250px;
-    width: 50%;
-    border: 5px solid red;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0px 3px 3px #b7afee;
+    background: #fff;
 }
 
+/* DDP_container secondChild */
 .DPieChart_container{
-    height: 250px;
-    width: 50%;
-    border: 5px solid blue;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0px 3px 3px #b7afee;
+    background: #fff;
 }

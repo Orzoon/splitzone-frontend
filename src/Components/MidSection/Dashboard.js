@@ -35,15 +35,27 @@ export default function Dashboard(props){
 
         test();
     })
+
+    function handleFacebookLogin(e){
+        e.preventDefault();
+
+       const testFetch = fetch("http://localhost:5000/auth/facebook",{
+           method: "GET"
+       })
+    }
     return (
         <div className = "dashboardContainer">
             <DBanner />
-            <DTotalGroups />
-            <DTotalBills />
-            <DTotalAmount />
+            <div className = "DS_container">
+                <DTotalGroups />
+                <DTotalBills />
+                <DTotalAmount />
+            </div>
             <LineChart />
-            <PieChart />
-            <DChart />
+            <div className = "DDP_container">
+                <PieChart />
+                <DChart />
+            </div>
             <DRecentActivity />
         </div>
     )
