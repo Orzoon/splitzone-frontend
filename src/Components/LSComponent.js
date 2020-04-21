@@ -3,8 +3,6 @@ import {useLoginForm} from "../hooks/appHooks";
 
 
 /* Token */
-import {serverURI} from "../helpers/GlobalVar";
-import Token from "../helpers/token";
 
 /* CSS */
 import "../css/Lsc.scss";
