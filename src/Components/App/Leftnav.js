@@ -22,7 +22,14 @@ import Profile from '../MidSection/Profile';
 // Icon context
 import {IconContext} from 'react-icons';
 // IMPORTING ICONS
-import {MdDashboard, MdGroup, MdCollectionsBookmark,MdPerson, MdLibraryBooks} from 'react-icons/md';
+import {
+    MdDashboard, 
+    MdGroup, 
+    MdCollectionsBookmark,
+    MdPerson, 
+    MdLibraryBooks,
+    MdClose
+} from 'react-icons/md';
 // css Styles
 import "../../css/LeftNav.scss";
 import "../../css/MidContainer.scss";
@@ -49,7 +56,8 @@ export default function LeftNaV(props) {
     const {url,path} = useRouteMatch();
     return (
         <React.Fragment>
-             <div className = "leftNavContainer">
+             <div className = {props.mblOpen ? "leftNavContainer leftNavContainerOpen" : "leftNavContainer leftNavContainerClose"}>
+
                 <ul>
                     <li>
                         {/* <NavLink  to ={`${url}/dashboard`} activeClassName = "leftNavActive">Dashboard</NavLink> */}
@@ -82,6 +90,12 @@ export default function LeftNaV(props) {
                         </CustomNavLink>
                     </li>
                 </ul>
+                <div 
+                    className = {props.mblOpen ? "leftNavCloseBtnC leftNavCloseBtnCOpen" : "leftNavCloseBtnC leftNavCloseBtnCClose"}
+                    onClick = {e => props.menuBtnShowHideHandler(e)}
+                    >
+                     <MdClose />
+                </div>
             </div>
 
             {/* MID CONTAINER*/}

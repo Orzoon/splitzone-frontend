@@ -17,3 +17,30 @@
 }
 
 
+
+
+// Global Vairables Vaiables
+$btn-primary-fontSize: 13px;
+
+//Primary BTN
+ @mixin Primary_Button{
+    justify-self: start;
+    align-self: end;
+    width: 150px;
+    height: 40px;
+    text-transform: uppercase;
+    background: #fff;
+    border: none;
+    cursor: pointer;
+    background: rgb(15, 75, 155);
+    color: #FFF;
+    font-weight: 600;
+    font-size:$btn-primary-fontSize;
+    letter-spacing: 1px;
+    outline: none;
+    &:active{
+        outline: none;
+    }
+ }
+
+

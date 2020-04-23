@@ -59,7 +59,8 @@ function useLoginForm(initialValues){
                 
 
                 // userInformation
-                let responseData = await response.json()
+                let responseData = await response.json();
+                console.log("responseData", responseData)
                 localStorage.setItem("splitzoneToken", responseData.token)
                 history.push("/app");
                 

@@ -1,4 +1,8 @@
-import React, {useState, useEffect, createContext} from 'react'
+import React, {
+    useState, 
+    useEffect, 
+    createContext, 
+    useRef} from 'react'
 import TopBar from "./TopBar";
 import Leftnav from "./Leftnav";
 import Rightnav from "./Rightnav";
@@ -11,13 +15,16 @@ import Token from '../../helpers/token'
 // importing ServerURIS
 import {serverURI} from '../../helpers/GlobalVar'
 
-export const AppUserContext = createContext();
+// REACT_ICONS
+import {MdKeyboardArrowRight} from 'react-icons/md';
 
+export const AppUserContext = createContext();
 
 function App(){
     const [user,setUser] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [mblMenuOpen, setMblMenuOpen] = useState(false);
 
     useEffect(() => {
         async function getUserData(){
@@ -50,8 +57,20 @@ function App(){
     
     },[])
 
+    const leftNavMiniButtonRef = useRef(null);
     const {url, path} = useRouteMatch();
 
+    function menuBtnShowHideHandler(e){
+        e.preventDefault();
+        if(mblMenuOpen){
+            setMblMenuOpen(!mblMenuOpen)
+            leftNavMiniButtonRef.current.classList.remove("leftNavMiniButtonCHide")
+        }else {
+            leftNavMiniButtonRef.current.classList.add("leftNavMiniButtonCHide");
+            setMblMenuOpen(!mblMenuOpen)
+        }
+      
+    }
     return (
         <div className = "appContainer"> 
             {/* AppUserContextProvider */}
@@ -59,11 +78,23 @@ function App(){
                 {/*topNavBar That Contains Logo and UserIcon*/}
                 <TopBar/>
                 {/*Main side Nav*/}
-                <Leftnav url = {url} path = {path} />
+                <Leftnav 
+                    url = {url} 
+                    path = {path} 
+                    mblOpen = {mblMenuOpen}
+                    menuBtnShowHideHandler ={menuBtnShowHideHandler}
+
+                    />
                 {/*Mid-Container-DIV rendered from within leftNav*/}
                 {/*Right Nav for Ads and offerss*/}
                 <Rightnav />  
-
+                <div 
+                    className = "leftNavMiniButtonC" 
+                    ref = {leftNavMiniButtonRef} 
+                    onClick = {menuBtnShowHideHandler}
+                    >Menu
+                    {/* <MdKeyboardArrowRight/> */}
+                </div>
             </AppUserContext.Provider>
         </div>
     )

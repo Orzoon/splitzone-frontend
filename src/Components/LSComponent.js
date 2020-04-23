@@ -14,6 +14,7 @@ const initialLoginValues = {
     passwordPlaceholder: "*****"
 }
 export default function LSComponent(){
+    localStorage.clear();
     return (
         <div className = "LSC_container">
             <LoginForm />

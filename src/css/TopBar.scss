@@ -1,20 +1,104 @@
-$iconColor: #1C2483;
+//$iconColor: #1C2483;
+$iconColor: #0f4b9b;
 
+
+// .topBarContainer{
+//     display: grid;
+//     align-items: center;
+//     grid-template-columns: 170px 1fr  50px 180px;
+//     grid-template-rows: auto;
+//     grid-template-areas: 'Logo . NotificationIcon ProfileNameIcon';
+//     // grid Areas
+//     & img {
+//         grid-area: Logo;
+//     }
+//     & .notificationIcon{
+//         margin-right: 15px;
+//         grid-area: NotificationIcon;
+//         font-size: 25px;
+//         justify-self: center;
+//         color: rgb(107, 109, 109);
+//         cursor: pointer;
+//         transition: all .1s ease-in;
+
+//         &:hover {
+//             font-size: 28px;
+//             color: #1C2483 !important;
+//             transition: all .1s ease-in;
+//         }
+//     }
+//     & .profileNameIcon{
+//         grid-area: ProfileNameIcon;
+//         width: auto;
+//     }
+
+
+//     /*********************     
+//     INDIVIDUAL COMPONENT STYLES
+//     *********************/
+//     & img {
+//         width: 80%;
+//         margin: 0 auto;
+//         height: 40px;
+//     }
+//     .profileNameIcon{
+//         width: 90%;
+//         color: $iconColor;
+//         display: flex;
+//         flex-direction: row;
+//         align-items: center;
+//         box-shadow: 0px 0px 2px #ddd;
+//         & .profileImage{
+//             display: flex;
+//             justify-content: center;
+//             align-items: center;
+//             background: $iconColor;
+//             color: #fff;
+//             height: 42px;
+//             width: 42px;
+//             font-weight: 900;
+//             font-size: 24px;
+//             margin-right: 10px;
+//         }
+
+//         & h3 {
+//             display: block;
+//             overflow: hidden;
+//             text-overflow: ellipsis;
+//             width: 100px;
+//         }
+//     }
+
+
+//     /*********************     
+//     ADDITIONAL CLASS STYLES
+//     *********************/
+//     .notificationIconActive{
+//         font-size: 25px;
+//         transition: all .1s ease-in;
+//     }
+
+    
+// }
+
+
+
+//------------------------------------------------------------
 .topBarContainer{
     display: grid;
     align-items: center;
-    grid-template-columns: 170px 1fr  50px 180px;
-    grid-template-rows: auto;
-    grid-template-areas: 'Logo . NotificationIcon ProfileNameIcon';
+    grid-template-columns: 80px 1fr;
+    grid-template-areas: 'Logo ProfileNameIcon';
     // grid Areas
     & img {
         grid-area: Logo;
     }
     & .notificationIcon{
-        margin-right: 15px;
-        grid-area: NotificationIcon;
+        display: none;
+        margin-right: 5px;
+        //grid-area: NotificationIcon;
         font-size: 25px;
-        justify-self: center;
+        justify-self: end;
         color: rgb(107, 109, 109);
         cursor: pointer;
         transition: all .1s ease-in;
@@ -27,7 +111,15 @@ $iconColor: #1C2483;
     }
     & .profileNameIcon{
         grid-area: ProfileNameIcon;
+        justify-self: end;
+
         width: auto;
+        height: 40px;
+        color: $iconColor;
+        
+        display: grid;
+        grid-template-columns: auto auto;
+        align-items: center;
     }
 
 
@@ -35,35 +127,34 @@ $iconColor: #1C2483;
     INDIVIDUAL COMPONENT STYLES
     *********************/
     & img {
-        width: 80%;
+        width: 100%;
         margin: 0 auto;
         height: 40px;
+        font-size: 12px;
     }
     .profileNameIcon{
-        width: 90%;
-        color: $iconColor;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        box-shadow: 0px 0px 2px #ddd;
+        //box-shadow: 0px 0px 2px #ddd;
         & .profileImage{
             display: flex;
             justify-content: center;
             align-items: center;
             background: $iconColor;
             color: #fff;
-            height: 42px;
-            width: 42px;
-            font-weight: 900;
-            font-size: 24px;
-            margin-right: 10px;
+            height: 35px;
+            width: 35px;
+            font-weight: 700;
+            font-size: 15px;
+            margin-right: 2px;
+            border-radius: 50%;
         }
 
         & h3 {
             display: block;
             overflow: hidden;
             text-overflow: ellipsis;
-            width: 100px;
+            width: 80px;
+            font-size: 14px;
+            margin-right: 10px;
         }
     }
 
@@ -75,9 +166,216 @@ $iconColor: #1C2483;
         font-size: 25px;
         transition: all .1s ease-in;
     }
+}
 
+// TEMPLATE
+// between 320 and 479 --CLEAR
+@media only screen and (min-width: 320px){
+    .topBarContainer{
+        display: grid;
+        align-items: center;
+        grid-template-columns: 80px 1fr 200px;
+        grid-template-areas: 'Logo . ProfileNameIcon';
+        // grid Areas
+        & img {
+            grid-area: Logo;
+        }
+        & .notificationIcon{
+            display: none;
+            &:hover {
+            }
+        }
+        & .profileNameIcon{
+            grid-area: ProfileNameIcon;
+
+            display: grid;
+            grid-template-columns: auto auto;
+            align-items: center;
+        }
     
     
+        /*********************     
+        INDIVIDUAL COMPONENT STYLES
+        *********************/
+        & img {
+        }
+        .profileNameIcon{
+            //box-shadow: 0px 0px 2px #ddd;
+            & .profileImage{
+                font-size: 18px;
+                margin-right: 5px;
+            }
+    
+            & h3 {
+                width: 90px;
+                font-size: 15px;
+                margin-right: 10px;
+            }
+        }
+    
+    
+        /*********************     
+        ADDITIONAL CLASS STYLES
+        *********************/
+        .notificationIconActive{
+            font-size: 25px;
+            transition: all .1s ease-in;
+        }
+    }
+}
+
+// between 480 and 767 --CLEAR
+@media only screen and (min-width: 480px) {  
+    .topBarContainer{
+        display: grid;
+        align-items: center;
+        // grid-template-columns: 80px 1fr 200px;
+        // grid-template-areas: 'Logo . ProfileNameIcon';
+        grid-template-columns: 170px 1fr  50px 150px;
+        grid-template-rows: auto;
+        grid-template-areas: 'Logo . NotificationIcon ProfileNameIcon';
+        // grid Areas
+        & img {
+            grid-area: Logo;
+        }
+        & .notificationIcon{
+            display: grid;
+            margin-right: 0px;
+            grid-area: NotificationIcon;
+            font-size: 28px;
+            justify-self: center;
+            //color: rgb(107, 109, 109);
+            color: #0f4c9bf6;
+            cursor: pointer;
+            transition: all .1s ease-in;
+
+            &:hover {
+                font-size: 32px;
+                //color: #1C2483 !important;
+                color: #0f4c9bf6 !important;
+                transition: all .1s ease-in;
+            }
+        }
+        & .profileNameIcon{
+            grid-area: ProfileNameIcon;
+
+            display: grid;
+            grid-template-columns: auto auto;
+            align-items: center;
+        }
+    
+    
+        /*********************     
+        INDIVIDUAL COMPONENT STYLES
+        *********************/
+        & img {
+        }
+        .profileNameIcon{
+            //box-shadow: 0px 0px 2px #ddd;
+            & .profileImage{
+                font-size: 18px;
+                margin-right: 5px;
+            }
+    
+            & h3 {
+                width: 90px;
+                font-size: 15px;
+                margin-right: 10px;
+            }
+        }
+    
+    
+        /*********************     
+        ADDITIONAL CLASS STYLES
+        *********************/
+        .notificationIconActive{
+            font-size: 25px;
+            transition: all .1s ease-in;
+        }
+    }
+
+}
+
+// between 768 and 991
+@media only screen and (min-width: 768px){
+    .topBarContainer{
+        display: grid;
+        align-items: center;
+        // grid-template-columns: 80px 1fr 200px;
+        // grid-template-areas: 'Logo . ProfileNameIcon';
+        grid-template-columns: 170px 1fr  50px minmax(200px,300px);
+        grid-template-rows: auto;
+        grid-template-areas: 'Logo . NotificationIcon ProfileNameIcon';
+        // grid Areas
+        & img {
+            grid-area: Logo;
+        }
+        & .notificationIcon{
+            display: grid;
+            margin-right: 0px;
+            grid-area: NotificationIcon;
+            font-size: 29px;
+            justify-self: center;
+            //color: rgb(107, 109, 109);
+            color: #0f4c9bf6;
+            cursor: pointer;
+            transition: all .1s ease-in;
+
+            &:hover {
+                font-size: 32px;
+                //color: #1C2483 !important;
+                color: #0f4c9bf6 !important;
+                transition: all .1s ease-in;
+            }
+        }
+        & .profileNameIcon{
+            grid-area: ProfileNameIcon;
+
+            display: grid;
+            grid-template-columns: auto auto;
+            align-items: center;
+        }
+    
+    
+        /*********************     
+        INDIVIDUAL COMPONENT STYLES
+        *********************/
+        & img {
+        }
+        .profileNameIcon{
+            //box-shadow: 0px 0px 2px #ddd;
+            & .profileImage{
+                height: 40px;
+                width: 40px;
+                font-size: 19px;
+                margin-right: 5px;
+            }
+    
+            & h3 {
+                width: 100%;
+                font-size: 18px;
+                margin-right: 30px;
+            }
+        }
+    
+    
+        /*********************     
+        ADDITIONAL CLASS STYLES
+        *********************/
+        .notificationIconActive{
+            font-size: 25px;
+            transition: all .1s ease-in;
+        }
+    }
+
+}
+// between 992 and 1199
+@media only screen and (min-width: 992px) and (max-width: 1199px){ 
+   
+
+}
+// above 1200
+@media only screen and (min-width: 1200px){
 
 
 }

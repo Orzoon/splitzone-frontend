@@ -665,13 +665,17 @@ function EditRemoveMembers(props){
 
         switch(actionName){
             case "removeMember":
-                try{
+                try{    
+
+                        /* Member to be removed*/
+                        const member = groupMembers.filter(member => member._id === _id)[0];
                         const removeMemberResponse = await fetch(`${serverURI}/api/app/group/${groupID}/${_id}`, {
                             method: "PATCH",
                             headers: {
                                 'Content-Type': 'application/json',
                                 'Authorization': 'Bearer '+ token
-                            }
+                            },
+                            body: JSON.stringify(member)
                         })
 
                         if(removeMemberResponse.status !== 200){

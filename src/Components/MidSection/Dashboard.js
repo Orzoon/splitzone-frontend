@@ -9,6 +9,8 @@ import {AppUserContext} from "../App/App";
 // scss style
 import "../../css/Dashboard.scss";
 
+// ICONS  DS
+import {MdReceipt,MdGroup,MdAttachMoney,MdCollectionsBookmark} from 'react-icons/md';
 export default function Dashboard(props){
     const [misc, setMisc] = useState(null)
     useEffect(() => {
@@ -64,7 +66,9 @@ function DTotalBills(props){
     return (
         <div className = "DTotalBills">
             <h2>{props.totalBillsNo ? props.totalBillsNo: 0}</h2>
-            <p></p>
+            <div  className = "DS_IconB">
+                 <MdReceipt />
+            </div>
             <h3>Total bills</h3>
         </div>
     )
@@ -74,7 +78,9 @@ function DTotalGroups(props){
     return (
         <div className = "DTotalGroups">
             <h2>{props.totalGroupsNo ? props.totalGroupsNo: 0}</h2>
-            <p></p>
+            <div >
+                <MdCollectionsBookmark />          
+            </div>
             <h3>Total groups</h3>
         </div>
     )
@@ -83,18 +89,25 @@ function DTotalGroups(props){
 function DTotalAmount(props){
     return (
         <div className = "DTotalAmount">
+            <h2>{props.totalGroupsNo ? props.totalGroupsNo: 0}</h2>
+            <div className = "DS_IconA">
+                <MdAttachMoney />             
+            </div>
+            <h3>Total balance</h3>
         </div>
     )
 }
 
 function DRecentActivity(props){
     const userID = useContext(AppUserContext)._id;
-    const [recentActivities, setRecentActivities] = useState(null)
+    const [recentActivitiesInfo, setRecentActivitiesInfo] = useState(null);
+    const [request, setRequest] = useState(false);
+    const [step, setStep] = useState(1);
     useEffect(() => {
-        async function test(){
+        async function getActivities(stepCount){
             const token = Token.getLocalStorageData('splitzoneToken');
             try{
-                const response = await fetch(`${serverURI}/api/app/activitysummary`, {
+                const response = await fetch(`${serverURI}/api/app/activitysummary?step=${stepCount}`, {
                                     method: "GET",
                                     headers: {
                                         'Content-Type': 'application/json',
@@ -108,51 +121,72 @@ function DRecentActivity(props){
                 console.log("activity",responseData);
                 
                 // Setting Activities
-                setRecentActivities(responseData)
+                setRecentActivitiesInfo(responseData)
             }
             catch(error){
-    
             }
         }
-
-        test();
-    },[])
+        getActivities();
+    },[request])
     return (
         <ul className = "DRecentActivity_container">
-            {recentActivities && recentActivities.map((activity) => {
+            {recentActivitiesInfo && recentActivitiesInfo.activities.map((activity,index) => {
              const list = (<li key = {activity._id}>
-
                                 {/* LINE STYLE */}
-                                <div className = "DeFlowLine"></div>
+                                <div className = {index === (recentActivitiesInfo.activities.length-1) ? "DeFlowLine DeFlowLineEnd":  "DeFlowLine"}></div>
                                 {/* Activity Text */}
                                 { activity.invokedBy ? 
                                     <p>
+                                        {/* INVOKEDBY NAME -> TITLES */}
                                         {activity.invokedBy._id === userID ? 
                                             <span className = "AP_Username">You </span> :  
                                             <span className = "AP_Username">{activity.invokedBy.name}</span>
                                         }
-                                        {/* Check for CREATED_VALUE group activity or bill activity */}
-                                        {
+                                        {/* Check for CREATED_VALUE group activity or bill activity  or userActivity*/}
+                                           {/* ACTIVITY */}
+                                        {   
+                                            activity.activityUserId ? 
+                                                <>
+                                                <span
+                                                    className = "AP_Activity AP_Blue"
+                                                >  {
+                                                        activity.activity === "signedIn" ? "logged in" :
+                                                        activity.activity === "signedUp" ? "Signed up" :
+                                                        "Updated"
+                                                    }
+                                                </span> at </>: 
                                             activity.activityGroupId ? 
-                                            <span 
-                                                className = {
-                                                    activity.activity === "created" ? "AP_Activity AP_Green": 
-                                                    activity.activity === "deleted" ? "AP_Activity AP_Red":
-                                                    "AP_Activity AP_Blue"
-                                                }> {activity.activity}
-                                            </span>: 
+                                                <span 
+                                                    className = {
+                                                        activity.activity === "created" ? "AP_Activity AP_Green": 
+                                                        activity.activity === "deleted" ? "AP_Activity AP_Red":
+                                                        activity.activity === "added" ? "AP_Activity AP_Green":
+                                                        "AP_Activity AP_Yellow"
+                                                    }>{activity.activity}
+                                                </span>: 
                                             " "
                                         }
+                                        {/* AFTER ACTIVITY*/}
                                         {
-                                            (activity.activityGroupId && activity.activity) ? <> a group <span className = "AP_GroupName">{activity.groupName}</span> </> : 
+                                            (activity.activityGroupId && (activity.activity === "created" || activity.activity === "deleted")) ? <> a group <span className = "AP_GroupName">{activity.groupName}</span> at </> :
+                                            (activity.activityGroupId && activity.activity === "added") ? <> <span className = "AP_Member_name">{activity.member.name}</span> to the group  <span className = "AP_GroupName">{activity.groupName}</span> at </> :
+                                            (activity.activityGroupId && activity.activity === "removed") ? <> <span className = "AP_Member_name">{activity.member.name}</span> from the group  <span className = "AP_GroupName">{activity.groupName}</span> at </> :
+                                            (activity.activityUserId && activity.acitvity === "updated") ? "your details":  
                                             ''
                                         }
+                                        {/* ACTIVITY TIME*/}                                 
+                                         <span className = "AP_Date">{new Date(activity.createdAt).toLocaleString() }</span>                 
                                     </p> : 
                                     " "
                                 }
                             </li>)
                 return list
             })}
+            
+            {/* Load More Button */}
+            {(recentActivitiesInfo && recentActivitiesInfo.stepInfo.exists )  ? <li><button>Load More</button></li> : null}
+          
+
         </ul>
     )
 }

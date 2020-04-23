@@ -1,50 +1,152 @@
+// $initialColor: #1C2483;
 $navTextColor: #1C2483;
-$navSideBarWidth: 6px;
+$navSideBarWidth: 4px;
 $navSideBarBorderRadius: 0px;
 
-.leftNavContainer{
+// .leftNavContainer{
+//     background: #0f4b9b;
+//     //background: #2C65F1;
+//     ul{
+//         margin-top: 30px;
+//         display: flex;
+//         list-style: none;
+//         width: 100%;
+//         flex-direction: column;
+//         li{
+//             display: flex;
+//             width: 100%;
+//             height: 44px;
+//             text-align: left;
+//             a{
+//                 position: relative;
+//                 text-decoration: none;
+//                 font-size: 16px;
+//                 height: 100%;
+//                 width: 100%;
+//                 padding: 8px 20px;
+//                 //color: rgb(107, 109, 109);
+//                 color: rgba(196, 189, 189, 0.856);
+//                 font-weight: 600;
+//                 display: flex;
+//                 justify-content: flex-start;
+//                 align-items: center;
 
+//             //    &:hover:after{
+//             //        position: absolute;
+//             //        content: '';
+//             //        height: 0%;
+//             //        width: $navSideBarWidth;
+//             //        background: $navTextColor;
+//             //        // added background
+//             //        background: inherit;
+//             //        left: 0;
+//             //        top: 50%;
+//             //        border-radius: $navSideBarBorderRadius;
+//             //        transform: translateY(-50%);
+//             //        animation: navLinkHeight .25s ease-in forwards;
+//             //    }
+
+//                &:hover {
+//                    color: $navTextColor;
+//                    color: rgba(255, 255, 255, 0.87) !important;
+//                }
+//             }
+
+//         }
+
+//     }
+// }
+
+// .leftNavActive{
+//     position: relative;
+//     //color: #065AFA !important;
+//     //color: $navTextColor !important;
+//     color: rgba(255, 255, 255, 0.959) !important;
+//     //background: #fff;
+//     &:after{
+//         position: absolute;
+//         content: '';
+//         height: 100%;
+//         width: $navSideBarWidth;
+//         left: 0px;
+//         top: 0px;
+//         background: rgba(255, 255, 255, 0.959) !important;
+//     }
+// }
+// .leftNavIcons {
+//     margin-right: 5px;
+//     color: inherit; 
+//     transition:all .2s ease-in;
+// }
+// .leftNavIconsActive{
+//     color: rgba(255, 255, 255, 0.959) !important; 
+//     width: 25px;
+//     height: 25px;
+//     margin-right: 5px;
+//     transition:all .2s ease-in;
+// }
+
+
+/* --------------------------- */
+/* BASE STYLES */
+/* --------------------------- */
+
+
+
+.leftNavContainer{
+    /* MBL NAV*/
+    position: fixed;
+    width: 170px;
+    height: 100vh;
+    top: 0;
+    z-index: 99;
+     /* MBL NAV-END*/
+    background: #0f4b9b;
+    //background: #2C65F1;
+    overflow: visible !important;
     ul{
         margin-top: 30px;
         display: flex;
         list-style: none;
         width: 100%;
         flex-direction: column;
-
         li{
             display: flex;
             width: 100%;
-            height: 50px;
+            height: 44px;
             text-align: left;
             a{
                 position: relative;
                 text-decoration: none;
-                font-size: 18px;
+                font-size: 16px;
                 height: 100%;
                 width: 100%;
                 padding: 8px 20px;
-                color: rgb(107, 109, 109);
-                font-weight: bold;
+                //color: rgb(107, 109, 109);
+                color: rgba(196, 189, 189, 0.856);
+                font-weight: 600;
                 display: flex;
                 justify-content: flex-start;
                 align-items: center;
 
-               &:hover:after{
-                   position: absolute;
-                   content: '';
-                   height: 0%;
-                   width: $navSideBarWidth;
-                   background: $navTextColor;
-                   left: 0;
-                   top: 50%;
-                   border-radius: $navSideBarBorderRadius;
-                   transform: translateY(-50%);
-                   animation: navLinkHeight .25s ease-in forwards;
-               }
+            //    &:hover:after{
+            //        position: absolute;
+            //        content: '';
+            //        height: 0%;
+            //        width: $navSideBarWidth;
+            //        background: $navTextColor;
+            //        // added background
+            //        background: inherit;
+            //        left: 0;
+            //        top: 50%;
+            //        border-radius: $navSideBarBorderRadius;
+            //        transform: translateY(-50%);
+            //        animation: navLinkHeight .25s ease-in forwards;
+            //    }
 
                &:hover {
                    color: $navTextColor;
-                   border-radius: $navSideBarBorderRadius;
+                   color: rgba(255, 255, 255, 0.87) !important;
                }
             }
 
@@ -53,38 +155,87 @@ $navSideBarBorderRadius: 0px;
     }
 }
 
+/* PSEUDO LEFTNAV MOBILE */
+
+
+.leftNavContainerClose{
+    left: -170px;
+    transition: left 0.3s 0.2s ease-in-out;
+}
+.leftNavContainerOpen{
+    left: 0px;
+    transition: left 0.3s ease-in-out;
+    
+    &::after{
+        position: absolute;
+        content: '';
+        left: 100%;
+        top: -1%;
+        width: 500%;
+        height: 105%;
+        z-index: 6;
+        background: #2b2a2a85;
+        transition: all 0.4s ease-in;
+    }
+}
+.leftNavCloseBtnC{
+    position: absolute;
+    height: 50px;
+    width: 50px;
+    background: rgba(15, 76, 155, 1);
+    right: 0px;
+    top: 20px;
+    z-index: 9;
+    font-size: 25px;
+    font-weight: 800;
+    color:  rgba(15, 76, 155, 1);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor:pointer;
+}
+.leftNavCloseBtnCOpen{
+    right: -80px;
+    color: #fff;
+    transform: rotate(360deg);
+    transition: all 0.4s 0.2s ease;
+}
+.leftNavCloseBtnCClose{
+    right: 0px;
+    color:  rgba(15, 76, 155, 1);
+    transform: rotate(0deg);
+    transition: all 0.3s ease-in;
+}
+/* NAV MENU_CLASSES _END */
+
 .leftNavActive{
-    position: relative;
     //color: #065AFA !important;
-    color: $navTextColor !important;
+    //color: $navTextColor !important;
+    color: rgba(255, 255, 255, 0.959) !important;
+    //background: #fff;
     &:after{
         position: absolute;
         content: '';
         height: 100%;
         width: $navSideBarWidth;
-        background: $navTextColor;
-        left: 0;
-        top: 0;
-        border-radius: $navSideBarBorderRadius;
+        left: 0px;
+        top: 0px;
+        background: rgba(255, 255, 255, 0.959) !important;
     }
 }
-
-
-
 .leftNavIcons {
-    margin-right: 3px;
+    margin-right: 5px;
     color: inherit; 
     transition:all .2s ease-in;
 }
-
 .leftNavIconsActive{
-    color: $navTextColor !important; 
+    color: rgba(255, 255, 255, 0.959) !important; 
     width: 25px;
     height: 25px;
     margin-right: 5px;
     transition:all .2s ease-in;
 }
-
 
 // ANIMATIONS
 @keyframes navLinkHeight{
@@ -95,21 +246,136 @@ $navSideBarBorderRadius: 0px;
     }
 }
 
-
 // between 320 and 479
-@media only screen and (min-width: 320px) and (max-width: 479px){
+@media only screen and (min-width: 320px){
 
- }
+}
 
 // between 480 and 767
-@media only screen and (min-width: 480px) and (max-width: 767px){  
-
+@media only screen and (min-width: 480px){  
 
 }
 
 // between 768 and 991
-@media only screen and (min-width: 768px) and (max-width: 991px){
-
+@media only screen and (min-width: 768px){
+    .leftNavContainer{
+        /* MBL NAV*/
+        position: relative !important;
+        width: 100% !important;
+        height: 100%;
+        top: auto;
+        z-index: 99;
+         /* MBL NAV-END*/
+        background: #0f4b9b;
+        //background: #2C65F1;
+        overflow: visible !important;
+        ul{
+            margin-top: 30px;
+            display: flex;
+            list-style: none;
+            width: 100%;
+            flex-direction: column;
+            li{
+                display: flex;
+                width: 100%;
+                height: 44px;
+                text-align: left;
+                a{
+                    position: relative;
+                    text-decoration: none;
+                    font-size: 16px;
+                    height: 100%;
+                    width: 100%;
+                    padding: 8px 20px;
+                    //color: rgb(107, 109, 109);
+                    color: rgba(196, 189, 189, 0.856);
+                    font-weight: 600;
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: center;
+    
+                //    &:hover:after{
+                //        position: absolute;
+                //        content: '';
+                //        height: 0%;
+                //        width: $navSideBarWidth;
+                //        background: $navTextColor;
+                //        // added background
+                //        background: inherit;
+                //        left: 0;
+                //        top: 50%;
+                //        border-radius: $navSideBarBorderRadius;
+                //        transform: translateY(-50%);
+                //        animation: navLinkHeight .25s ease-in forwards;
+                //    }
+    
+                   &:hover {
+                       color: $navTextColor;
+                       color: rgba(255, 255, 255, 0.87) !important;
+                   }
+                }
+    
+            }
+    
+        }
+    }
+    
+    /* PSEUDO LEFTNAV MOBILE */
+    
+    
+    .leftNavContainerClose{
+        left: auto;
+        transition: none;
+    }
+    .leftNavContainerOpen{
+        left: auto;
+        transition: none;
+        
+        &::after{
+            position: absolute;
+            content: '';
+            left: 100%;
+            top: -1%;
+            width: 0%;
+            height: 0%;
+            z-index: 6;
+            background: none;
+            transition: none;
+        }
+    }
+    .leftNavCloseBtnC{
+        display: none;
+        position: absolute;
+        height: 50px;
+        width: 50px;
+        background: rgba(15, 76, 155, 1);
+        right: 0px;
+        top: 20px;
+        z-index: 9;
+        font-size: 25px;
+        font-weight: 800;
+        color:  rgba(15, 76, 155, 1);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor:pointer;
+    }
+    .leftNavCloseBtnCOpen{
+        display: none;
+        right: -80px;
+        color: #fff;
+        transform: rotate(360deg);
+        transition: all 0.4s 0.2s ease;
+    }
+    .leftNavCloseBtnCClose{
+        display: none;
+        right: 0px;
+        color:  rgba(15, 76, 155, 1);
+        transform: rotate(0deg);
+        transition: all 0.3s ease-in;
+    }
+    /* NAV MENU_CLASSES _END */
 
  }
 
