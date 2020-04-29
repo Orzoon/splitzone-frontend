@@ -8,6 +8,7 @@ import Token from "../../helpers/token";
 export default function LineChart(props){
     const lineBarRef = useRef(null);
     const [billsGraphData, setBillsGraphData] = useState(null);
+    const lineChartRef = useRef(null);
     useEffect(() => {
         async function test(){
             const token = Token.getLocalStorageData('splitzoneToken');
@@ -89,21 +90,29 @@ export default function LineChart(props){
     const data = canvas => {
         const ctx = canvas.getContext("2d")
         var gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
-        gradient.addColorStop(0, "#7C4DFF");
-        gradient.addColorStop(1, "#448AFF");
+        // gradient.addColorStop(0, "#7C4DFF");
+        // gradient.addColorStop(1, "#448AFF");
         //gradient.addColorStop(1, "#00BCD4");
         //gradient.addColorStop(1, "#1DE9B6");
+        //  gradient.addColorStop(0, "#32d6fb");
+        //  gradient.addColorStop(1, "#5558ed");
+        // 32d6fb  5558ed 
+        gradient.addColorStop(0, "rgb(68, 138, 255)");
+        gradient.addColorStop(1, "rgb(15, 75, 155)");
+        var gradientFill = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradientFill.addColorStop(0, "rgba(15, 76, 155, 0.5)");
+        gradientFill.addColorStop(0.7, "rgba(15, 76, 155, 0)");
+        // gradientFill.addColorStop(0.6, "rgba(0, 188, 212, .8)");
+        // gradientFill.addColorStop(1, "rgba(29, 233, 182, .8)");
 
-        var gradientFill = ctx.createLinearGradient(0, 0, canvas.width, 0);
-        gradientFill.addColorStop(0, "rgba(124, 77, 255, .8)");
-        gradientFill.addColorStop(0.3, "rgba(68, 138, 255, .8)");
-        gradientFill.addColorStop(0.6, "rgba(0, 188, 212, .8)");
-        gradientFill.addColorStop(1, "rgba(29, 233, 182, .8)");
+        var gradientFillLast = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradientFillLast.addColorStop(0, "rgba(192, 191, 191,0.5)");
+        gradientFillLast.addColorStop(0.7, "rgba(192, 191, 191, 0)");
         return   {
             labels: billsGraphData ? billsGraphData.currentMonth.label : [],
             datasets: [
                 {   
-                    label: "this month",
+                    label: "This Month",
                     //borderColor: gradient,
                     borderColor: gradient,
                     radius: 2,
@@ -111,16 +120,30 @@ export default function LineChart(props){
                     pointHoverRadius: 6,
                     pointBackgroundColor: gradient,
                     borderWidth: 5,
-                    fill: false,
-                    backgroundColor: gradient,
+                    fill: true,
+                    backgroundColor: gradientFill,
                     data: billsGraphData ? [10,30,45,60,80,82,85,90,97,98,70] : [],
+                    //backgroundColor: "#fff"
+                },
+                {   
+                    label: "Last Month",
+                    //borderColor: gradient,
+                    borderColor: "rgb(192, 191, 191)",
+                    radius: 2,
+                    pointRadius: 2,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: "rgb(192, 191, 191)",
+                    borderWidth: 5,
+                    fill: true,
+                    backgroundColor: gradientFillLast,
+                    data: billsGraphData ? [70,50,45,55,78,38,22,10,7,5,4,10,] : [],
                     //backgroundColor: "#fff"
                 }
             ]
         }
     }
     return (
-        <div className = "DLineChart_container">
+        <div className = "DLineChart_container" ref = {lineChartRef}>
 
             <Line ref = {lineBarRef}
                 data = {data}

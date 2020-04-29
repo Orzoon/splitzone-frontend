@@ -2,7 +2,7 @@ import React, {useState, useEffect, useRef} from 'react';
 import {useHistory, useRouteMatch} from "react-router-dom";
 import {serverURI} from "../../helpers/GlobalVar"
 import Token from "../../helpers/token"
-
+import DBanner from "../Dashboard/DBanner";
 // icons
 import {MdAddCircleOutline} from "react-icons/md";
 
@@ -59,13 +59,15 @@ export default function Groups(){
 
     return (
         <div className = "groupsContainer">
+            {/* BANNER */}
+            <DBanner />
             <ul className = "Gul">
 
                 {/* Loading the groupLoader */}
                 {isloading && <GroupLoader/>}
 
                 {/* Rest components to show */}
-                {!isloading && <li><CreateGroupButton createGroupClickHandler = {createGroupClickHandler}/></li>}
+                {!isloading && <li className ="GulCreateLi"><CreateGroupButton createGroupClickHandler = {createGroupClickHandler}/></li>}
                 {!isloading && <GroupList groups = {groups} ToBills = {ToBills}></GroupList>}
                 
             </ul>
