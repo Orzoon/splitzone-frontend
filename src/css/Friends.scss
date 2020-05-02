@@ -1,29 +1,185 @@
+$GgridGap: 18px;
 
-
-
+@mixin commmonRadius{
+    border-radius: 8px;
+}
 
 
 .friendsContainer{
+    overflow: hidden;
+    min-width: 0;
     position: relative;
+    height: auto;
+    width:100%;
+    padding: 35px 5px 30px 5px;
+    background: #F3F1F9 !important;
+    display: grid;
+    grid-row-gap: 30px;
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-areas: "DBanner"
+    "FUL";
 
     & ul {
+        overflow: hidden;
+        width: 100%;
+        min-height: 0px;
+        min-width: 0px;
+        grid-area: "FUL";
         display: grid;
         grid-auto-flow: row;
-        grid-auto-rows: 200px;
-        grid-template-columns: repeat(3, 1fr);
-        grid-gap: 10px;
-        padding: 30px;
+        grid-template-rows: 90px;
+        grid-auto-rows: 290px;
+        grid-template-columns: repeat(1, 1fr);
+        grid-gap: $GgridGap;
 
         & li {
-            list-style-type: none;
-            position: relative;
-            overflow: visible;
-            display: block;
             height: 100%;
-            max-width: 100%;
+            width: 100%;
+            @include commmonRadius;
+            //box-shadow: 0px 3px 3px rgb(183, 175, 238);
+        }
+        & li button.AddFriendButton{
+            overflow: hidden;
+            position:relative;
+            margin-top: 15px;
+            margin-left: 18px;
+            height: 40px;
+            width: 200px;
+            background: #fff;
+            border: none;
+            cursor: pointer;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #0f4b9b;
+            background: #0f4b9b;
+            color: #fff;
+            box-shadow: 0px 2px 6px 3px #10467c21;
+            display: flex;
+            flex-direction: row-reverse;
+            align-items:center;
+            justify-items:center;
+
+            &::after {
+                position: absolute;;
+                top: 0;
+                left: 0;
+                content: 'Add Friend';
+                width: 130px;
+                height: 100%;
+                color: #0f4b9b;
+                background: #fff;
+                text-transform: uppercase;
+                line-height: 3;
+                cursor: pointer;
+                font-size: 13px;
+                font-weight: 700;
+                letter-spacing: 1px;
+            }
+            & span.createGButtonIconC{
+                //grid-area: 1/1/2/2;
+                width: 70px;
+                font-size: 30px;
+                align-self: center;
+                line-height: 1.6;
+
+                &::after{
+                    position: absolute;
+                    content: "";
+                    width: 0px;
+                    height: 0px;
+                    border-top:20px solid transparent;
+                    border-right: 20px solid transparent;
+                    border-bottom: 20px solid transparent;
+                    border-left: 20px solid #fff;
+                    top: 50%;
+                    transform: translateY(-58%);
+                    left: -13px;
+                }
+            }
+        }
+        & li.friendProfileList{
             overflow: hidden;
             background: #fff;
+            border-bottom: 1px solid #ddd;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 80px 1fr 2fr;
+
+            & div {
+                h1 {
+                    font-size: 14px;
+                    color: #333B6A;
+                }
+                /* same class for IMG and H1 tag */
+                & .friendImage{
+                    position: absolute;
+                    height: 70px;
+                    width: 70px;
+                    border-radius: 50%;
+                    overflow: hidden;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    bottom: -25px;
+                }
+                & h1.friendImage {
+                    font-size: 22px;
+                    background: #0f4b9b;
+                    color: #fff;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    text-transform: uppercase;
+                    font-weight: 800;
+                    letter-spacing: 2px;
+
+                }
+            }
+            & div.friendCardUpper {
+                grid-area: 1/1/2/3;
+                background: linear-gradient(to right, #7AD8EE, #5D9BDC, #496DD0);
+            }
+            & div.friendCardLower{
+                grid-area: 2/1/3/3;
+                align-self: end;
+                padding-left: 18px;
+
+                & h1:nth-child(2){
+                    text-decoration: underline;
+
+                    &:hover {
+                        text-decoration: none;
+                    }
+                }
+            }
+            /* buttonContainer */
+            & div.friendCardButtons{
+                grid-column: 1/ span 2;
+                width: 100%;
+                height: 100%;
+                margin-left: 18px;
+                display: grid;
+                grid-template-rows: 40px 40px;
+                grid-template-columns: 1fr;
+                align-content: center;
+                grid-row-gap: 15px;
+                & button {
+                    padding: 0px;
+                    // setting padding to the first button
+                    // common span style
+                    & span {    
+                        &:nth-child(2){
+                            color: #fff;
+                        }
+                    }
+                }
+
+            }
         }
+
+
     }
 }
 
@@ -35,6 +191,241 @@
     top: 0 ;
     left: 0;
     z-index: 6;
-
     // form
 } 
+
+
+
+// between 320 and 479
+@media only screen and (min-width: 320px){
+    .friendsContainer{
+        overflow: hidden;
+        min-width: 0;
+        position: relative;
+        height: auto;
+        width:100%;
+        padding: 35px 5px 30px 5px;
+        background: #F3F1F9 !important;
+        display: grid;
+        grid-row-gap: 30px;
+        grid-template-columns: repeat(1, 1fr);
+        grid-template-areas: "DBanner"
+        "FUL";
+    
+        & ul {
+            overflow: hidden;
+            width: 100%;
+            min-height: 0px;
+            min-width: 0px;
+            grid-area: "FUL";
+            display: grid;
+            grid-auto-flow: row;
+            grid-template-rows: 90px;
+            grid-auto-rows: 290px;
+            grid-template-columns: repeat(1, 1fr);
+            grid-gap: $GgridGap;
+    
+            & li {
+                height: 100%;
+                width: 100%;
+                @include commmonRadius;
+                //box-shadow: 0px 3px 3px rgb(183, 175, 238);
+            }
+            & li button.AddFriendButton{
+                overflow: hidden;
+                position:relative;
+                margin-top: 15px;
+                margin-left: 18px;
+                height: 40px;
+                width: 200px;
+                background: #fff;
+                border: none;
+                cursor: pointer;
+                cursor: pointer;
+                font-size: 13px;
+                font-weight: 700;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                color: #0f4b9b;
+                background: #0f4b9b;
+                color: #fff;
+                box-shadow: 0px 2px 6px 3px #10467c21;
+                display: flex;
+                flex-direction: row-reverse;
+                align-items:center;
+                justify-items:center;
+    
+                &::after {
+                    position: absolute;;
+                    top: 0;
+                    left: 0;
+                    content: 'Add Friend';
+                    width: 130px;
+                    height: 100%;
+                    color: #0f4b9b;
+                    background: #fff;
+                    text-transform: uppercase;
+                    line-height: 3;
+                    cursor: pointer;
+                    font-size: 13px;
+                    font-weight: 700;
+                    letter-spacing: 1px;
+                }
+                & span.createGButtonIconC{
+                    //grid-area: 1/1/2/2;
+                    width: 70px;
+                    font-size: 30px;
+                    align-self: center;
+                    line-height: 1.6;
+    
+                    &::after{
+                        position: absolute;
+                        content: "";
+                        width: 0px;
+                        height: 0px;
+                        border-top:20px solid transparent;
+                        border-right: 20px solid transparent;
+                        border-bottom: 20px solid transparent;
+                        border-left: 20px solid #fff;
+                        top: 50%;
+                        transform: translateY(-58%);
+                        left: -13px;
+                    }
+                }
+            }
+            & li.friendProfileList{
+                overflow: hidden;
+                background: #fff;
+                border-bottom: 1px solid #ddd;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: 80px 1fr 2fr;
+    
+                & div {
+                    h1 {
+                        font-size: 14px;
+                        color: #333B6A;
+                    }
+                    /* same class for IMG and H1 tag */
+                    & .friendImage{
+                        position: absolute;
+                        height: 70px;
+                        width: 70px;
+                        border-radius: 50%;
+                        overflow: hidden;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        bottom: -25px;
+                    }
+                    & h1.friendImage {
+                        font-size: 22px;
+                        background: #0f4b9b;
+                        color: #fff;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        text-transform: uppercase;
+                        font-weight: 800;
+                        letter-spacing: 2px;
+    
+                    }
+                }
+                & div.friendCardUpper {
+                    grid-area: 1/1/2/3;
+                    background: linear-gradient(to right, #7AD8EE, #5D9BDC, #496DD0);
+                }
+                & div.friendCardLower{
+                    grid-area: 2/1/3/3;
+                    align-self: end;
+                    padding-left: 18px;
+    
+                    & h1:nth-child(2){
+                        text-decoration: underline;
+    
+                        &:hover {
+                            text-decoration: none;
+                        }
+                    }
+                }
+                /* buttonContainer */
+                & div.friendCardButtons{
+                    grid-column: 1/ span 2;
+                    width: 100%;
+                    height: 100%;
+                    margin-left: 18px;
+                    display: grid;
+                    grid-template-rows: 40px 40px;
+                    grid-template-columns: 1fr;
+                    align-content: center;
+                    grid-row-gap: 15px;
+                    & button {
+                        padding: 0px;
+                        // setting padding to the first button
+                        // common span style
+                        & span {    
+                            &:nth-child(2){
+                                color: #fff;
+                            }
+                        }
+                    }
+    
+                }
+            }
+        }
+    }
+}
+
+// between 480 and 767
+@media only screen and (min-width: 480px){ 
+    .friendsContainer{
+        width:100%;
+        padding: 25px 15px 30px 15px;
+        display: grid;
+        grid-row-gap: 30px;
+        grid-template-columns: repeat(1, 1fr);
+        grid-template-areas: "DBanner"
+        "FUL";
+    
+        & ul {
+            overflow: hidden;
+            width: 100%;
+            min-height: 0px;
+            min-width: 0px;
+            grid-area: "FUL";
+            display: grid;
+            grid-auto-flow: row;
+            grid-template-rows: 90px;
+            grid-auto-rows: 290px;
+            grid-template-columns: repeat(1, 400px);
+            grid-gap: $GgridGap;
+        }
+    }
+
+}
+// Friends double column
+@media only screen and (min-width: 660px){  
+    .friendsContainer{
+        display: grid;
+        grid-row-gap: 30px;
+        grid-template-columns: repeat(1, 1fr);
+        grid-template-areas: "DBanner"
+        "FUL";
+        & ul {
+            overflow: hidden;
+            width: 100%;
+            min-height: 0px;
+            min-width: 0px;
+            grid-area: "FUL";
+            display: grid;
+            grid-auto-flow: row;
+            grid-template-rows: 90px;
+            grid-auto-rows: 290px;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: $GgridGap;
+
+            & li.AddFriendButtonList{
+                grid-column: 1/ span 2;
+            }
+        }
+    }
+}

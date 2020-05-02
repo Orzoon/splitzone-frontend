@@ -58,7 +58,7 @@ $color: #392CDE;
 .BLBcontainer{
     margin: 20px auto auto auto;
     width: 96%;
-    height: auto;
+    min-height: 100vh;
     display: grid;
     grid-auto-rows: auto;
     grid-row-gap: 8px;

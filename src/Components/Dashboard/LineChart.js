@@ -51,6 +51,8 @@ export default function LineChart(props){
                                 const getDate = new Date(currentMonthResponse[i].paidDate).getDate();
                                 currentMonthData[getDate] = parseInt(currentMonthResponse[i].amount.toFixed(2), 10);
                             }
+                            const currentToday = new Date().getDate();
+                            currentMonthData.splice(currentToday+1)
                         }
                         if(i === 1){
                             for(let j = 1; j <= totalDays ; j++){
@@ -65,6 +67,10 @@ export default function LineChart(props){
                         }
                     }
                 }
+                let maxValue = Math.max(...[...currentMonthData, ...previousMonthData])
+                if(!maxValue || maxValue === 0){
+                    maxValue = 100
+                }
                 const lineGraphData = {
                     currentMonth: {
                         label: currentMonthLabel,
@@ -73,7 +79,8 @@ export default function LineChart(props){
                     previousMonth: {
                         label: previousMonthLabel,
                         data: previousMonthData
-                    }
+                    },
+                    maxValue
                 }
                 console.log(lineGraphData)
                 // setting lineGraph Data
@@ -122,7 +129,7 @@ export default function LineChart(props){
                     borderWidth: 5,
                     fill: true,
                     backgroundColor: gradientFill,
-                    data: billsGraphData ? [10,30,45,60,80,82,85,90,97,98,70] : [],
+                    data: billsGraphData ? billsGraphData.currentMonth.data : [],
                     //backgroundColor: "#fff"
                 },
                 {   
@@ -136,7 +143,7 @@ export default function LineChart(props){
                     borderWidth: 5,
                     fill: true,
                     backgroundColor: gradientFillLast,
-                    data: billsGraphData ? [70,50,45,55,78,38,22,10,7,5,4,10,] : [],
+                    data: billsGraphData ? billsGraphData.previousMonth.data : [],
                     //backgroundColor: "#fff"
                 }
             ]
@@ -178,9 +185,9 @@ export default function LineChart(props){
                             ticks: {
                                 beginAtZero:true,
                                 min: 0,
-                                max: 100,
+                                max: billsGraphData ? billsGraphData.maxValue : 100,
                                 padding: 5,
-                                stepSize: 100/6
+                                stepSize: billsGraphData ? billsGraphData/6 : 100/6
                             }
                         }]
                     },

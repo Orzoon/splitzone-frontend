@@ -5,8 +5,13 @@ import Token from "../../helpers/token"
 import {AppUserContext} from "../App/App"
 
 // ICONS
-
-
+import {
+    MdAddCircleOutline, 
+    MdLink,
+    MdDelete,
+    MdChat
+} from "react-icons/md";
+import DBanner from "../Dashboard/DBanner";
 // scss
 import "../../css/Friends.scss";
 
@@ -34,7 +39,6 @@ export default function Friends(){
                 //error
             }
             const userFriendsdata = await friendsResponse.json();
-
             setuserFriends(userFriendsdata)
             setisLoading(false);
         }
@@ -124,16 +128,20 @@ export default function Friends(){
 
    async function sendSplitzoneInvite(e, email){
     e.preventDefault();
-    console.log(email)
-
    }
 
     return (
         <div className = "friendsContainer">
+            <DBanner />
             <ul>
                 {!isLoading &&
-                    <li key = "1">
-                        <button onClick = {(e) => setFriendBtnStatus(!newFriendBtnStatus)}>add new friend</button>
+                    <li key = "1" className = "AddFriendButtonList">
+                        <button 
+                            className = "AddFriendButton"
+                            onClick = {(e) => setFriendBtnStatus(!newFriendBtnStatus)}>
+                            <span className = "createGButtonIconC"><MdAddCircleOutline/></span>
+                            <span className = "createGButtonText">Add friend</span>
+                        </button>
                     </li>
                 }
                 {!isLoading && userFriends && 
@@ -171,27 +179,50 @@ export default function Friends(){
 
 function FriendList(props){
 
-    const {name, email, registered, _id} = props.friendItem;
+    const {name, email, registered, _id, imageLink} = props.friendItem;
     return (
-        <li key = {props.friendItem._id}>
-            <div>
-                {name}
+        <li key = {props.friendItem._id} className = "friendProfileList">
+            <div className = "friendCardUpper">
+                {imageLink ? 
+                    <img   alt = "friendIamge" 
+                            src = {imageLink} 
+                            className = "friendImage" 
+                    /> :
+                    <h1  className = "friendImage" >{name.charAt(0) + name.charAt(1)}</h1>
+                }
             </div>
-            <div>
-                {email}
+
+            <div className = "friendCardLower">
+                {name && <h1>{name}</h1>}
+                {email && <h1>{email}</h1>}
             </div>
             {/* 
                 if not registered send invite and no chat options
                 else chat options and options to chat and splitzone memeber indication
             */}
-            {!registered && email &&
-                <button onClick = {e => props.sendSplitzoneInvite(e, email)}>send invite</button>
-            }
-            { registered && 
-                <button>chat</button>
-            }
-
-            <button onClick = {(e) => props.removeFriendHandler(e, _id)}>remove user</button>
+            <div className = "friendCardButtons">
+                {!registered && email &&
+                    <button 
+                        onClick = {e => props.sendSplitzoneInvite(e, email)}
+                        className = "friendBtnInvite GlobalBtnSecondary">
+                            <span className = "FBText ButtonText blueColor">send invite</span>
+                            <span className = "FBIcon ButtonIcon blueBg"><MdLink /></span>
+                    </button>
+                }
+                { registered && 
+                    <button  className = "friendBtnChat GlobalBtnSecondary">
+                    <span className = "FBText ButtonText greenColor">chat</span>
+                    <span className = "FBIcon ButtonIcon greenBg"><MdChat /></span>
+                    </button>
+                }
+                <button 
+                    className = "friendBtnRemove GlobalBtnSecondary"
+                    onClick = {(e) => props.removeFriendHandler(e, _id)}>
+                        <span className = "FBText ButtonText redColor">remove</span>
+                        <span className = "FBIcon ButtonIcon redBg"><MdDelete /></span>
+                </button>
+            </div>
+        
         </li>
     )
 

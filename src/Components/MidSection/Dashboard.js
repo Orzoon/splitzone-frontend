@@ -46,7 +46,7 @@ export default function Dashboard(props){
                 <h1>Overview</h1>
                 <DTotalGroups totalGroupsNo = {misc ? misc.totalGroups : ""}/>
                 <DTotalBills totalBillsNo = {misc ? misc.totalBills : ""}/>
-                <DTotalAmount />
+                <DTotalAmount totalBalance = {misc ? misc.totalBalance: ""} />
             </div>
             <div className = "DLineChart_wrapper">
                 <h1>Bill summary</h1>
@@ -89,7 +89,7 @@ function DTotalGroups(props){
 function DTotalAmount(props){
     return (
         <div className = "DTotalAmount">
-            <h2>{props.totalGroupsNo ? props.totalGroupsNo: 0}</h2>
+            <h2>{props.totalBalance ? props.totalBalance: 0}</h2>
             <div className = "DS_IconA">
                 <MdAttachMoney />             
             </div>
@@ -126,8 +126,9 @@ function DRecentActivity(props){
             catch(error){
             }
         }
-        getActivities();
+        getActivities(step);
     },[request])
+    
     return (
         <ul className = "DRecentActivity_container">
             {recentActivitiesInfo && recentActivitiesInfo.activities.map((activity,index) => {
@@ -184,7 +185,14 @@ function DRecentActivity(props){
             })}
             
             {/* Load More Button */}
-            {(recentActivitiesInfo && recentActivitiesInfo.stepInfo.exists )  ? <li><button>Load More</button></li> : null}
+            {(recentActivitiesInfo && recentActivitiesInfo.stepInfo.exists )  ? 
+                <li className = "loadMoreList">
+                    <button onClick = {() => {
+                            setStep((prevStep) => prevStep + 1);
+                            setRequest(!request)
+                        }}>Load More</button>
+                </li> : 
+                null}
           
 
         </ul>

@@ -44,4 +44,77 @@ $btn-primary-fontSize: 13px;
     }
  }
 
+ .GlobalBtnSecondary{
+     width: auto;
+     height: 40px;
+     font-size: 13px;
+     font-weight: 700;
+     letter-spacing: 1px;
+     color: #0f4b9b;
+     text-transform: uppercase;
+     cursor: pointer;
+     font-size: 30px;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     background: #fff;
+     outline: none;
+     border: none;
+     border-radius: 18px;
+     box-shadow: 1px 2px 3px 1px rgb(207, 207, 207);
+     max-width: 200px;
+     overflow: hidden;
+     text-align: center;
+     & span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height:40px;
+     }
+     & span.ButtonText{
+         font-size: 13px !important;
+         padding: 10px;
+         width: 140px;
+     }
+     & span.ButtonIcon {
+        padding-right: 10px;
+        width: 60px;
+        &::after{
+            position: absolute;
+            content: " ";
+            height: 120%;
+            width: 15px;
+            left: 0px;
+            top: 0px;
+            background: inherit;
+            transform: rotate(20deg);
+            transform-origin:top right;
+        }
+     }
+ }
+
+
+ /* STD COLORS */
+ .greenColor{
+     color: #2DB177;
+ }
+ .redColor {
+    color: #E54650;
+ }
+ .blueColor{
+     color: #0f4b9b;
+ }
+
+ /* STD BACKGROUNDS */
+ .greenBg{
+    background: #2DB177;
+ }
+
+ .redBg{
+     background: #E54650;
+ }
+.blueBg{
+    background: #0f4b9b;
+}
+
 

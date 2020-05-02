@@ -473,7 +473,21 @@ $font-color-yellow: #F9B71D;
             font-size: $font-size-h3;
             color: $font-color-dark;
             //border: 1px solid red;
-    
+            
+
+            // cirlce Line fix
+            &::after{
+                position: absolute;
+                content: '';
+                height: 12.5px;
+                width: 12.5px;
+                left: 6px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: #0f4c9b;
+                border-radius: 50%;
+                z-index: 1;
+            }
             /* LINE */
             & div.DeFlowLine{
                 position: absolute;
@@ -484,19 +498,20 @@ $font-color-yellow: #F9B71D;
                 top: 50%;
                 transform: translateY(-50%);
                 background: rgba(15, 76, 155, 0.233);
+                background: none;
                 &::after, &::before{
                     position: absolute;
                     content: "";
                 }
-
                 &::before{
-                    height: 50%;
-                    width: 50%;
+                    height: 100%;
+                    width: 100%;
                     top: 50%;
                     left: 50%;
                     transform: translate(-50%,-50%);
                     border-radius: inherit;
-                    background-color: rgb(15, 76, 155);
+                    //background-color: rgb(15, 76, 155);
+                    background: rgba(15, 76, 155, 0.233);
                     z-index: 9;
                 }
 
@@ -507,9 +522,9 @@ $font-color-yellow: #F9B71D;
                     top: 50%;
                     left: 50%;
                     transform: translateX(-50%);
+                    z-index: 10;
                 }
             }
-
             & div.DeFlowLineEnd{
                 
                 &::after{
@@ -554,6 +569,14 @@ $font-color-yellow: #F9B71D;
             & span.AP_Yellow{
                 border: 1px solid rgba(249, 183, 29, 0.993);
                 color: $font-color-yellow;
+            }
+        }
+
+        & li.loadMoreList{
+            
+            &::after, &::before{
+                height: 0px;
+                width: 0px;
             }
         }
         & li button {
