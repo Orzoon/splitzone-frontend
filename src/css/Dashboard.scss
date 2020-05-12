@@ -418,15 +418,85 @@ $font-color-yellow: #F9B71D;
 .DLineChart_wrapper{
     grid-area: "DLineChartWrapper";
     @include commmonDahsboard;
-
     display: grid;
     grid-template-columns: repeat(1,1fr);
-    grid-auto-rows: 40px auto;
+    grid-auto-rows: 40px auto auto;
     grid-row-gap: 15px;
+ 
     & h1 {
         color: rgb(71, 79, 119);
         font-size: 24px;
         font-weight: 700;
+    }
+
+    & div.DLineChart_SummaryOverlay{
+        border-radius: 8px;
+        padding: 18px;
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        display: grid;
+        grid-template-columns: 50px 1fr;
+        grid-template-rows: 50px auto;
+        grid-row-gap: 15px;
+
+        & div.DLineWIcon{
+            grid-area: 1/1/2/2;
+            height:28px;
+            width: 28px;
+            background: rgba(255, 188, 33, 0.24);
+            color: #FFBC21;
+            border-radius: 50%;
+            justify-self: center;
+            align-self: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 26px;
+            animation:DlineWIconA 1s ease-in-out forwards;
+        }
+
+        & p.DLineP {
+            grid-area: 1/2/2/3;
+            color: #3a426b;
+            font-size: 14px;
+            font-weight: 600;
+            align-self: center;
+        }
+        & div.lineOverlayLegend{
+            grid-area: 2/2/3/3;
+            justify-self: start;
+            & p {
+                position: relative;
+                font-size: 14px;
+                font-weight: 600;
+                color: #3a426b;
+                &::after{
+                    position: absolute;
+                    content: " ";
+                    width: 25px;
+                    height: 5px;
+                    left: -40px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    border-radius: 5px;
+                }
+            }
+
+            & p.lineTMnth{
+                color: rgba(15, 76, 155, 1);
+                &::after{
+                    background: rgba(15, 76, 155, 1);
+                }
+            }
+
+            & p.lineLMnth{
+                color: rgb(192, 191, 191);
+                &::after {
+                    background:rgb(192, 191, 191);
+                }
+            }
+        }
     }
 
     & div.DLineChart_container{
@@ -436,6 +506,7 @@ $font-color-yellow: #F9B71D;
         width: 100%;
         background: #fff;
         @include commmonDahsboard;
+        overflow: hidden;
     }
 }
 
@@ -587,14 +658,24 @@ $font-color-yellow: #F9B71D;
 }
 
 
-
+@keyframes DlineWIconA{
+    0%{
+        height:28px;
+        width: 28px;
+        background: rgba(255, 188, 33,0.3);
+    }
+    100%{
+        height:40px;
+        width: 40px;
+        background: rgba(255, 188, 33, 0.2);
+    }
+}
 /* -------MEDIA QUERIES-------------- */
 
 // between 320 and 479
 @media only screen and (min-width: 320px){
     .dashboardContainer{
         padding: 35px 10px 0px 10px;
-
         display: grid;
         grid-row-gap: 30px;
         grid-template-columns: repeat(1, 1fr);
@@ -689,12 +770,13 @@ $font-color-yellow: #F9B71D;
     
         display: grid;
         grid-template-columns: repeat(1,1fr);
-        grid-auto-rows: 40px auto;
+        grid-auto-rows: 40px auto auto;
         grid-row-gap: 15px;
         & h1 {
         }
     
         & div.DLineChart_container{
+            overflow: hidden;
             padding: 30px 5px 25px 5px;
         }
     }
@@ -860,7 +942,7 @@ $font-color-yellow: #F9B71D;
     
         display: grid;
         grid-template-columns: repeat(1,1fr);
-        grid-auto-rows: 40px auto;
+        grid-auto-rows: 40px auto auto;
         grid-row-gap: 15px;
         & h1 {
         }
@@ -990,7 +1072,7 @@ $font-color-yellow: #F9B71D;
     
         display: grid;
         grid-template-columns: repeat(1,1fr);
-        grid-auto-rows: 40px auto;
+        grid-auto-rows: 40px auto auto;
         grid-row-gap: 15px;
         & h1 {
             font-size: 25px;

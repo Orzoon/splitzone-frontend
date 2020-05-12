@@ -96,25 +96,28 @@ $btn-primary-fontSize: 13px;
 
  /* STD COLORS */
  .greenColor{
-     color: #2DB177;
+     color: #2DB177 !important;
  }
  .redColor {
-    color: #E54650;
+    color: #E54650  !important;
  }
  .blueColor{
-     color: #0f4b9b;
+     color: #0f4b9b !important;
  }
 
  /* STD BACKGROUNDS */
  .greenBg{
-    background: #2DB177;
+    background: #2DB177 !important;
  }
 
  .redBg{
-     background: #E54650;
+     background: #E54650 !important;
  }
 .blueBg{
-    background: #0f4b9b;
+    background: #0f4b9b !important;
+}
+.yellowBg{
+    
 }
 
 

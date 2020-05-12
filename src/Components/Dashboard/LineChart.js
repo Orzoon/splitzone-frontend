@@ -1,98 +1,13 @@
-import React, {useState, useEffect, useRef, useContext } from "react";
+import React, {useRef} from "react";
 import { Line } from 'react-chartjs-2';
 
 /* Token */
-import {serverURI} from "../../helpers/GlobalVar";
-import Token from "../../helpers/token";
 
-export default function LineChart(props){
+
+export default function LineChart({billsGraphData}){
     const lineBarRef = useRef(null);
-    const [billsGraphData, setBillsGraphData] = useState(null);
     const lineChartRef = useRef(null);
-    useEffect(() => {
-        async function test(){
-            const token = Token.getLocalStorageData('splitzoneToken');
-            try{
-                const response = await fetch(`${serverURI}/api/app/summary?currentMonth=currentMongth`, {
-                                    method: "GET",
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'Authorization': 'Bearer '+ token
-                                    }
-                                })
-                if(!response.status === 200){
-                    throw new Error("something went wrong")
-                }
-                const responseData = await response.json();
-                console.log(responseData)
-                // processing data
-                const responseDataPropArray = Object.keys(responseData);
-                const currentMonthLabel = [];
-                const previousMonthLabel = [];
-                const currentMonthData = [];
-                const previousMonthData = [];
-                function getDates(year, month){
-                    const date = new Date(year,month, 0).getDate();
-                    return date;
-                }
-                for(let i = 0; i < responseDataPropArray.length - 1; i ++){
-                    if(responseData[responseDataPropArray[i]].length > 0){
-                        const year = new Date(responseData[responseDataPropArray[i]][i].paidDate).getFullYear();
-                        const month = new Date(responseData[responseDataPropArray[i]][i].paidDate).getMonth();
-                        const totalDays = getDates(year, month);
-                        // for currentMonth
-                        if(i === 0){
-                            for(let j = 1; j <= totalDays ; j++){
-                                currentMonthLabel.push(j);
-                                currentMonthData.push(0);
-                            }
-                            const currentMonthResponse = responseData[responseDataPropArray[i]]
-                            for(let i = 0 ; i < currentMonthResponse.length; i++){
-                                const getDate = new Date(currentMonthResponse[i].paidDate).getDate();
-                                currentMonthData[getDate] = parseInt(currentMonthResponse[i].amount.toFixed(2), 10);
-                            }
-                            const currentToday = new Date().getDate();
-                            currentMonthData.splice(currentToday+1)
-                        }
-                        if(i === 1){
-                            for(let j = 1; j <= totalDays ; j++){
-                                previousMonthLabel.push(j);
-                                previousMonthData.push(0);
-                            }
-                            const previousMonthResponse = responseData[responseDataPropArray[i]]
-                            for(let i = 0 ; i < previousMonthResponse.length; i++){
-                                const getDate = new Date(previousMonthResponse[i].paidDate).getDate();
-                                previousMonthData[getDate] = parseInt(previousMonthData[i].amount.toFixed(2), 10);
-                            }
-                        }
-                    }
-                }
-                let maxValue = Math.max(...[...currentMonthData, ...previousMonthData])
-                if(!maxValue || maxValue === 0){
-                    maxValue = 100
-                }
-                const lineGraphData = {
-                    currentMonth: {
-                        label: currentMonthLabel,
-                        data: currentMonthData
-                    },
-                    previousMonth: {
-                        label: previousMonthLabel,
-                        data: previousMonthData
-                    },
-                    maxValue
-                }
-                console.log(lineGraphData)
-                // setting lineGraph Data
-                setBillsGraphData(lineGraphData)
-
-            }catch(error){
-
-            }
-        }
-        test();
-    }, [])
-
+    console.log("billsGraphData", billsGraphData)
 
     const data = canvas => {
         const ctx = canvas.getContext("2d")
@@ -116,7 +31,7 @@ export default function LineChart(props){
         gradientFillLast.addColorStop(0, "rgba(192, 191, 191,0.5)");
         gradientFillLast.addColorStop(0.7, "rgba(192, 191, 191, 0)");
         return   {
-            labels: billsGraphData ? billsGraphData.currentMonth.label : [],
+            labels: billsGraphData ? billsGraphData.currentMonth.label : [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30],
             datasets: [
                 {   
                     label: "This Month",
@@ -129,7 +44,7 @@ export default function LineChart(props){
                     borderWidth: 5,
                     fill: true,
                     backgroundColor: gradientFill,
-                    data: billsGraphData ? billsGraphData.currentMonth.data : [],
+                    data: billsGraphData ? billsGraphData.currentMonth.data : [10,20,30,45,60,78,50,65,70,90],
                     //backgroundColor: "#fff"
                 },
                 {   
@@ -143,7 +58,7 @@ export default function LineChart(props){
                     borderWidth: 5,
                     fill: true,
                     backgroundColor: gradientFillLast,
-                    data: billsGraphData ? billsGraphData.previousMonth.data : [],
+                    data: billsGraphData ? billsGraphData.previousMonth.data : [60,90,50,45,68,70,85,70,70,10,60],
                     //backgroundColor: "#fff"
                 }
             ]

@@ -9,7 +9,7 @@
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: repeat(4, auto);
-    grid-row-gap:30px;
+    grid-row-gap:20px;
     align-items: start;
 
     // common div
@@ -20,11 +20,11 @@
     }
 
     // profile sectons
-     
     & div.ProfileBannerContainer{
         position: relative;
         height: 300px;
         background: linear-gradient(to top right, #5975CD, #662571);
+        margin-bottom:30px;
         & div.ProfilePicContainer{
             position: absolute;
             height: 90px;
@@ -188,7 +188,7 @@ div.profileCardCommonLower{
         display: grid;
         grid-template-columns: 1fr;
         grid-template-rows: repeat(4, auto);
-        grid-row-gap:30px;
+        grid-row-gap:20px;
         // common div
         & div {
             width: 100%;

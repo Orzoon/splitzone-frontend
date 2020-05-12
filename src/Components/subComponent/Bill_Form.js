@@ -1,14 +1,13 @@
-import React, {useEffect, useState, useContext} from "react";
-import {useHistory} from 'react-router-dom';
+import React, {useEffect, useState, useContext, useRef} from "react";
 import Token from "../../helpers/token";
 import {serverURI} from "../../helpers/GlobalVar";
 import {AppUserContext} from "../App/App"
-import {useBillSubmitForm} from "../../hooks/appHooks";
+
 
 export default function BillForm(props){
-    const history = useHistory();
+    const BillFormRef = useRef(null);
     const user = useContext(AppUserContext);
-    const {groupID} = props;
+    const {groupID,newBillsAdditionHandler} = props;
     const [groupMembers, setGroupMembers] = useState(null);
     const [splitAmongB, setSplitAmongB] = useState(false);
     const [errors, setErrors] = useState({});
@@ -20,9 +19,9 @@ export default function BillForm(props){
     // form hook
 
     useEffect(() => {
-        const token = Token.getLocalStorageData('splitzoneToken');
         async function fetchGroupMembersData(){
             try{
+                const token = Token.getLocalStorageData('splitzoneToken');
                 const groupMemberResponse = await fetch(`${serverURI}/api/app/group/${groupID}`, {
                     method: "GET",
                     headers: {
@@ -76,9 +75,17 @@ export default function BillForm(props){
         }
 
         fetchGroupMembersData();
+        window.addEventListener('click', outsideUtil, false);
+        return (() => {
+            window.removeEventListener('click', outsideUtil, false)
+        })
     }, [])
 
-  
+    function outsideUtil(e){
+        if(BillFormRef.current && !BillFormRef.current.contains(e.target)){
+            props.showBillFormToggleHandler();
+        }
+    }
     /* --based on this OPEN/CLOSE splitView */
     function splitAmongBHandler(e){
         e.preventDefault();
@@ -205,14 +212,39 @@ export default function BillForm(props){
     function submitBillFormHandler(e){
         e.preventDefault();
         const valuesCopy = {...initialValues}
+
+        /* Values to be set Later ??*/
         valuesCopy.paidCategory= "some category for now";
         valuesCopy.ownerGroup = groupID;
         valuesCopy.paidDate = "somedate";
         // deleting customCopy
         delete valuesCopy.customObj;
         
+        /* NOTE Added divided info even for split here */
         // validate here
+        if(valuesCopy.dividedEqually) {
+            const groupMembersCopy = [...groupMembers];
+            const splittedAmongMembersCopy = [...valuesCopy.splittedAmongMembers];
+            const splittedAmongNo = splittedAmongMembersCopy.length;
 
+            const dividedArray = [];
+
+            splittedAmongMembersCopy.forEach(id => {
+                const member = groupMembersCopy.filter(member => member._id.toString() === id);
+                dividedArray.push(
+                    {
+                        amount : +(valuesCopy.paidAmount/ splittedAmongNo).toFixed(2),
+                        _id: id,
+                        name: member[0].name
+                    }
+                )
+            })
+
+            // setting values
+            valuesCopy.divided = dividedArray
+        }
+        
+        
         // sending data
         const token = Token.getLocalStorageData('splitzoneToken');
 
@@ -233,22 +265,18 @@ export default function BillForm(props){
                     return false
                 }
                 // cosing the bill form
-                props.showBillFormToggleHandler()
-                console.log("bill added")
-                history.push("/temp");
-                history.goBack();
-
-            
-
+                const addedBill = await Billsresponse.json();
+                newBillsAdditionHandler(addedBill);
+                props.showBillFormToggleHandler();
             }catch(error){
-                console.log(error)
+               // errros while adding
             }
         }
         sendBillFormData();
     }
     return (
-        <div className = "Bill_Form_Container">
-            <form className = "Bill_Form"  id = "Bill_Form" onSubmit={(e) => submitBillFormHandler(e)} >
+        <div className = "Bill_Form_Container" >
+            <form className = "Bill_Form"  ref = {BillFormRef} id = "Bill_Form" onSubmit={(e) => submitBillFormHandler(e)} >
                 {/* Form close button */}
                 <button  
                     type = "button"
@@ -256,22 +284,36 @@ export default function BillForm(props){
                     className = "Bill_Form_Close">
                         close
                 </button>
+
+                <h1 className = "formTitle">Add a bill</h1>
+
+
                 {/* Amount field */}
-                <input 
-                    name = "Amount"
-                    placeholder = "Amount"
-                    value = {(initialValues) ? initialValues.paidAmount : " "}
-                    onChange = {(e) => handleBillFormChange(e)}
-                />    
-                <br />
+                <div className = "commonF_div">
+                    <input 
+                        className = "Amount"
+                        name = "Amount"
+                        placeholder = "Amount"
+                        value = {(initialValues) ? initialValues.paidAmount : " "}
+                        onChange = {(e) => handleBillFormChange(e)}
+                    />   
+                </div>  
+              
+
                 {/* including/excluding field */}
-                <select onChange = { e => handleBillFormChange(e, "incExc")} value = {initialValues ? initialValues.customObj.incExc : "including"}>
-                    <option value = "including">including</option>
-                    <option value = "excluding">excluding</option>
-                </select> you
-                <br />
+                <div className = "commonF_div">
+                    <select onChange = { e => handleBillFormChange(e, "incExc")} value = {initialValues ? initialValues.customObj.incExc : "including"}>
+                        <option value = "including">including</option>
+                        <option value = "excluding">excluding</option>
+                    </select> 
+                    <h1>you</h1>
+
+                </div>
+            
                 {/* paidby member */}
-                paid by <select onChange = {e => handleBillFormChange(e, "paidBy")}>
+                <div className = "commonF_div">
+                    <h1>Paid by</h1>
+                    <select onChange = {e => handleBillFormChange(e, "paidBy")}>
                             {groupMembers && groupMembers.length > 1 && 
                                 groupMembers.map(member => {
                                     if(member._id === user._id){
@@ -283,39 +325,44 @@ export default function BillForm(props){
                                 })
                             }
                         </select>
-                <br />
-                split 
-                <select onChange = {e => handleBillFormChange(e, "eqUneq")} value = {initialValues ? 
-                        initialValues.dividedEqually ? "equally" : "unequally"
-                        :
-                        "equally"
-                    }
-                >
-                    <option value = "equally">equally</option>  
-                    <option value = "unequally">unequally</option>  
-                </select><br/>
-                    
-                <br/>among 
-                {splitAmongB ? 
+                </div>
+                <div className = "commonF_div">
+                    <h1>Split</h1>
+                    <select onChange = {e => handleBillFormChange(e, "eqUneq")} value = {initialValues ? 
+                            initialValues.dividedEqually ? "equally" : "unequally"
+                            :
+                            "equally"
+                            }
+                        >
+                        <option value = "equally">equally</option>  
+                        <option value = "unequally">unequally</option>  
+                    </select>
+                </div>
+                <div id = {splitAmongB ? "splittedAmongParentDivFix": "splittedAmongParentDivFixFirstParent"} >
+                    <h1>Among</h1>
+                    {splitAmongB ? 
                     <SplitAmongBComponent 
-                    groupMembers = {groupMembers} 
-                    paidAmount = {initialValues.paidAmount}
-                    splittedAmongNumber = {initialValues.splittedAmongNumber}
-                    splittedAmongMembers = {initialValues.splittedAmongMembers}
-                    dividedEqually = {initialValues.dividedEqually}
-                    divided = {initialValues.divided}
-                    handleRemoveAddBillMembers = {handleRemoveAddBillMembers}
-                    handleBillFormChange = {handleBillFormChange}
-                    errors = {errors}
-                    errorHandler = {errorHandler}
+                        groupMembers = {groupMembers} 
+                        paidAmount = {initialValues.paidAmount}
+                        splittedAmongNumber = {initialValues.splittedAmongNumber}
+                        splittedAmongMembers = {initialValues.splittedAmongMembers}
+                        dividedEqually = {initialValues.dividedEqually}
+                        divided = {initialValues.divided}
+                        handleRemoveAddBillMembers = {handleRemoveAddBillMembers}
+                        handleBillFormChange = {handleBillFormChange}
+                        errors = {errors}
+                        errorHandler = {errorHandler}
                     /> 
                     : 
-                    <input type = "button" value = "all"
+                    <input className = "FormButton" type = "button" value = "all"
                      onClick = {splitAmongBHandler}
                     /> 
                 } 
-
-            <input type = "submit" value = "submit"/>
+                </div>
+                
+                <div className = "commonF_div">
+                     <input className = "FormButton" type = "submit" value = "submit"/>
+                </div>
             </form>
         </div>
     )
@@ -352,10 +399,10 @@ function SplitAmongBComponent(props){
                         const memberIncludedB = splittedAmongMembers.some(sAMembers => members._id === sAMembers)
 
                         if(memberIncludedB){
-                            return (<div key = {members._id}>
-                                        {members.name} 
+                            return (<div key = {members._id} className = "F_List">
+                                        <h1>{members.name} </h1>
                                         {dividedEqually ? 
-                                            <div>
+                                            <div className = "Form_amount">
                                                 {(dividedEqually) ? (parseInt(paidAmount, 10)/parseInt(splittedAmongNumber, 10)).toFixed(2) : "not equally" }
                                             </div>
                                             :
@@ -375,8 +422,8 @@ function SplitAmongBComponent(props){
                                     </div>)
                         }
                         else {
-                            return (<div key = {members._id}> 
-                                {members.name} 
+                            return (<div key = {members._id}  className = "F_List"> 
+                                <h1>{members.name} </h1>
                                 <button 
                                 onClick = {(e) => handleRemoveAddBillMembers(e,members._id, "add")} >
                                         include
@@ -400,9 +447,9 @@ function DividedUnequallyInput({
     })
     {   
         const index = divided.findIndex(member => member._id === members._id)
-        return (<input 
+        return (<input className = "input_amount"
             value = { index > -1 ? divided[index].amount : " "} 
             placeholder = "input value" 
             onChange = {e => handleBillFormChange(e, "divided",members._id )}
             />)
-    }
+}

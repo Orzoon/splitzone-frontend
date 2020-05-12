@@ -30,6 +30,7 @@ function App(){
         async function getUserData(){
             setLoading(true);  // setting loading to true
             const token = Token.getLocalStorageData('splitzoneToken');
+            console.log(token);
             try {
                 const response = await fetch(`${serverURI}/api/app/user`, {
                                     method: 'GET',
@@ -41,8 +42,9 @@ function App(){
                 if(!response.status === 200){
                     throw new Error('invalid response');
                 }
-
+                console.log(response.status)
                 const userData = await response.json();
+                console.log("userData", userData)
                 setUser(userData);
                 setLoading(false)
             }

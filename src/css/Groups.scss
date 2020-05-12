@@ -744,16 +744,28 @@ $testBorder: 1px solid red;
 
                 // IMG and P tag
                 & .GLi_profileIcon{
+                    display: inline-block;
                     height: 35px;
                     width: $profileIconWidth;
                     top: 55%;
                     transform: translateY(-40%);
                 }
 
-                & img.GLi_profileIcon{
+                & img.GLi_profileIcon, & h1.GLi_profileIcon{
                     position: absolute;
                     left: 18px;
                     border-radius: 50%;
+                }
+
+                & h1.GLi_profileIcon{
+                    background: #0f4b9b;
+                    color: #fff;
+                    font-size: 16px;
+                    font-weight: 600;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    letter-spacing: 1px;
                 }
                 & p.GLIP_second{
                     display: block;
@@ -791,36 +803,65 @@ $testBorder: 1px solid red;
         & .createGroup{
             margin: 100px auto;
             width: 250px;
-            height: 180px;
+            height: auto;
             background: #fff;
             z-index: 9999;
             display: grid;
             grid-template-columns: 1fr;
-            grid-template-rows: 1fr 1fr 1fr;
-            grid-row-gap: 10px;
-            border-radius: 5px;
+            grid-auto-rows: auto;
+            grid-row-gap: 15px;
+            border-radius: 8px;
             overflow: hidden;
             box-shadow: 0px 2px 3px rgb(130, 118, 209);
             padding-bottom: 20px;
+            
+            & p {
+                padding-left: 10px;
+                padding-right: 10px;
+                color: #E54650;
+                font-weight: 400;
+                font-size: 14px;
+            }
             & h3 {
-                background: $groupNameColor;
+                background: #0f4c9b;
                 color: #fff;
+                font-weight: 600;
+                font-size: 13px;
+                letter-spacing: 1px;
+                height: 60px;
+                text-transform: uppercase;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                
             }
             & input {
-                height: 40px;
-                height: 100%;
-                border-radius: 4px;
+                height: 45px;
+                border-radius: 8px;
                 margin: 5px 10px;
-                padding: 2px;
+                padding-left: 10px;
                 font-size: 16px;
+                outline: none;
+                border: none;
+                box-shadow: 0px 0px 1px #ddd;
+                border: 1px solid rgba(197, 193, 193, 0.842);
             }
 
             & button {
-                margin: 10px 10px 0px 10px;
+                margin: 0px 10px 0px 10px;
                 height: 40px;
                 align-self: center;
                 border-radius: 4px;
                 cursor: pointer;
+                outline: none;
+                border: none;
+                background: #0f4b9b;
+                color: #FFF;
+                font-weight: 600;
+                font-size: 13px;
+                letter-spacing: 1px;
+                outline: none;
+                text-transform: uppercase;
             }
         }
     }

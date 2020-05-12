@@ -1,43 +1,93 @@
-import React, {useState, useEffect, useContext, useRef} from 'react';
+import  React, {
+        useState, 
+        useEffect, 
+        useContext, 
+        useRef,
+        useReducer
+    } 
+from 'react';
+
 import {useHistory} from 'react-router-dom';
 import {serverURI} from "../../helpers/GlobalVar";
 import Token from "../../helpers/token"
 import {AppUserContext} from "../App/App"
 
 // ICONS
+import {
+    MdAdd,
+    MdClose,
+    MdKeyboardArrowDown,
+    MdCheck,
+    MdKeyboardArrowUp
+} from "react-icons/md"
 
-import {MdAdd} from "react-icons/md"
 // scss
 import "../../css/Bills.scss";
 
 // subComponents
-import BillForm from '../subComponent/Bill_Form'
+import BillForm from '../subComponent/Bill_Form';
 
+
+// importing Loader
+import ComLoader from './ComLoader';
 
 /*--------------
 
 MAIN BILLS COMPONENT
 
 ----------------*/
+const initialBillState = {
+    isLoading: true,
+    groupID: null,
+    group: null,
+    bills: [],
+    showSectionDetails: true,
+    showEditRemoveMembers: false, 
+    showBillForm: false,
+    errors: [],
+
+}
 
 
+const billReducer = (state, action) => {
+    switch(action.type){
+        case "isLoading":
+            return {...state, isLoading: action.payload }
+        case "group":
+            return {...state, group: action.payload}
+        case "bills": 
+            return {...state, bills: action.payload}
+        case "showSectionDetails":
+            return {...state, showSectionDetails: action.payload}
+        case "showEditRemoveMembers":
+            return {...state, showEditRemoveMembers: action.payload}
+        case "showBillForm":
+            return {...state, showBillForm: action.payload}
+        default: 
+            return state;
+    }
+}
 
+/* MAIN COMPONENT */
 export default function Bills(props){
+    const [state, dispatch] = useReducer(billReducer, initialBillState)
     const {groupID} = props.match.params;
-    const [isLoading, setisLoading] = useState(true);
-    const [group, setGroup] = useState({});
-    const [bills, setBills] = useState([]);
-    const [errors, setErrors] = useState(null);
-    const [showDetails, setShowDetails] = useState(null);
-    const [showEditRemoveMembersB,setShowEditRemoveMembersB] = useState(false)
-    const [showBillFormB, setShowBillFormB] = useState(false)
-
+    //const [isLoading, setisLoading] = useState(true);
+    //const [group, setGroup] = useState({});
+    //const [bills, setBills] = useState([]);
+    //const [errors, setErrors] = useState(null);
+    //const [showDetails, setShowDetails] = useState(true);
+    //const [showEditRemoveMembersB,setShowEditRemoveMembersB] = useState(false)
+    //const [showBillFormB, setShowBillFormB] = useState(false)
     useEffect(() => { 
         async function getData(groupID){
+            if(!groupID){
+                // set error
+                return null;
+            }
             const token = Token.getLocalStorageData('splitzoneToken');
-
             try{
-                const groupResponse = await fetch(`${serverURI}/api/app/group/${groupID}`, {
+                const groupResponse = await fetch(`${serverURI}/api/app/group/${groupID}?bgDetails=${true}`, {
                             method: "GET",
                             headers: {
                                 'Content-Type': 'application/json',
@@ -58,33 +108,40 @@ export default function Bills(props){
 
                 const [groupData, billsData] = [await groupResponse.json(), await Billsresponse.json()]
 
-                setGroup(groupData)
-                setBills(billsData)
-                setShowDetails(true)
-                setisLoading(false)
+                dispatch({type: "group", payload: groupData})
+                dispatch({type: "bills", payload: billsData})
+                dispatch({type: "showSectionDetails", payload: true});
+                dispatch({type: "isLoading", payload: false})
+                //
+                //setGroup(groupData)
+                // setBills(billsData)
+                // setShowDetails(true)
+                // setisLoading(false)
 
                
             }catch(error){
-                console.log(error)
+               // handle error later on
             }
         }
         getData(groupID);
-    }, [])
-
-
-    function HideShowDetailsHandler(){
-        setShowDetails(false);
+    },[])
+    function HideShowSectionDetailsHandler(){
+            dispatch({type: "showSectionDetails", payload: !state.showSectionDetails})
     }
     function showBillFormToggleHandler(){
-        setShowBillFormB(!showBillFormB)
+        dispatch({type:"showBillForm", payload: !state.showBillForm})
+        //setShowBillFormB(!showBillFormB)
     }
-    function showEditRemoveMembersBHandler(){
-        setShowEditRemoveMembersB(!showEditRemoveMembersB)
+    function showEditRemoveMembersHandler(){
+        dispatch({type: "showEditRemoveMembers", payload: !state.showEditRemoveMembers})
+        //setShowEditRemoveMembersB(!showEditRemoveMembersB)
+    }
+    function newBillsAdditionHandler(newBillFromForm){
+        dispatch({type: "bills", payload: [newBillFromForm, ...state.bills]})
     }
     async function removeBillHandler(_id){
         const token = Token.getLocalStorageData('splitzoneToken');
         const billID = _id;
-
         try{
            
             const billDeleteResponse = await fetch(`${serverURI}/api/app/bill/${groupID}/${billID}`, {
@@ -97,63 +154,67 @@ export default function Bills(props){
 
 
             if(billDeleteResponse.status !== 200){
-                // throe code for an error
+                // check for additional error codes
                 console.log("error occured")
-                return
+                return null
             }
 
-            const billsCopy = [...bills];
+            const billsCopy = [...state.bills];
             const filteredBill = billsCopy.filter(bill => bill._id !== billID)
-            setBills(filteredBill);
-
+            dispatch({type: "bills", payload: filteredBill})
         }
         catch(error){
-            console.log(error)
+            // errors
         }
     }
 
-    if(isLoading){
-        return (
-            <div className = "billsContainer">
-                <BillsLGContainer />
-                <BillsLBContainer />
-            </div>
-        )
+    if(state.isLoading){
+        return <ComLoader />
     }
-
-    return (
+    else return (
         <div className = "billsContainer">
             <BillsGroup 
-                group = {group} 
-                showEditRemoveMembersBHandler = {showEditRemoveMembersBHandler} 
+                group = {state.group} 
+                showEditRemoveMembersHandler = {showEditRemoveMembersHandler} 
                 showBillFormToggleHandler = {showBillFormToggleHandler}
+                HideShowSectionDetailsHandler = {HideShowSectionDetailsHandler}
+                showSectionDetails = {state.showSectionDetails}
+                groupCreatedById = {state.group.createdById}
             />
-
             {/* conditional Details */}
-            {showDetails && <BillsGroupDetails hideShowDetails = {HideShowDetailsHandler}/>}
+            {state.showSectionDetails && 
+                    <BillsGroupDetails 
+                        HideShowSectionDetailsHandler = {HideShowSectionDetailsHandler} 
+                        showEditRemoveMembersHandler = {showEditRemoveMembersHandler}
+                        group = {state.group}
+                    />
+             }
+            
             <BillsSummary 
-                bills = {bills} 
-                groupMembers = {group.members}
+                bills = {state.bills} 
+                groupMembers = {state.group.members}
             />
-            <BillsFilter/>
+            {/* Add Bills filter later on */}
+            {/* <BillsFilter/> */}
             {/* <BillsTitle/> */}
             <BillsComponent 
-                bills = {bills}
+                bills = {state.bills}
                 removeBillHandler = {removeBillHandler}
             />
-            {showEditRemoveMembersB && <EditRemoveMembers 
-                            showEditRemoveMembersBHandler = {showEditRemoveMembersBHandler} 
+            {state.showEditRemoveMembers && <EditRemoveMembers 
+                            showEditRemoveMembersHandler = {showEditRemoveMembersHandler} 
                             groupID = {groupID}
-                            groupMembers = {group.members}
+                            groupCreatedById = {state.group.createdById}
+                            groupMembers = {state.group.members}
                         />}
-            {showBillFormB && <BillForm 
+            {state.showBillForm && <BillForm 
                                 showBillFormToggleHandler = {showBillFormToggleHandler}
                                 groupID = {groupID}
+                                newBillsAdditionHandler ={newBillsAdditionHandler}
                               />}
         </div>
     )
 }
-
 
 /*--------------
  LOADINGS COMPONENTS
@@ -208,7 +269,7 @@ function BillsGroup(props){
     const history = useHistory();
     const [showBillsMenu, setshowBillsMenu] = useState(false);
     const {group} = props;
-
+ 
     async function deleteGroupHandler(){
         // ask for  confirmation that group together with all the bills will get deleted
         const token = Token.getLocalStorageData('splitzoneToken');
@@ -236,67 +297,108 @@ function BillsGroup(props){
 
 
 
-   }
+    }
 
+    function menuToggler(){
+        setshowBillsMenu(!showBillsMenu)
+    }
     return (
         <div className = "BGContainer">
             <h3>{group.groupName}</h3>
-            <button onClick = {(e) => setshowBillsMenu(true)}>...</button>
-            <p className = "BGCreatedBy"><span>created By: </span><span>{group.createdBy}</span></p>
-            <p className = "BGCreatedAt"><span>created At:</span><span>{new Date(group.createdAt).toDateString() }</span></p>
+            <button className = "BGMenuBtn" onClick = {(e) => setshowBillsMenu(true)}>...</button>
+            <p className = "BGCreatedBy"><span>created By: </span><span>{group.createdBy.replace(group.createdBy.charAt(0), group.createdBy.charAt(0).toUpperCase())}</span></p>
+            <p className = "BGCreatedAt"><span>created At: </span><span>{new Date(group.createdAt).toDateString() }</span></p>
 
+            <button className = "BGButton BGFirst">Add a Bill</button>
+            <button className = "BGButton BGSecond">Add/Remove Member</button>
             {showBillsMenu && 
-            
-            <div className = "showBillsMenu">
-                <ul>
-                    <li>
-                        <button onClick = {(e) => setshowBillsMenu(false)}>Close</button>
-                    </li>
-                    <li>
-                        <button onClick = {deleteGroupHandler}>delete Group</button>
-                    </li>
-                    <li>
-                        <button onClick = {props.showEditRemoveMembersBHandler}>removeAddMembers</button>
-                    </li>
-                    <li>
-                        <button>RemoveMember</button>
-                    </li>
-                    <li>
-                        <button>Edit Grup</button>
-                    </li>
-                    <li>
-                        <button>Summary Report</button>
-                    </li>
-                    <li>
-                        <button onClick = {props.showBillFormToggleHandler}>add a bill</button>
-                    </li>
-                </ul>
-            </div> }
+                <BillsGroupMenu
+                    deleteGroupHandler = {deleteGroupHandler}
+                    HideShowSectionDetailsHandler = {props.HideShowSectionDetailsHandler}
+                    showBillFormToggleHandler = {props.showBillFormToggleHandler}
+                    showEditRemoveMembersHandler = {props.showEditRemoveMembersHandler}
+                    menuToggler = {menuToggler}
+                    showSectionDetails = {props.showSectionDetails}
+                    groupCreatedById = {props.groupCreatedById}
+                />
+            }
         </div>
     )
 }
 
+function BillsGroupMenu(props){
+    const billsMenuRef = useRef(null);
+    const user = useContext(AppUserContext);
+    function outsideUtil(e) {
+        if(billsMenuRef.current && !billsMenuRef.current.contains(e.target)){
+            props.menuToggler();
+        }
+    }
+    useEffect(() => {
+        window.addEventListener("click", outsideUtil, false)
 
-function BillsGroupDetails(props){
+        return (() => {
+            window.removeEventListener("click", outsideUtil, false)
+        })
+    },[])
+
+    return(
+        <div className = "showBillsMenu" ref = {billsMenuRef}>
+            <div className = "BGEffect"></div>
+            <div className = "BGEffect"></div>
+            <div className = "BGEffect"></div>
+            <div className = "BGEffect"></div>
+            <ul>
+                <li>
+                    <button onClick = {(e) => props.menuToggler()}>Close</button>
+                </li>
+                <li>
+                    <button onClick = {e => {props.showEditRemoveMembersHandler(e);   props.menuToggler()}}>Remove/Add Member</button>
+                </li>
+                <li>
+                    <button onClick = {e => {props.showBillFormToggleHandler();  props.menuToggler()}}>add a bill</button>
+                </li>
+                <li>
+                    <button onClick = {e => {props.HideShowSectionDetailsHandler(); props.menuToggler()}}>{props.showSectionDetails ? "Hide" : "Show"} details</button>
+                </li>
+                <li>
+                    <button>Summary Report</button>
+                </li>
+                {props.groupCreatedById.toString() === user._id.toString() ? 
+                    <li>
+                        <button className = "BGDelete" onClick = {props.deleteGroupHandler}>delete Group</button>
+                    </li>
+                    :
+                    null
+                }
+            </ul>
+        </div>
+    )
+}
+
+function BillsGroupDetails({HideShowSectionDetailsHandler, group}){
+   
     return (
         <ul className = "BGDetailsContainer">
             <li>
+                <h2>{group && group.bgDetails.totalBills}</h2>
                 <h3>Total Bills</h3>
-                <h2>$50</h2>
             </li>
             <li>
-                <h3>Total Amount</h3>
-                <h2>$100</h2>
+                <h2>$ {group && group.bgDetails.totalBalance}</h2>
+                <h3>Total Balance</h3>
             </li>
             <li>
-                <h3>you owe</h3>
-                <h2>$30</h2>
+                <h2>$ {group && group.bgDetails.totalOwe}</h2>
+                <h3>You owe</h3>
             </li>
             <li>
-                <h3>you lent</h3>
-                <h2>$90</h2>
+                <h2>$ {group && group.bgDetails.totalLent}</h2>
+                <h3>You lent</h3>
             </li>
-            <button className = "B_closeBGDetails" onClick = {props.hideShowDetails}>x</button>
+            <button className = "B_closeBGDetails" onClick = {HideShowSectionDetailsHandler}>
+                <MdClose />
+            </button>
         </ul>
     )
 }
@@ -308,7 +410,6 @@ function BillsGroupDetails(props){
 
 function BillsSummary(props){
     const {bills, groupMembers} = props;
-    console.log("bills", bills)
     const user = useContext(AppUserContext)
     const summaryOptions = {
         _id : "groupId",
@@ -456,8 +557,6 @@ function BillsSummary(props){
         }
 
     })
-
-    console.log("summaryDetails", summaryDetails)
     return (
         <div className = "BSummary"> 
 
@@ -504,32 +603,30 @@ function BillsComponent({bills, removeBillHandler}){
 
 
 function ListComponent({bill, removeBillHandler}){
+    const [detailsToggle, setDetailsToggle] = useState(false);
     const user = useContext(AppUserContext);
     const monthArray = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug','Sep', 'Oct', 'Nov', 'Dec'];
     return (
-        <li className = "BComponentList">
+        <li className = "BComponentList" key = {bill._id}>
             <ul className = "BULNested">
                 <li className = "BULN_Date">
                     <div className= "month">{monthArray[new Date(bill.createdAt).getMonth()].toUpperCase()} </div>
                     <div className = "day">{new Date(bill.createdAt).getDate()}</div>
                 </li>
-                <li className = "BULN_Amount">
-                    <h3 className = "amount">${bill.paidAmount}</h3>
-                    <p><span className = "added_by">{bill.addedBy._id === bill.paidBy._id ? "Added &" : "Added By"}</span><span className = "addedByName">{bill.addedBy._id === bill.paidBy._id ? " " : bill.addedBy.name}</span></p>
-                    <p><span className = "paid_by">Paid by</span><span className = "paidByName">{bill.paidBy.name}</span></p>
+                <li className = "BULN_PaidBy">
+                    <h1>Paid By</h1>
+                    <p className = "paidByp">{(user._id === bill.paidBy._id) ? "You" : bill.paidBy.name}</p>
                 </li>
-                <li className = "BULN_Details">
-                    {bill.splittedAmongMembers.some(item => item === user._id) && 
-                        <p className = "including"><span>including</span> you</p>
-                    }
-                        <p className = "divided"><span>divided</span> {bill.dividedEqually ? "equally": " "}</p>
-                        <p className = "among"><span>among</span> {bill.splittedAmongNumber}</p>
+
+                <li className = "BULN_Amount greenColor">
+                    <h1 className = "greenColor">Amount</h1>
+                    <p className = "amount greenColor">$ {bill.paidAmount}</p>
                 </li>
                 <li className ="BULN_Lentowe">
-                    {bill.paidBy._id === user._id && <p className = "lentOwnTitle">you lent</p> }
+                    {bill.paidBy._id === user._id && <h1 className = "lentOwnTitle greenColor">you lent</h1> }
                     {bill.paidBy._id === user._id &&
-                        <p className = "lentOwnAmount">
-                            {bill.splittedAmongMembers.some(member => member === user._id) ? 
+                        <p className = "lentOwnAmount greenColor">
+                            $ {bill.splittedAmongMembers.some(member => member === user._id) ? 
                                 // divided equally
                                 bill.dividedEqually ? (bill.paidAmount - (bill.paidAmount/bill.splittedAmongNumber)).toFixed(2) : bill.divided.reduce((total, object) => {
                                     if(object._id === user._id){
@@ -543,33 +640,144 @@ function ListComponent({bill, removeBillHandler}){
                             bill.dividedEqually ? bill.paidAmount : bill.divided.reduce((total, object) => {
                                     total = total + object.amount
                                     return total
-                                })
+                                }, 0)
                             }
                         </p>
                     }
-                    {bill.paidBy._id !== user._id && bill.splittedAmongMembers.some(item => item === user._id) && <p className = "lentOwnTitle">you owe</p>}
+                    {bill.paidBy._id !== user._id && bill.splittedAmongMembers.some(item => item === user._id) && <h1 className = "lentOwnTitle redColor">you owe</h1>}
                     {bill.paidBy._id !== user._id && bill.splittedAmongMembers.some(item => item === user._id) &&
-                        <p className = "lentOwnAmount">
-                            {bill.dividedEqually ? (bill.paidAmount/bill.splittedAmongNumber).toFixed(2) : bill.divided.find(object => object._id === user._id).amount }
+                        <p className = "lentOwnAmount redColor">
+                            $ {bill.dividedEqually ? (bill.paidAmount/bill.splittedAmongNumber).toFixed(2) : bill.divided.find(object => object._id === user._id).amount }
                         </p>
                     }
                 </li>
-                <li className = "BULN_button">
+                <li className = "BULN_button_show">
+                     <h1>Details</h1>
+                     <button onClick = {e => setDetailsToggle(prevState => !prevState)}>
+                        {detailsToggle ? <MdKeyboardArrowUp/> : <MdKeyboardArrowDown/>}
+                     </button>
+                </li>
+                <li className = "BULN_button_delete">
+                    <h1>Delete</h1>
                     <button className = "deleteBillButton" onClick = {(e) => removeBillHandler(bill._id)}>
                         <MdAdd/>
                     </button>
                 </li>
-        </ul>
-    </li>
+            </ul>
+            <div className = "BUL_Details" style = {{display: detailsToggle ? "grid": ""}}>
+                <div className = "including">
+                    <p>Including you</p> 
+                    <div  className =   {bill.splittedAmongMembers.some(item => item === user._id) ? "blueBg": "redBg"}>
+                        {bill.splittedAmongMembers.some(item => item === user._id) ? <MdCheck />: <MdClose/>}
+                    </div>
+                </div>
+             
+                <div className = "divided">
+                    <p>Divided Equally</p> 
+                    <div className = {bill.dividedEqually ? "greenBg":  "redBg"}>
+                       {bill.dividedEqually ? <MdCheck />:  <MdClose/>}
+                    </div>
+                </div>
+
+                <div className = "among">
+                    <p>Among</p>
+                    <div className = "blueBg divAmongCircle">
+                        {bill.splittedAmongNumber}
+                    </div>
+                </div>
+            </div>     
+            {detailsToggle 
+                && 
+                <div  className = "BUL_DetailsView">
+                <ul className = "BDView_commonUl BDView_heading">
+                    <li>Member</li>
+                    {bill.paidBy._id === user._id ? 
+                        <li className = "greenColor">You lent</li>:
+                        <li className = "redColor">You owe</li>
+                    }
+                </ul>
+
+                {/* showing members */}
+                {bill && bill.divided.length > 0
+                    &&
+                    bill.divided.map((item) => {
+                        // paid by user /->lent
+                        if(bill.paidBy._id.toString() === user._id.toString()){
+                            // including user
+                            // hiding user UL--showing in footer instead
+                            if(item._id.toString() === user._id.toString()){
+                                return null
+                            }
+                            else {
+                                return  <ul className = "BDView_commonUl">
+                                            <li>{item && item.name.replace(item.name.charAt(0),item.name.charAt(0).toUpperCase())}</li>
+                                            <li className = "greenColor">$ {item.amount}</li>
+                                        </ul>
+                            }
+                        }
+                        // paid by other 
+                        else {
+                            if(item._id.toString() === user._id.toString()){
+                                return  <ul className = "BDView_commonUl">
+                                            <li>{item && item._id.toString() === user._id ? "You" :item.name.replace(item.name.charAt(0),item.name.charAt(0).toUpperCase())}</li>
+                                            <li className = "redColor">$ {item.amount}</li>
+                                        </ul>
+                            }
+                            else {
+                                return null
+                            }
+                        }  
+                    })
+                }
+
+                {/* total UI*/}
+                {bill && bill.divided.length > 0
+                    &&
+                    bill.divided.map((item) => {
+                        // paid by user /->lent
+                        if(bill.paidBy._id.toString() === user._id.toString()){
+                            // including user
+                            // hiding user UL--showing in footer instead
+                            if(item._id.toString() === user._id.toString()){
+                                return  <ul className = "BDView_commonUl BDView_ULYourShare">
+                                            <li className = "BDView_LYS blueColor">Your share</li>
+                                            <li className = "greenColor">$ {item.amount ? item.amount : "-"}</li>
+                                        </ul>
+                            }
+                            else {
+                                return  null
+                            }
+                        }
+
+                        // paid by other 
+                        else {
+                            if(item._id.toString() === user._id.toString()){
+                                return  null
+                            }
+                            else {
+                                return null
+                            }
+                        }  
+                    })
+                }
+
+
+
+                <ul className = "BDView_commonUl BDView_footer">
+
+                </ul>
+
+            </div>  
+            }
+        </li>
 )
 }
 
 /*--------------
  EditRemoveMembers
 ----------------*/
-
 function EditRemoveMembers(props){
-    const {groupID, showEditRemoveMembersBHandler} = props;
+    const {groupID, showEditRemoveMembersHandler, groupCreatedById} = props;
     const user = useContext(AppUserContext)
     const editRemoveInnerRef = useRef();
     const [friendsArray, setFriendsArray] = useState(null);
@@ -578,7 +786,7 @@ function EditRemoveMembers(props){
 
     function outsideclickHandler(e){
         if(editRemoveInnerRef.current && !editRemoveInnerRef.current.contains(e.target)){
-            showEditRemoveMembersBHandler();
+            showEditRemoveMembersHandler();
         }
     }
 
@@ -725,29 +933,31 @@ function EditRemoveMembers(props){
                 {groupMembers && groupMembers.map(member => {
                     return (
                         <li className = "B_ERList" key = {member._id}>
-                            <p>{member.name}</p>
+                            <p className = "FriendName">{member.name}</p>
 
                             {/* if email exists show else option for adding an email */}
                             {(member.email && member.email.length > 0) ? 
-                                <p>{member.email}</p> :
-                                <button>Add Email</button>
+                                <p className = "FriendOption">{member.email}</p> :
+                                <button className = "FriendOption emailBtn">Add Email +</button>
                             }
-                            <button onClick = {(e) => {addFriendToFriendsList(member._id, "removeMember")}}>remove</button>
+                           {member._id.toString() === groupCreatedById.toString() ? 
+                                null: 
+                                <button  className = "optionButton" onClick = {(e) => {addFriendToFriendsList(member._id, "removeMember")}}>remove</button>}
                         </li>
                     )
                 })}
 
                 {friendsArray && friendsArray.map(friend => {
                     return (
-                        <li className = "B_ERList" key = {friend._id}>
-                            <p>{friend.name}</p>
+                        <li className = "B_ERList" key = {friend._id} style = {{backgroundColor: 'rgb(224, 217, 217)'}}>
+                            <p className = "FriendName">{friend.name}</p>
                             {/* if email exists show else option for adding an email */}
                             {(friend.email && friend.email.length > 0) ? 
                                 //------- based on friend registered or not show invite
-                                <p>{friend.email}</p> :
-                                <button>Add Email</button>
+                                <p className = "FriendOption">{friend.email}</p> :
+                                <button className = "FriendOption emailBtn">Add Email +</button>
                             }
-                           <button onClick = {(e) => {addFriendToFriendsList(friend._id, "addMember")}}>Add</button>
+                           <button className = "optionButton" onClick = {(e) => {addFriendToFriendsList(friend._id, "addMember")}}>Add</button>
                         </li>
                     )
                 })}

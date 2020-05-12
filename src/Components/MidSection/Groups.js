@@ -1,31 +1,55 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useReducer} from 'react';
 import {useHistory, useRouteMatch} from "react-router-dom";
 import {serverURI} from "../../helpers/GlobalVar"
 import Token from "../../helpers/token"
 import DBanner from "../Dashboard/DBanner";
+import ComLoader from "./ComLoader";
 // icons
 import {MdAddCircleOutline} from "react-icons/md";
 
 import "../../css/Groups.scss";
+
 /*************
  *
  * MAIN GROUP COMPONENT 
  * 
  *************/
+
+const groupReducer = function (state, action){
+    switch(action.type){
+        case "setLoadingB":
+            return {...state, loading: action.payload}
+        case "setGroupsData": 
+            return {...state, groupsData: action.payload}
+        case "setCreateGroupB":
+            return {...state, createGroup: action.payload}
+        case "setError": 
+            return {...state, createGroupError:action.payload}
+        case "loadingButtonCreateGroup":
+            return {...state, loadingButtonCreateGroup: action.payload}
+        default: 
+            return state;
+    }
+}
+
+const initialGroupState = {
+    loading: true,
+    errors: null,
+    groupsData: null,
+    createGroup: false,
+    createGroupError: null,
+    loadingButtonCreateGroup: false
+}
 export default function Groups(){
+    const [state, dispatch] = useReducer(groupReducer, initialGroupState);
+
     const {url} = useRouteMatch();
     const history = useHistory();
-    const [isloading, setisLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [groups, setGroups] = useState([]);
-    const [createGroup, setCreateGroup] = useState(false);
 
     useEffect(() => {
         async function getGroups(){
-            setisLoading(true);
             const token = Token.getLocalStorageData('splitzoneToken');
             try{
-
                 const response = await fetch(`${serverURI}/api/app/groups`, {
                                     method: "GET",
                                     headers: {
@@ -34,16 +58,16 @@ export default function Groups(){
                                     }
                                 })
                 if(!response.status === 200){
-                    // false response
+                    // check for other status code and set errors accordingly
+                    throw Error ("something went wrong")
                 }
                 const data = await response.json();
-                setGroups(data)
-                setError(null)
-                setTimeout(() => {
-                    setisLoading(false)
-                },0)
+
+                dispatch({type: "setGroupsData", payload: data})
+                dispatch({type: "setLoadingB", payload: false})
+
             }catch(error){
-                setError(error)
+              // error dispatch
             }
         }
         getGroups();
@@ -54,25 +78,87 @@ export default function Groups(){
     }
 
     function createGroupClickHandler(){
-        setCreateGroup(!createGroup)
+       dispatch({type: "setCreateGroupB", payload: !state.createGroup})
+
+       // removing previously set Errors open component mount
+       if(state.createGroup){
+        dispatch({type: "setError", payload: null})
+       }
     }
 
-    return (
+    async function createGroupHandler(e, groupName){
+        dispatch({type: "loadingButtonCreateGroup", payload: true})
+        e.preventDefault();
+        if(!groupName || groupName.trim().length <= 0){
+            dispatch({type: "setError", payload: "Empty group name"})
+            dispatch({type: "loadingButtonCreateGroup", payload: false})
+            return null
+        }
+
+        if(groupName && groupName.trim().length > 15){
+            dispatch({type: "setError", payload: "Group name should be no more than 15 characters"})
+            dispatch({type: "loadingButtonCreateGroup", payload: false})
+
+            return null
+        }
+
+        const groupData = {
+            groupName : groupName
+        }
+        const token = Token.getLocalStorageData('splitzoneToken');
+        try{
+
+            const response = await fetch(`${serverURI}/api/app/group`, {
+                                method: "POST",
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': 'Bearer '+ token
+                                }, 
+                                body: JSON.stringify(groupData)
+                            })
+            if(!response.status === 200){
+                // false response
+            }
+            const newGroup = await response.json();
+            newGroup.billCount = 0;
+            const newGroupsData = [newGroup, ...state.groupsData]
+            dispatch({type: "setGroupsData", payload: newGroupsData})
+            dispatch({type: "setCreateGroupB", payload: false})
+            dispatch({type: "loadingButtonCreateGroup", payload: false})
+        }catch(error){
+           
+        }  
+    }
+    if(state.loading) return <ComLoader />
+    else return (
         <div className = "groupsContainer">
             {/* BANNER */}
             <DBanner />
             <ul className = "Gul">
 
-                {/* Loading the groupLoader */}
-                {isloading && <GroupLoader/>}
+                {/* disabled */}
+                {state.loading && <GroupLoader/>}
 
                 {/* Rest components to show */}
-                {!isloading && <li className ="GulCreateLi"><CreateGroupButton createGroupClickHandler = {createGroupClickHandler}/></li>}
-                {!isloading && <GroupList groups = {groups} ToBills = {ToBills}></GroupList>}
+                {!state.loading && 
+                    <li className ="GulCreateLi">
+                        <CreateGroupButton 
+                            createGroupClickHandler = {createGroupClickHandler}
+                        />  
+                    </li>
+                }
+                {!state.loading && <GroupList groups = {state.groupsData} ToBills = {ToBills}></GroupList>}
                 
             </ul>
 
-            {createGroup && <CreateGroupComponent createGroupClickHandler = {createGroupClickHandler} />}
+            {state.createGroup 
+                && 
+                <CreateGroupComponent 
+                    createGroupClickHandler = {createGroupClickHandler} 
+                    createGroupHandler = {createGroupHandler}
+                    createGroupError = {state.createGroupError}
+                    loadingButtonCreateGroup = {state.loadingButtonCreateGroup}
+                />}
 
         </div>
     )
@@ -80,7 +166,7 @@ export default function Groups(){
 
 function CreateGroupButton({createGroupClickHandler}){
     return(
-        <button className = "createGButton" onClick = {createGroupClickHandler}>
+        <button className = "createGButton" onClick = {e => createGroupClickHandler()}>
             <span className = "createGButtonIconC">
                 <MdAddCircleOutline/>
             </span>
@@ -157,6 +243,7 @@ function GroupList(props){
         const month = monthArray[date.getMonth()];
         const monthDate = date.getDate();
         const membersLength = groupListItem.members.length - 1;
+        const createdBy = groupListItem.createdBy;
         return(<li className = "GListSIContainer" key = {groupListItem._id} onClick = {() => {props.ToBills(groupListItem._id)}} >
                     {/* <div>{groupListItem.createdBy}</div>
                     <div>{groupListItem.members.length}</div> */}
@@ -168,35 +255,35 @@ function GroupList(props){
                         <p>{month}</p>
                     </div>
                     <div className = "GLi_billsNumber">
-                        <h3>0</h3>
+                        <h3>{groupListItem.billCount}</h3>
                         <p>Bills</p>
                     </div>
                     {/* <div className = "GL_billsMembers"></div> */}
                 </div>
                 <div className = "GLi_profileIcons">
-                    <img className = "GLi_profileIcon GLIP_first" alt = "creater_image" src = "https://images.pexels.com/photos/3768163/pexels-photo-3768163.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"></img>
-                <p className = "GLi_profileIcon GLIP_second">Creator<b>+</b><b>{(membersLength > 0) ? membersLength : 0}</b> others</p>
+                    {groupListItem.createdByImgUrl ? 
+                        <img className = "GLi_profileIcon GLIP_first" alt = "creater_image" src = "https://images.pexels.com/photos/3768163/pexels-photo-3768163.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"></img>:
+                        <h1 className = "GLi_profileIcon GLIP_first">{createdBy.charAt(0).toUpperCase() + createdBy.charAt(1).toUpperCase()}</h1>
+                    }
+                    <p className = "GLi_profileIcon GLIP_second">{createdBy.replace(createdBy.charAt(0), createdBy.charAt(0).toUpperCase() )}<b>+</b><b>{(membersLength > 0) ? membersLength : 0}</b> others</p>
                 </div>
                 </li>)
     })
 }
 
-function CreateGroupComponent({createGroupClickHandler}){
-    const history = useHistory(); 
-    const createGroupRef = useRef();
+function CreateGroupComponent({createGroupClickHandler,createGroupHandler, createGroupError, loadingButtonCreateGroup}){
+    const createGroupRef = useRef(null);
     const [groupName, setGroupName] = useState("");
-
 
     function outsideClickHandler(e){
         if(createGroupRef.current && !createGroupRef.current.contains(e.target)){
             createGroupClickHandler()
         }
         else {
-            return
+            return null
         }
     }
     useEffect(() => {
-
             window.addEventListener("click", outsideClickHandler, false);
             
         return (() => {
@@ -204,44 +291,11 @@ function CreateGroupComponent({createGroupClickHandler}){
         })
     })
 
-    async function createGroupButtonHandler(e){
-        e.preventDefault();
-        if(!groupName || groupName.trim().length <= 0){
-            // set Error
-            return
-        }
-
-        const groupData = {
-            groupName : groupName
-        }
-        const token = Token.getLocalStorageData('splitzoneToken');
-        try{
-
-            const response = await fetch(`${serverURI}/api/app/group`, {
-                                method: "POST",
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': 'Bearer '+ token
-                                }, 
-                                body: JSON.stringify(groupData)
-                            })
-            if(!response.status === 200){
-                // false response
-            }
-            const data = await response.json();
-            console.log(data);
-            history.push('/temp');
-            history.goBack();
-           
-        }catch(error){
-            console.log(error)
-        }  
-    }
-
     return (
         <div className = "GCreateContainer">
             <div className="createGroup" ref = {createGroupRef}>
                 <h3>Enter Group Name</h3>
+                {createGroupError && <p>{createGroupError}</p>}
                 <input 
                     type="text" 
                     name="groupName" 
@@ -249,7 +303,11 @@ function CreateGroupComponent({createGroupClickHandler}){
                     value = {groupName}
                     onChange = {(e) => setGroupName(e.target.value)}
                 />
-                <button onClick = {createGroupButtonHandler}>Create</button>
+                <button 
+                    disabled = {loadingButtonCreateGroup}
+                    onClick = {e => {
+                        createGroupHandler(e,groupName)}
+                    }>{loadingButtonCreateGroup ? "..." : "create group"}</button>
             </div>
         </div>
     )

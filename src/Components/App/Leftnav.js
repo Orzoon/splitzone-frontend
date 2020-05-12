@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useContext} from 'react';
+import {useHistory} from 'react-router-dom';
 import 
 {   
     Route,
@@ -16,9 +17,6 @@ import Bills from '../MidSection/Bills';
 import News from '../MidSection/News';
 import Profile from '../MidSection/Profile';
 
-
-
-
 // Icon context
 import {IconContext} from 'react-icons';
 // IMPORTING ICONS
@@ -28,8 +26,12 @@ import {
     MdCollectionsBookmark,
     MdPerson, 
     MdLibraryBooks,
-    MdClose
+    MdClose,
+    MdExitToApp
 } from 'react-icons/md';
+
+import {serverURI} from '../../helpers/GlobalVar';
+import Token from '../../helpers/token';
 // css Styles
 import "../../css/LeftNav.scss";
 import "../../css/MidContainer.scss";
@@ -53,11 +55,37 @@ function CustomNavLink({activeOnlyWhenExact, to, linkName, children}){
 }
 
 export default function LeftNaV(props) {
+    const history = useHistory();
     const {url,path} = useRouteMatch();
+
+    async function handleLogout(){
+        try{
+            const token = Token.getLocalStorageData('splitzoneToken');
+            const response = await fetch(`${serverURI}/api/user/logout`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                    } 
+                })
+
+            if(!response.status === 200){
+                throw Error("something went wrong while logging out try again later")
+            }
+
+            // successfull delete all tokens
+            localStorage.clear();
+            history.push('/temp');
+            history.goBack();
+            // redirecting
+            
+        }catch(e){
+            // set Logout error
+        }
+    }
     return (
         <React.Fragment>
              <div className = {props.mblOpen ? "leftNavContainer leftNavContainerOpen" : "leftNavContainer leftNavContainerClose"}>
-
                 <ul>
                     <li>
                         {/* <NavLink  to ={`${url}/dashboard`} activeClassName = "leftNavActive">Dashboard</NavLink> */}
@@ -89,6 +117,11 @@ export default function LeftNaV(props) {
                             <MdPerson/>
                         </CustomNavLink>
                     </li>
+                    <li className = "navLogout">
+                        <button onClick = {handleLogout}>
+                                Logout
+                        </button>
+                    </li>
                 </ul>
                 <div 
                     className = {props.mblOpen ? "leftNavCloseBtnC leftNavCloseBtnCOpen" : "leftNavCloseBtnC leftNavCloseBtnCClose"}
@@ -97,7 +130,6 @@ export default function LeftNaV(props) {
                      <MdClose />
                 </div>
             </div>
-
             {/* MID CONTAINER*/}
             <div className = "midContainer">
                 <Switch>

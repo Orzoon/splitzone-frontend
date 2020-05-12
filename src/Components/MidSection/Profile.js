@@ -1,6 +1,6 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useState, useReducer} from 'react';
 import {AppUserContext} from "../App/App";
-
+import ComLoader from "./ComLoader";
 // scss
 import "../../css/Profile.scss";
 import {
@@ -11,8 +11,11 @@ import {
     MdKeyboardArrowUp
 } from "react-icons/md";
 
-export default function Profile(){
 
+
+
+
+export default function Profile(){
     return (
         <div className = "profileContainer">
            <ProfileBanner />
@@ -41,7 +44,7 @@ function ProfileBanner(){
                 {/* USER TYPE POSITION ABSOLUTE */}
                 {userInfo.type ? <h2>App Name</h2> : <h2>Normal</h2>}
             </div>
-            <h1 className = "h1Username">{userInfo.username}</h1>
+            <h1 className = "h1Username">{userInfo && userInfo.username.replace(userInfo.username.charAt(0), userInfo.username.charAt(0).toUpperCase())}</h1>
             <h2>{userInfo.email}</h2>
         </div>)
 }

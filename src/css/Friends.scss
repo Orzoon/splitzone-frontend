@@ -6,11 +6,11 @@ $GgridGap: 18px;
 
 
 .friendsContainer{
-    overflow: hidden;
+    min-height: auto;
     min-width: 0;
     position: relative;
     height: auto;
-    width:100%;
+    width:100% !important;
     padding: 35px 5px 30px 5px;
     background: #F3F1F9 !important;
     display: grid;
@@ -132,14 +132,16 @@ $GgridGap: 18px;
                     justify-content: center;
                     align-items: center;
                     text-transform: uppercase;
-                    font-weight: 800;
+                    font-weight: 700;
                     letter-spacing: 2px;
+                    background: linear-gradient(to top right, #5975CD, #0f4b9b);
 
                 }
             }
             & div.friendCardUpper {
                 grid-area: 1/1/2/3;
                 background: linear-gradient(to right, #7AD8EE, #5D9BDC, #496DD0);
+                background: linear-gradient(to top right, #5975CD, #662571);
             }
             & div.friendCardLower{
                 grid-area: 2/1/3/3;
@@ -185,15 +187,82 @@ $GgridGap: 18px;
 
 .friendsContainer .addNewFriend{
     position: absolute;
+    width: 100% !important;
     height: 100%;
-    width: 100%;
-    background: rgba(247, 245, 245, .8);
-    top: 0 ;
+    top: 0;
     left: 0;
-    z-index: 6;
-    // form
+    background: rgba(248, 245, 245, 0.9);
+    z-index: 99;
+
+    & form {
+        margin: 100px auto;
+        width: 250px;
+        height: auto;
+        min-height: 250px;
+        background: #fff;
+        z-index: 99999;
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-auto-rows: auto auto auto auto;
+        grid-row-gap: 15px;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0px 2px 3px rgb(130, 118, 209);
+        padding-bottom: 20px;
+        & p {
+            padding-left: 10px;
+            padding-right: 10px;
+            color: #E54650;
+            font-weight: 400;
+            font-size: 14px;
+        }
+        & h3 {
+            background: #0f4c9b;
+            color: #fff;
+            font-weight: 600;
+            font-size: 13px;
+            letter-spacing: 1px;
+            height: 60px;
+            text-transform: uppercase;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        & input {
+            height: 45px;
+            border-radius: 8px;
+            margin: 5px 10px;
+            padding-left: 10px;
+            font-size: 16px;
+            outline: none;
+            border: none;
+            box-shadow: 0px 0px 1px #ddd;
+            border: 1px solid rgba(197, 193, 193, 0.842);
+        }
+
+        & button {
+            margin: 0px 10px 0px 10px;
+            height: 40px;
+            align-self: center;
+            border-radius: 4px;
+            cursor: pointer;
+            outline: none;
+            border: none;
+            background: #0f4b9b;
+            color: #FFF;
+            font-weight: 600;
+            font-size: 13px;
+            letter-spacing: 1px;
+            outline: none;
+            text-transform: uppercase;
+        }
+    }
 } 
 
+.friendContainerHeightFix{
+    min-height: 100vh !important;
+}
 
 
 // between 320 and 479
@@ -319,20 +388,19 @@ $GgridGap: 18px;
                     }
                     & h1.friendImage {
                         font-size: 22px;
-                        background: #0f4b9b;
                         color: #fff;
                         display: flex;
                         justify-content: center;
                         align-items: center;
                         text-transform: uppercase;
-                        font-weight: 800;
+                        font-weight: 700;
                         letter-spacing: 2px;
     
                     }
                 }
                 & div.friendCardUpper {
                     grid-area: 1/1/2/3;
-                    background: linear-gradient(to right, #7AD8EE, #5D9BDC, #496DD0);
+                    
                 }
                 & div.friendCardLower{
                     grid-area: 2/1/3/3;

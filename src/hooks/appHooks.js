@@ -39,6 +39,11 @@ function useLoginForm(initialValues){
             return 
         }
 
+        const data = {
+            email: val.email,
+            password: val.password
+        }
+
         //send the values to the server
         async function makeLoginRequest(val){
             try{
@@ -47,7 +52,7 @@ function useLoginForm(initialValues){
                                     headers: {
                                         'Content-Type': 'application/json',
                                     },
-                                    body: JSON.stringify(val)
+                                    body: JSON.stringify(data)
                                 })
                 if(!response.status === 200){
                     if(response.status === 422){

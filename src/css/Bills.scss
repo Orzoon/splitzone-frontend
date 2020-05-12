@@ -1,108 +1,582 @@
 
 $IconColor: #1C2483;
-$BillsCommonWidth: 96%;
+$BillsCommonWidth: 100%;
 $testBorder: 1px solid red;
 $fontColor: #2A1AB1;
 $orangeColor: #F19226;
 $leftMargin: 10px;
 $color: #392CDE;
+
+// .billsContainer{
+//     margin: 0;
+//     padding: 0;
+//     overflow: hidden;
+//     height: auto;
+//     width: 100%;
+//     position: relative;
+//     //background: #C1C3CD !important;
+// }
+
+// .BLGcontainer{
+//     margin: 0 auto;
+//     margin-top: 15px;
+//     position: relative;
+//     width: 96%;
+//     height: 125px;
+//     background: #fff;
+//     padding: 1px;
+//     border-radius: 4px;
+
+
+//     // not touched
+//     & .BLGHeader{
+//         margin-left: 15px;
+//         margin-top: 10px;
+
+//         & div:nth-child(1){
+//             height: 40px;
+//             width: 250px;
+//             background: linear-gradient(to right, #eee, #ddd);
+//         }
+
+//         & div:nth-child(2){
+//             margin-top: 10px;
+//             height: 20px;
+//             width: 250px;
+//             background: linear-gradient(to right, #eee, #ddd);
+//         }
+//     }
+
+
+//     // not touched
+//     & .BLGHeaderDeatils{
+//         display: block;
+//         list-style-type: none;
+//     }
+// }
+
+// // BLBcontainer
+// .BLBcontainer{
+//     margin: 20px auto auto auto;
+//     width: 96%;
+//     min-height: 100vh;
+//     display: grid;
+//     grid-auto-rows: auto;
+//     grid-row-gap: 8px;
+//     grid-template-columns: 1fr;
+//     justify-content: center;
+//     align-items: center;
+//     & li {
+//         list-style-type: none;
+//         height: 62px;
+//         width: 100%;
+//         background: #fff;
+//         border-radius: 6px;
+//     }
+// }
+
+
+// .billsContainer{
+
+
+//     & .BGContainer{
+//         position: relative;
+//         margin: 0 auto;
+//         height: 130px;
+//         width: $BillsCommonWidth;
+//         background: #fff;
+//         margin-top: 15px;
+//         background: #fff;
+//         border-radius: 4px;
+//         display: grid;
+//         grid-template-columns: repeat(4, 1fr);
+//         grid-template-rows: 1fr 20px 20px 5px;
+
+
+//         & h3 {
+//             grid-area: 1/1/2/4;
+//             display:flex;
+//             align-items: center;
+//             margin-left: $leftMargin;
+//             font-size: 25px;
+//             font-weight: 900;
+//         }
+//         & button{
+//             grid-area: 1/4/2/5;
+//             background: #fff;
+//             outline: none;
+//             cursor: pointer;
+//             width: 40px;
+//             height: 30px;
+//             justify-self: end;
+//             font-size: 20px;  
+//             border:none;
+//         }
+//         & p {
+//             font-size: 14px;
+//             font-weight: bold;
+//             margin-left: $leftMargin;
+//         }
+
+//         & p.BGCreatedBy {
+//             grid-area: 2/1/3/3;
+         
+//         }
+
+//         & p.BGCreatedAt{
+//             grid-area: 3/1/4/3;
+         
+//         }
+//     }
+
+//     & .BGDetailsContainer{
+//         position: relative;
+//         margin: 1px auto auto auto;
+//         width: $BillsCommonWidth;
+//         height: auto;
+//         background: #fff;
+//         border-radius: 4px;
+//         display: grid;
+//         grid-template-columns: repeat(4, 1fr);
+//         grid-template-rows: 100px;
+//         justify-items: start;
+//         align-items:center;
+        
+
+//         & li {
+//             list-style-type: none;
+//             display: flex;
+//             flex-wrap: wrap;
+//             height: 100%;
+//             width: 100%;
+//             background: #fff;
+//             box-shadow: 0px 0px 1px #8276d1;  
+//             overflow: hidden;
+//             align-items: center;
+
+//             & h3, & h2{
+//                 text-align: center;
+//                 width: 100%;
+//                 color: $color;
+//             }
+//             & h3{
+//                 margin-top: 10px;
+//                 display: block;
+//                 width: 100%;
+//                 height: 35%;
+//                 text-align:center;
+//                 //margin-top: 10px;
+//                 font-size: 18px;
+//             }
+//             & h2 {
+//                 margin-top: 0px;
+//                 font-size: 26px;
+//                 height: 60%;
+//             }
+//         }
+
+//         & .B_closeBGDetails{
+//             position: absolute;
+//             height: 25px;
+//             width: 25px;
+//             background: #fff;
+//             right: 25px;
+//             top: 0%;
+//             transform: translateY(-50%);
+//             color: $IconColor;
+//             border-radius: 50%;
+//             cursor: pointer;
+//         }
+//     }
+
+
+//     & .BFilter{
+//         display: flex;
+//         justify-content: flex-end;
+//         width: $BillsCommonWidth;
+//         height: 50px;
+//        // border: $testBorder;
+//         margin: 0 auto;
+
+
+//         & ul.BPagination{
+//             width: 150px;
+//             //border: $testBorder;
+//             display: flex;
+//             list-style-type: none;
+//             flex-direction: row;
+//             align-self: center;
+//             & li {
+//                display: flex;
+//                justify-content: center;
+//                align-items: center;
+//                height: auto;
+//                padding: 5px;
+//                margin-left: 5px; 
+//             }
+//         }
+//     }
+
+//     // ignore for now
+//     & ul.BTitle{
+//         margin: 0 auto;
+//         width: $BillsCommonWidth;
+//         height: 50px;
+//         border: $testBorder;
+//         list-style-type: none;
+//         color: #0D0C0F;
+//         display: flex;
+//         flex-direction: row;
+//         & li {
+//             margin-right: 10px;
+//         }
+
+//     }
+
+//     & ul.BComponent{
+//         list-style-type: none;
+//         width: $BillsCommonWidth;
+//         margin: 0 auto;
+//         display: grid;
+//         grid-auto-rows: 80px;
+//         grid-template-columns: 1fr;
+
+
+//         & li.BComponentList {
+//             width: 100%;
+//             height: 100%;
+//             background: #fff;
+//             box-shadow: 0px 0px 1px #8276d1;
+//             border-radius: 4px;
+//             margin-top: 5px;
+
+//             & ul.BULNested{
+//                 margin: 0 auto;
+//                 list-style-type: none;
+//                 height: 100%;
+//                 width:100%;
+//                 font-size: 18px;
+//                 color: $fontColor;
+//                 display: grid;
+//                 grid-template-columns: 50px 3fr 150px 1fr 1fr ;
+//                 grid-template-rows: 1fr;
+                
+//                 & .BULN_Date{
+//                     align-self: center;
+//                     justify-self: center;
+//                     padding: 8px 5px;
+//                     font-weight: bold;
+//                     //box-shadow: 0px 0px 1px #8276d1;
+//                     display: flex;
+//                     justify-content: center;
+//                     align-items: center;
+//                     flex-direction: column;
+//                     color: #000;
+//                     & div.month{
+//                         font-weight: 400;
+//                         font-size: 13px;
+//                         font-weight: bold;
+//                     }
+
+//                     & div.day{
+//                         font-size: 22px;
+//                         margin-top: -6px;
+//                     }
+//                 }
+//                 & .BULN_Amount{
+//                     width: 100%;
+//                     height: auto;
+//                     display: grid;
+//                     grid-column-gap: 8px;
+//                     grid-template-columns: auto 1fr;
+//                     grid-template-rows: 1fr 1fr;
+//                     grid-template-areas: "amount added_by"
+//                                         "amount paid_by";
+//                     & .amount{
+//                         align-self:center;
+//                         justify-self: center;
+//                         display: flex;
+//                         height: 100%;
+//                         width: 100%;
+//                         justify-content: center;
+//                         align-items: center;
+//                         grid-area: amount;
+//                         font-size: 25px;
+//                         padding: 0px 5px;
+//                         color: $orangeColor;
+//                         //box-shadow: 0px 0px 1px #8276d1;
+//                     }
+                    
+//                     & p {
+//                         color: #000;
+//                         display: flex;
+//                         align-items:flex-end;
+//                         font-size: 14px;
+//                         font-weight: bold;
+//                         &:last-child{
+//                             align-items: flex-start;
+//                         }
+//                         & .added_by, & .addedByName{
+//                             grid-area:added_by;
+//                             font-size: 12px;
+//                             font-weight: bold;
+//                             align-self: flex-end;
+//                             background:$IconColor;
+//                             color: #fff;
+//                             padding: 5px;
+//                             border-radius: 10px;
+//                         }
+//                         & .paid_by, & .paidByName{
+//                             margin-top: 3px;
+//                             align-self: flex-start;
+//                             grid-area: paid_by;
+//                             font-size: 12px;
+//                             font-weight: bold;
+//                             background:$IconColor;
+//                             color: #fff;
+//                             padding: 5px;
+//                             border-radius: 10px;
+//                         }
+
+//                         & .paidByName, & .addedByName{
+//                             border: none;
+//                             background: none; 
+//                             color: inherit;
+//                             font-size: 14px;
+//                             font-weight: bold;
+//                         }
+//                     }
+//                 }
+//                 & .BULN_Details{
+//                     display: flex;
+//                     width: 100%;
+//                     height: 100%;
+//                     flex-direction: column;
+//                    // align-items: center;
+//                     justify-content: center;
+
+//                     & p {
+//                         font-size: 14px;
+//                         font-weight: bold; 
+//                         margin-top: 5px;
+//                         color: #000;
+//                     }
+//                     & span{
+//                         background:$IconColor;
+//                         color: #fff;
+//                         padding: 3px 5px;
+//                         border-radius: 10px;
+//                         font-size: 12px;
+//                     }
+
+//                 }
+//                 & .BULN_Lentowe{
+//                     width: auto;
+//                     height: 100%;
+//                     display: grid;
+//                     grid-template-columns: 1fr;
+//                     grid-template-rows: auto 1fr;
+//                     font-size: 14px;
+//                     font-weight: bold;
+                    
+//                     & p {
+//                         font-weight: bold;
+//                         font-size: 16px;
+//                         text-align: center;
+//                         padding: 3px;
+//                         color: #000;
+//                     }
+
+//                     & .lentOwnTitle{
+//                       //color: $orangeColor;
+//                     }
+//                     & .lentOwnAmount{
+//                         font-size: 25px;
+//                         color: $orangeColor;
+//                     }
+//                 }
+
+//                 & .BULN_button{
+//                     height: 100%;
+//                     width: 100%;
+//                     display: flex;
+//                     justify-content: center;
+//                     align-items:center;
+
+//                     & button {
+//                         border-radius: 50%;
+//                         height: 40px;
+//                         width: 40px;
+//                         display: flex;
+//                         justify-content: center;
+//                         align-items: center;
+//                         transform: rotate(45deg);
+
+//                         & svg {
+//                             height: 33px;
+//                             width: 33px;
+//                             fill:rgb(255, 72, 72);
+//                         }
+//                     }
+//                 }
+//             }
+
+//         }
+//     }
+// }
+
+
+// /* 
+// ADD REMOVE FREINDS OVERLAP
+// */
+// .billsContainer {
+
+//     & .B_editRemoveMembersC {
+//         position:absolute;
+//         height : 100%;
+//         width: 100%;
+//         background: rgba(255, 255, 255, .9);
+//         top: 0;
+//         left: 0;
+//         z-index: 6;
+
+
+//         & ul {
+//             list-style-type: none;
+//             width: 280px;
+//             height: auto;
+//             background: #fff;
+//             border: $testBorder;
+//             margin: 40px auto;
+
+//             & li {
+//                 border-bottom: $testBorder;
+//             }
+//         }
+//     }
+// }
+
+// // BillsMenu Component
+// .BGContainer {
+//     & .showBillsMenu {
+//         position: absolute;
+//         height: auto;
+//         width: 200px;
+//         right: 0;
+//         top: 0;
+//         border: $testBorder;
+//         z-index: 6;
+//         background: #ffff;
+
+//         & ul {
+//             list-style-type: none;
+//             display: flex;
+//             flex-direction: column;
+//             height: auto;
+//             width: 100%;
+
+
+//             & li {
+//                 display: flex;
+//                 height: auto;
+//                 width: auto;
+//                 justify-content: center;
+//                 align-items: center;
+
+
+//                 & button {
+//                     text-align: center;
+//                     height: 50px;
+//                     width: 100%;
+//                 }
+//             }
+//         }
+//     } 
+// }
+
+// // BIll _Form
+// .billsContainer{
+
+//     & .Bill_Form_Container{
+//         position: absolute;
+//         width: 100%;
+//         height: 100%;
+//         left: 0;
+//         top: 0;
+//         background: rgba(255,255,255, .7);
+//         z-index: 6;
+//         & form.Bill_Form{
+//             position: relative;
+//             margin: 20px auto;
+//             height: auto;
+//             width: 400px;
+//             height: 500px;
+//             border: $testBorder;
+//             background: #fff;
+//             overflow: hidden;
+
+//             & .Bill_Form_Close{
+//                 position: absolute;
+//                 right: 0px;
+//                 top: 0;
+//                 width: 60px;
+//                 height: 30px;
+//             }
+
+//         }
+
+//     }
+
+// }
+
+// .BSummary{
+//     height: auto;
+//     width: 100%;
+//     border: 1px solid red;
+// }
+
 .billsContainer{
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
+    min-height: 0;
+    min-width: 0;
+    position: relative;
     height: auto;
-    width: 100%;
-    position: relative;
-    //background: #C1C3CD !important;
+    width:100%;
+    padding: 30px 5px 30px 5px;
+    background: #F3F1F9 !important;
+    color: #3a426b;
 }
 
-.BLGcontainer{
-    margin: 0 auto;
-    margin-top: 15px;
-    position: relative;
-    width: 96%;
-    height: 125px;
-    background: #fff;
-    padding: 1px;
-    border-radius: 4px;
 
-
-    // not touched
-    & .BLGHeader{
-        margin-left: 15px;
-        margin-top: 10px;
-
-        & div:nth-child(1){
-            height: 40px;
-            width: 250px;
-            background: linear-gradient(to right, #eee, #ddd);
-        }
-
-        & div:nth-child(2){
-            margin-top: 10px;
-            height: 20px;
-            width: 250px;
-            background: linear-gradient(to right, #eee, #ddd);
-        }
-    }
-
-
-    // not touched
-    & .BLGHeaderDeatils{
-        display: block;
-        list-style-type: none;
-    }
-}
 
 // BLBcontainer
-.BLBcontainer{
-    margin: 20px auto auto auto;
-    width: 96%;
-    min-height: 100vh;
-    display: grid;
-    grid-auto-rows: auto;
-    grid-row-gap: 8px;
-    grid-template-columns: 1fr;
-    justify-content: center;
-    align-items: center;
-
-    & li {
-        list-style-type: none;
-        height: 62px;
-        width: 100%;
-        background: #fff;
-        border-radius: 6px;
-    }
-}
 
 
 .billsContainer{
-
 
     & .BGContainer{
         position: relative;
         margin: 0 auto;
-        height: 130px;
+        padding: 18px;
+        height: auto;
         width: $BillsCommonWidth;
         background: #fff;
-        margin-top: 15px;
-        background: #fff;
-        border-radius: 4px;
+        border-radius: 8px;
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        grid-template-rows: 1fr 20px 20px 5px;
+        grid-template-columns: 1fr 50px;
+        grid-template-rows: auto 30px 30px;
+        grid-row-gap: 5px;
+        grid-column-gap: 10px;
 
 
         & h3 {
-            grid-area: 1/1/2/4;
+            grid-area: 1/1/2/2;
             display:flex;
             align-items: center;
-            margin-left: $leftMargin;
             font-size: 25px;
-            font-weight: 900;
+            font-weight: 800;
         }
-        & button{
-            grid-area: 1/4/2/5;
+        & button.BGMenuBtn{
+            grid-area: 1/2/2/3;
             background: #fff;
             outline: none;
             cursor: pointer;
@@ -111,74 +585,95 @@ $color: #392CDE;
             justify-self: end;
             font-size: 20px;  
             border:none;
+            line-height: 1;
         }
         & p {
             font-size: 14px;
             font-weight: bold;
-            margin-left: $leftMargin;
         }
 
         & p.BGCreatedBy {
             grid-area: 2/1/3/3;
+            align-self: end;
          
         }
 
         & p.BGCreatedAt{
-            grid-area: 3/1/4/3;
+            grid-area: 3/1/4/2;
          
+        }
+
+        & button.BGButton{
+            display: none;
         }
     }
 
     & .BGDetailsContainer{
+        border-radius: 8px;
         position: relative;
-        margin: 1px auto auto auto;
+        margin: 10px auto auto auto;
         width: $BillsCommonWidth;
         height: auto;
         background: #fff;
-        border-radius: 4px;
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        grid-template-rows: 100px;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: 100px 100px;
         justify-items: start;
         align-items:center;
-        
-
         & li {
             list-style-type: none;
             display: flex;
             flex-wrap: wrap;
             height: 100%;
             width: 100%;
-            background: #fff;
-            box-shadow: 0px 0px 1px #8276d1;  
+            background: #fff;  
             overflow: hidden;
             align-items: center;
-
+            border-bottom: 1px solid rgb(228, 225, 225);
+            &:nth-child(1){
+                border-top-left-radius: 8px;
+            }
+            &:nth-child(2){
+                border-top-right-radius: 8px;
+            }
+            &:nth-child(3){
+                border-bottom-left-radius: 8px;
+            }
+            &:nth-child(4){
+                border-bottom-right-radius: 8px;
+            }
+            &:nth-child(1), &:nth-child(3){
+                border-right: 1px solid rgb(228, 225, 225);
+            }
             & h3, & h2{
                 text-align: center;
                 width: 100%;
-                color: $color;
+                color: #3a426b;
             }
             & h3{
-                margin-top: 10px;
                 display: block;
                 width: 100%;
                 height: 35%;
                 text-align:center;
-                //margin-top: 10px;
-                font-size: 18px;
+                font-size: 14px;
+                font-weight: 600;
+                color: #3a426b;
             }
             & h2 {
-                margin-top: 0px;
+                display: flex;
+                width: 100%;
+                align-items: center;
+                justify-content: center;
                 font-size: 26px;
-                height: 60%;
+                height: 60%;  
+                padding-top: 10px;              
             }
         }
 
-        & .B_closeBGDetails{
+        & button.B_closeBGDetails{
             position: absolute;
-            height: 25px;
-            width: 25px;
+            height: 30px;
+            width: 30px;
             background: #fff;
             right: 25px;
             top: 0%;
@@ -186,6 +681,12 @@ $color: #392CDE;
             color: $IconColor;
             border-radius: 50%;
             cursor: pointer;
+            outline: none;
+            display: flex;
+            justify-content: center;
+            align-items:center;
+            color: #0f4c9b;
+            font-size: 18px;
         }
     }
 
@@ -236,42 +737,69 @@ $color: #392CDE;
     & ul.BComponent{
         list-style-type: none;
         width: $BillsCommonWidth;
-        margin: 0 auto;
+        margin: 30px auto;
         display: grid;
-        grid-auto-rows: 80px;
+        grid-auto-rows: auto;
         grid-template-columns: 1fr;
-
+        grid-row-gap: 12px;
 
         & li.BComponentList {
             width: 100%;
-            height: 100%;
+            height: auto;
             background: #fff;
-            box-shadow: 0px 0px 1px #8276d1;
-            border-radius: 4px;
-            margin-top: 5px;
+            border-radius: 8px;
 
             & ul.BULNested{
-                margin: 0 auto;
                 list-style-type: none;
                 height: 100%;
                 width:100%;
+                padding: 10px 18px;
                 font-size: 18px;
                 color: $fontColor;
                 display: grid;
-                grid-template-columns: 50px 3fr 150px 1fr 1fr ;
+                grid-template-columns: repeat(2, 1fr);
                 grid-template-rows: 1fr;
-                
-                & .BULN_Date{
-                    align-self: center;
-                    justify-self: center;
-                    padding: 8px 5px;
+
+                /* common BULN IST */
+                & li {
+                    & h1 {
+                        font-size: 12px;
+                        font-weight: 800;
+                        text-transform: uppercase;
+                        color: #3a426b;
+                        color: #000;
+                    }
+
+                    & p {
+                        font-size: 16px;
+                        font-weight: 600;
+                        color: #2a2f49;
+                    }
+
+                    & p.paidByp {
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: #3a426b;
+                    }
+
+                    & button {
+                        cursor: pointer;
+                        outline: none;
+                        margin-top: 0px;
+                        border: none;
+                        background: #fff;
+                        box-shadow: 0px 1px 2px rgb(167, 165, 165);
+                        &:hover {
+                            background: #fff;
+                            
+                        }
+                    }
+                }
+                & li.BULN_Date{
                     font-weight: bold;
-                    //box-shadow: 0px 0px 1px #8276d1;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    flex-direction: column;
                     color: #000;
+                    display: flex;
+                    flex-direction: column;
                     & div.month{
                         font-weight: 400;
                         font-size: 13px;
@@ -279,131 +807,38 @@ $color: #392CDE;
                     }
 
                     & div.day{
-                        font-size: 22px;
+                        font-size: 25px;
                         margin-top: -6px;
                     }
                 }
-                & .BULN_Amount{
-                    width: 100%;
-                    height: auto;
-                    display: grid;
-                    grid-column-gap: 8px;
-                    grid-template-columns: auto 1fr;
-                    grid-template-rows: 1fr 1fr;
-                    grid-template-areas: "amount added_by"
-                                        "amount paid_by";
-                    & .amount{
-                        align-self:center;
-                        justify-self: center;
+                & li.BULN_button_show, & li.BULN_button_delete{
+                    border-top: 1px solid rgb(158, 155, 155);
+                }
+                & li.BULN_button_show{
+                    & h1{
+                        color: #0f4c9b;
+                    }
+                    & button{
+                        border-radius: 50%;
+                        height: 40px;
+                        width: 40px;
                         display: flex;
-                        height: 100%;
-                        width: 100%;
                         justify-content: center;
                         align-items: center;
-                        grid-area: amount;
-                        font-size: 25px;
-                        padding: 0px 5px;
-                        color: $orangeColor;
-                        //box-shadow: 0px 0px 1px #8276d1;
-                    }
-                    
-                    & p {
-                        color: #000;
-                        display: flex;
-                        align-items:flex-end;
-                        font-size: 14px;
-                        font-weight: bold;
-                        &:last-child{
-                            align-items: flex-start;
-                        }
-                        & .added_by, & .addedByName{
-                            grid-area:added_by;
-                            font-size: 12px;
-                            font-weight: bold;
-                            align-self: flex-end;
-                            background:$IconColor;
-                            color: #fff;
-                            padding: 5px;
-                            border-radius: 10px;
-                        }
-                        & .paid_by, & .paidByName{
-                            margin-top: 3px;
-                            align-self: flex-start;
-                            grid-area: paid_by;
-                            font-size: 12px;
-                            font-weight: bold;
-                            background:$IconColor;
-                            color: #fff;
-                            padding: 5px;
-                            border-radius: 10px;
-                        }
 
-                        & .paidByName, & .addedByName{
-                            border: none;
-                            background: none; 
-                            color: inherit;
-                            font-size: 14px;
-                            font-weight: bold;
-                        }
-                    }
+                        & svg {
+                            height: 33px;
+                            width: 33px;
+                            fill:#0f4c9b;
+                        }                    
+                     }
                 }
-                & .BULN_Details{
-                    display: flex;
-                    width: 100%;
-                    height: 100%;
-                    flex-direction: column;
-                   // align-items: center;
-                    justify-content: center;
+                & li.BULN_button_delete{
+                     & h1 {
+                         color: #E54650 !important;
+                     }
 
-                    & p {
-                        font-size: 14px;
-                        font-weight: bold; 
-                        margin-top: 5px;
-                        color: #000;
-                    }
-                    & span{
-                        background:$IconColor;
-                        color: #fff;
-                        padding: 3px 5px;
-                        border-radius: 10px;
-                        font-size: 12px;
-                    }
-
-                }
-                & .BULN_Lentowe{
-                    width: auto;
-                    height: 100%;
-                    display: grid;
-                    grid-template-columns: 1fr;
-                    grid-template-rows: auto 1fr;
-                    font-size: 14px;
-                    font-weight: bold;
-                    
-                    & p {
-                        font-weight: bold;
-                        font-size: 16px;
-                        text-align: center;
-                        padding: 3px;
-                        color: #000;
-                    }
-
-                    & .lentOwnTitle{
-                      //color: $orangeColor;
-                    }
-                    & .lentOwnAmount{
-                        font-size: 25px;
-                        color: $orangeColor;
-                    }
-                }
-
-                & .BULN_button{
-                    height: 100%;
-                    width: 100%;
-                    display: flex;
-                    justify-content: center;
-                    align-items:center;
-
-                    & button {
+                     & button{
                         border-radius: 50%;
                         height: 40px;
                         width: 40px;
@@ -416,9 +851,88 @@ $color: #392CDE;
                             height: 33px;
                             width: 33px;
                             fill:rgb(255, 72, 72);
-                        }
+                        }                    
+                     }
+                }        
+            }
+
+            & div.BUL_Details{
+                background: rgba(247, 245, 245, 0.425);
+                padding: 15px;
+                width: auto;
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+                justify-items: start;
+                display: none;
+                & div {
+                    display: grid;
+                    grid-template-columns: auto auto;
+                    justify-items: center;
+                    align-items: center;
+                    grid-column-gap: 5px;
+                    p {
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: #0f4b9b;
+                        font-size: 14px;
+                        font-weight: bold;
+                        color: #3a426b;
+                    }
+                    // circle div
+                    & div {
+                        height: 18px;
+                        width: 18px;
+                        border-radius: 50%;
+                        color: #fff;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
+
+                    & div.divAmongCircle{
+                        font-size: 11px;
                     }
                 }
+            }
+
+            & div.BUL_DetailsView{
+                width: 100%;
+                height: auto;
+                padding: 10px 18px;
+                display: grid;
+                grid-template-columns: 1fr;
+                justify-content:center;
+                align-content: center;
+                border-top: 1px solid rgb(228, 228, 228);
+                
+                & ul.BDView_commonUl {
+                    list-style-type: none;
+                    width: 100%;
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    grid-column-gap: 10px;
+                    grid-template-rows: auto;
+                    font-size: 16px;
+                    font-weight: 400;
+                    color: #3a426b;
+                    margin-bottom: 6px;
+                }
+
+                & ul.BDView_heading {
+                    font-size: 12px;
+                    font-weight: 800;
+                    text-transform: uppercase;
+                    margin-bottom: 8px;
+                }
+                & ul.BDView_ULYourShare{
+                    li.BDView_LYS{
+                        justify-self:end;
+                        font-size: 14px;
+                        font-weight: bold;
+                        color: #3a426b;
+                    }
+                }
+
             }
 
         }
@@ -426,32 +940,99 @@ $color: #392CDE;
 }
 
 
-/* 
-ADD REMOVE FREINDS OVERLAP
-*/
+/*  ADD REMOVE FREINDS OVERLAP  */
 .billsContainer {
-
     & .B_editRemoveMembersC {
         position:absolute;
-        height : 100%;
+        min-height : 100%;
         width: 100%;
+        height: 200vh;
         background: rgba(255, 255, 255, .9);
         top: 0;
         left: 0;
         z-index: 6;
 
-
         & ul {
             list-style-type: none;
-            width: 280px;
+            width: 320px;
             height: auto;
             background: #fff;
-            border: $testBorder;
             margin: 40px auto;
+            box-shadow: 0px 0px 3px rgba(184, 183, 183, 0.801);
+            background: #ffff;
+            border-radius: 8px;
 
             & li {
-                border-bottom: $testBorder;
+                font-size: 14px;
+                color: #333B6A;
+                padding: 10px;
+                display: grid;
+                grid-template-columns: 1fr 100px;
+                grid-auto-rows: auto auto;
+                grid-column-gap: 10px;
+                min-height: 0;
+                min-width: 0;
+                overflow: hidden;
+                color: #333B6A;
+                font-weight: 600;
+
+                & p {
+                    min-height: 0;
+                    min-width: 0;
+                    word-wrap: break-word;
+                    word-break: break-all;
+                    max-width: 100%;
+                }
+                & p.FriendName{
+                    grid-area: 1/1/2/2;
+                }
+
+                p.FriendOption{
+                    font-size: 14px;
+                    color: #333B6A;
+                    font-weight: 400;
+                    text-decoration: underline;
+
+                    &:hover {
+                        text-decoration: none;
+                    }
+                }
+                & .FriendOption{
+                    grid-area: 2/1/3/2;
+                }
+
+                & button.optionButton{
+                    grid-area: 1/2/3/3;
+                }
+
+                & button {
+                    height: 45px;
+                    background: #fff;
+                    border-radius: 25px;
+                    font-size: 14px;
+                    font-weight: 600;
+                    letter-spacing: 1px;
+                    color: #1563c9;
+                    cursor: pointer;
+                    background: #1563c9;
+                    color: #fff;
+                    outline: none;
+                    border: none;
+                }
+
+                & button.emailBtn{
+                    width: fit-content;
+                    height: auto;
+                    background: none;
+                    height: 16px;
+                    border: none;
+                    color: #1563c9;
+                    padding: 0px;
+                    border-radius: none;
+                }
+
             }
+          
         }
     }
 }
@@ -462,11 +1043,58 @@ ADD REMOVE FREINDS OVERLAP
         position: absolute;
         height: auto;
         width: 200px;
-        right: 0;
-        top: 0;
-        border: $testBorder;
+        right: 10px;
+        top: 10px;
         z-index: 6;
         background: #ffff;
+        border-radius: 8px;
+        box-shadow: 0px 0px 3px rgba(184, 183, 183, 0.801);
+        // Effect hiding y_axis
+        overflow-y: hidden;
+        & div.BGEffect{
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 6;
+
+            &:nth-child(1){
+                top: 0px;
+                height: 2px;
+                width: 0%;
+                left: 0;
+                //background:#0f4b9b;
+                animation: BGWidth 0.2s ease-in forwards;
+            }
+
+            &:nth-child(2){
+                height: 0%;
+                width: 2px;
+                left:0px;
+                top: 0;
+                //background: #0f4b9b;
+                animation: BGHeight 0.2s ease-in forwards;
+            }
+
+            &:nth-child(3){
+                bottom: 0px;
+                height: 2px;
+                width: 0%;
+                left: 0;
+                //background: #0f4b9b;
+                animation: BGWidth 0.2s ease-in forwards;
+            }
+
+            &:nth-child(4){
+                height: 0%;
+                width: 2px;
+                right: 0px;
+                top: 0;
+                //background: #0f4b9b;
+                animation: BGHeight 0.2s ease-in forwards;
+            }
+
+        }
+
 
         & ul {
             list-style-type: none;
@@ -482,12 +1110,33 @@ ADD REMOVE FREINDS OVERLAP
                 width: auto;
                 justify-content: center;
                 align-items: center;
-
+                border-bottom: 1px solid rgb(243, 242, 242);
 
                 & button {
                     text-align: center;
                     height: 50px;
                     width: 100%;
+                    border: none;
+                    text-transform: uppercase;
+                    cursor: pointer;
+                    color: #0f4b9b;
+                    background: #FFF;
+                    font-weight: 600;
+                    font-size: 13px;
+                    letter-spacing: 1px;
+                    outline: none;
+                    &:hover{
+                        background: #0f4b9b;
+                        color: #fff; 
+                    }
+                }
+                & button.BGDelete{
+                    background: #E54650 !important;
+                    color: #ddd;
+
+                    &:hover {
+                        color: #fff;
+                    }
                 }
             }
         }
@@ -502,19 +1151,24 @@ ADD REMOVE FREINDS OVERLAP
         width: 100%;
         height: 100%;
         left: 0;
-        top: 0;
+        top: 50px;
         background: rgba(255,255,255, .7);
         z-index: 6;
         & form.Bill_Form{
+            box-shadow: 0px 0px 3px rgba(184, 183, 183, 0.801);
+            background: #ffff;
+            border-radius: 8px;
             position: relative;
             margin: 20px auto;
             height: auto;
-            width: 400px;
-            height: 500px;
-            border: $testBorder;
-            background: #fff;
+            width: auto;
+            height: auto;
             overflow: hidden;
-
+            width: 80%;
+            display: grid;
+            grid-auto-rows: auto;
+            grid-template-columns: 1fr;
+            grid-row-gap: 0px;
             & .Bill_Form_Close{
                 position: absolute;
                 right: 0px;
@@ -522,18 +1176,951 @@ ADD REMOVE FREINDS OVERLAP
                 width: 60px;
                 height: 30px;
             }
+            & h1.formTitle {
+                background: #0f4c9b;
+                color: #fff;
+                font-weight: 600;
+                font-size: 13px;
+                letter-spacing: 1px;
+                height: 60px;
+                text-transform: uppercase;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+            // common div styles
+            & div.commonF_div {
+                padding: 10px 18px;
+                width: 100%;
+                height: auto;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: 1fr;
+                & input.Amount{
+                    height: 42px;
+                    padding:10px;
+                    border-radius:8px;
+                    background: #fff;
+                    border: 1px solid rgb(211, 209, 209);
+                    outline: none;
+                    box-shadow: 1px 2px 3px #ddd;
+                }
 
+                & select {
+                    height: 42px;
+                    padding:10px;
+                    border-radius:8px;
+                    background: #fff;
+                    border: 1px solid rgb(211, 209, 209);
+                    outline: none;
+                    box-shadow: 1px 2px 3px #ddd;
+                    font-size: 14px;
+                    font-size: 14px;
+                    font-weight: 600;
+                    color: #3a426b;
+
+                    & option {
+                        padding:30px;
+                        background: #fff;
+                        border: none;
+                        outline: none;
+                        box-shadow: 1px 2px 3px #ddd;
+                        font-size: 14px;
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: #3a426b;
+                    }
+                }
+
+                & h1 {
+                    align-self: center;
+                    background: none;
+                    height: auto;
+                    color: #0f4c9b;
+                    font-weight: 600;
+                    font-size: 13px;
+                    letter-spacing: 1px;
+                    text-transform: uppercase;
+                    padding-left: 18px;
+                    padding-right: 18px;
+                }
+
+                & .FormButton {
+                    justify-self: start;
+                    align-self: center;
+                    width: 150px;
+                    height: 40px;
+                    text-transform: uppercase;
+                    background: #fff;
+                    border: none;
+                    cursor: pointer;
+                    background: #0f4b9b;
+                    color: #FFF;
+                    font-weight: 600;
+                    font-size: 13px;
+                    letter-spacing: 1px;
+                    outline: none;                    
+                }
+            }
+        }
+    }
+}
+
+
+#splittedAmongParentDivFixFirstParent{
+    padding: 10px 18px;
+    width: 100%;
+    height: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    & h1 {
+        align-self: center;
+        background: none;
+        height: auto;
+        color: #0f4c9b;
+        font-weight: 600;
+        font-size: 13px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+    & .FormButton {
+        justify-self: start;
+        align-self: center;
+        width: 150px;
+        height: 40px;
+        text-transform: uppercase;
+        background: #fff;
+        border: none;
+        cursor: pointer;
+        background: #0f4b9b;
+        color: #FFF;
+        font-weight: 600;
+        font-size: 13px;
+        letter-spacing: 1px;
+        outline: none;                    
+    }
+}
+#splittedAmongParentDivFix{
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    justify-items: start;
+    padding: 10px 18px;
+    & h1 {
+        align-self: center;
+        background: none;
+        height: auto;
+        color: #0f4c9b;
+        font-weight: 600;
+        font-size: 13px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+    & div.BF_splitAmongBComponentContainer{
+        margin-top: 10px;
+        width: 100%;
+        height: auto;
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        grid-row-gap: 10px;
+        & div.F_List{
+            display: grid;
+            grid-template-columns: 1fr 60px auto !important;
+            grid-template-rows: 1fr;
+            justify-items: start;
+            grid-column-gap: 10px;
+
+
+            & h1 {
+               
+                font-size: 15px;
+                font-weight: 600;
+                color: #3a426b;
+                text-transform: none;
+                padding: 0px;
+            }
+            & div.Form_amount{
+                border: 1px solid red;
+            } 
+
+            & input.input_amount {
+                border: 1px solid green;
+                height: 38px;
+                padding: 5px;
+                border-radius: 8px;
+                background: #fff;
+                border: 1px solid #d3d1d1;
+                outline: none;
+                box-shadow: 1px 2px 3px #ddd;
+                width: 60px;
+            }
+
+            & button {
+                justify-self: start;
+                align-self: center;
+                height: 40px;
+                text-transform: uppercase;
+                background: #fff;
+                border: none;
+                cursor: pointer;
+                background: #0f4b9b;
+                color: #FFF;
+                font-weight: 600;
+                font-size: 13px;
+                letter-spacing: 1px;
+                outline: none;
+                border-radius: 8px;
+                padding: 5px 10px;
+            }
         }
 
+        & div.F_List > * {
+            min-width: 0px;
+            min-height: 0px;
+            overflow: hidden;
+        }
     }
-
 }
+
+
+
 
 .BSummary{
     height: auto;
     width: 100%;
-    border: 1px solid red;
+}
+
+/* ---------------------- */
+@keyframes BGWidth {
+    0% {width : 0%}
+    100% {width: 100%}
+}
+@keyframes BGHeight {
+    0% {height : 0%}
+    100% {height: 100%}
+}
+@keyframes showOpacity{
+    0%{
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+// between 320 and 479
+@media only screen and (min-width: 320px){
+    
+
 }
 
 
+@media only screen and (min-width: 480px){
 
+    .billsContainer{
+        min-height: 0;
+        min-width: 0;
+        position: relative;
+        height: auto;
+        width:100%;
+        padding: 30px 15px 30px 15px;
+        background: #F3F1F9 !important;
+        color: #3a426b;
+    }
+    .billsContainer{
+
+        & .BGContainer{
+            display: grid;
+            grid-template-columns: 1fr 50px;
+            grid-template-rows: auto 30px 30px;
+            grid-row-gap: 5px;
+            & h3 {
+                grid-area: 1/1/2/2;
+                display:flex;
+                align-items: center;
+            }
+            & button.BGMenuBtn{
+                grid-area: 1/2/2/3;
+                justify-self: end;
+            }
+            & p {
+                font-size: 14px;
+                font-weight: bold;
+            }
+    
+            & p.BGCreatedBy {
+                grid-area: 2/1/3/3;
+                align-self: end;
+             
+            }
+    
+            & p.BGCreatedAt{
+                grid-area: 3/1/4/2;
+             
+            }
+    
+            & button.BGButton{
+                display: none;
+            }
+        }
+    
+        & .BGDetailsContainer{
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: 100px 100px;
+            justify-items: start;
+            align-items:center;
+            & li {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                &:nth-child(1){
+                    border-top-left-radius: 8px;
+                }
+                &:nth-child(2){
+                    border-top-right-radius: 8px;
+                }
+                &:nth-child(3){
+                    border-bottom-left-radius: 8px;
+                }
+                &:nth-child(4){
+                    border-bottom-right-radius: 8px;
+                }
+                &:nth-child(1), &:nth-child(3){
+                    border-right: 1px solid rgb(228, 225, 225);
+                }
+                & h3, & h2{
+                }
+                & h3{
+                }
+                & h2 {            
+                }
+            }
+    
+            & button.B_closeBGDetails{
+            }
+        } 
+
+        & ul.BComponent{
+            list-style-type: none;
+            width: $BillsCommonWidth;
+            margin: 30px auto;
+            display: grid;
+            grid-auto-rows: auto;
+            grid-template-columns: 1fr;
+    
+            & li.BComponentList {
+                width: 100%;
+                height: auto;
+                background: #fff;
+                border-radius: 8px;
+    
+                & ul.BULNested{
+                    list-style-type: none;
+                    height: 100%;
+                    width:100%;
+                    padding: 10px 18px;
+                    font-size: 18px;
+                    color: $fontColor;
+                    display: grid;
+                    grid-template-columns: repeat(5, 1fr);
+                    grid-template-rows: auto auto;
+                    grid-row-gap: 10px;
+                    
+                    /* common BULN IST */
+                    & li {
+                        & h1 {
+                            font-size: 12px;
+                            font-weight: 800;
+                            text-transform: uppercase;
+                            color: #3a426b;
+                            color: #000;
+                        }
+    
+                        & p {
+                            font-size: 16px;
+                            font-weight: 600;
+                            color: #2a2f49;
+                        }
+    
+                        & button {
+                            cursor: pointer;
+                            outline: none;
+                            margin-top: 0px;
+                            border: none;
+                            background: #fff;
+                            box-shadow: 0px 1px 2px rgb(167, 165, 165);
+                            &:hover {
+                                background: #fff;
+                                
+                            }
+                        }
+                    }
+                    & li.BULN_Date{
+                        font-weight: bold;
+                        color: #000;
+                        display: flex;
+                        flex-direction: column;
+                        & div.month{
+                            font-weight: 400;
+                            font-size: 13px;
+                            font-weight: bold;
+                        }
+    
+                        & div.day{
+                            font-size: 25px;
+                            margin-top: -6px;
+                        }
+                    }
+                    & li.BULN_button_show, & li.BULN_button_delete{
+                        border-top: 1px solid rgb(158, 155, 155);
+                    }
+                    & li.BULN_button_show{
+                        grid-area: 2/1/3/6;
+                        width: 100%;
+                        justify-self: center;
+                        & h1{
+                            color: #0f4c9b;
+                        }
+                        & button{
+                            border-radius: 50%;
+                            height: 40px;
+                            width: 40px;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+    
+                            & svg {
+                                height: 33px;
+                                width: 33px;
+                                fill:#0f4c9b;
+                            }                    
+                         }
+                    }
+                    & li.BULN_button_delete{
+                        border: none;
+                        grid-area: 1/5/2/6;
+                        justify-self: center;
+                         & h1 {
+                             color: #E54650 !important;
+                         }
+    
+                         & button{
+                            border-radius: 50%;
+                            height: 40px;
+                            width: 40px;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            transform: rotate(45deg);
+    
+                            & svg {
+                                height: 33px;
+                                width: 33px;
+                                fill:rgb(255, 72, 72);
+                            }                    
+                         }
+                    }        
+                }
+    
+                & div.BUL_Details{
+                    display: none;
+                }
+    
+            }
+        }
+
+    }
+}
+
+// bill list complete
+@media only screen and (min-width: 660px){  
+    .billsContainer{
+        min-height: 0;
+        min-width: 0;
+        position: relative;
+        height: auto;
+        width:100%;
+        padding: 30px 15px 30px 15px;
+        background: #F3F1F9 !important;
+        color: #3a426b;
+    }
+    .billsContainer{
+
+        & .BGContainer{
+            display: grid;
+            grid-template-columns: 1fr 180px 180px 30px;
+            grid-template-rows: auto auto auto;
+            grid-row-gap: 5px;
+            & h3 {
+                grid-area: 1/1/2/4;
+                display:flex;
+                align-items: center;
+            }
+            & button.BGMenuBtn{
+                grid-area: 1/4/2/5;
+                justify-self: end;
+            }
+            & p {
+                font-size: 14px;
+                font-weight: bold;
+            }
+    
+            & p.BGCreatedBy {
+                grid-area: 2/1/3/2;
+                align-self: end;
+             
+            }
+    
+            & p.BGCreatedAt{
+                grid-area: 3/1/4/2;
+             
+            }
+    
+            & button.BGButton{
+                margin-top: 20px;
+                display: block;
+                justify-self: start;
+                align-self: center;
+                width: 100%;
+                height: 40px;
+                text-transform: uppercase;
+                border: none;
+                cursor: pointer;
+                background: #0f4b9b;
+                color: #FFF;
+                font-weight: 600;
+                font-size: 13px;
+                letter-spacing: 1px;
+                outline: none;
+                border-radius: 8px;
+                transition: all 0.2s ease-in-out;
+                display: none;
+            }
+        
+
+        }
+    
+        & .BGDetailsContainer{
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: 100px 100px;
+            justify-items: start;
+            align-items:center;
+            & li {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                &:nth-child(1){
+                    border-top-left-radius: 8px;
+                }
+                &:nth-child(2){
+                    border-top-right-radius: 8px;
+                }
+                &:nth-child(3){
+                    border-bottom-left-radius: 8px;
+                }
+                &:nth-child(4){
+                    border-bottom-right-radius: 8px;
+                }
+                &:nth-child(1), &:nth-child(3){
+                    border-right: 1px solid rgb(228, 225, 225);
+                }
+                & h3, & h2{
+                }
+                & h3{
+                }
+                & h2 {            
+                }
+            }
+    
+            & button.B_closeBGDetails{
+            }
+        } 
+
+        & ul.BComponent{
+            list-style-type: none;
+            width: $BillsCommonWidth;
+            margin: 30px auto;
+            display: grid;
+            grid-auto-rows: auto;
+            grid-template-columns: 1fr;
+    
+            & li.BComponentList {
+                width: 100%;
+                height: auto;
+                background: #fff;
+                border-radius: 8px;
+    
+                & ul.BULNested{
+                    list-style-type: none;
+                    height: 100%;
+                    width:100%;
+                    padding: 10px 18px;
+                    font-size: 18px;
+                    color: $fontColor;
+                    display: grid;
+                    grid-template-columns: repeat(5, 1fr);
+                    grid-template-rows: auto auto;
+                    /* common BULN IST */
+                    & li {
+                        & h1 {
+                            font-size: 12px;
+                            font-weight: 800;
+                            text-transform: uppercase;
+                            color: #3a426b;
+                            color: #000;
+                        }
+    
+                        & p {
+                            font-size: 16px;
+                            font-weight: 600;
+                            color: #2a2f49;
+                        }
+    
+                        & button {
+                            cursor: pointer;
+                            outline: none;
+                            margin-top: 0px;
+                            border: none;
+                            background: #fff;
+                            box-shadow: 0px 1px 2px rgb(167, 165, 165);
+                            &:hover {
+                                background: #fff;
+                                
+                            }
+                        }
+                    }
+                    & li.BULN_Date{
+                        font-weight: bold;
+                        color: #000;
+                        display: flex;
+                        flex-direction: column;
+                        & div.month{
+                            font-weight: 400;
+                            font-size: 13px;
+                            font-weight: bold;
+                        }
+    
+                        & div.day{
+                            font-size: 25px;
+                            margin-top: -6px;
+                        }
+                    }
+                    & li.BULN_button_show, & li.BULN_button_delete{
+                        border-top: 1px solid rgb(158, 155, 155);
+                    }
+                    & li.BULN_button_show{
+                        & h1{
+                            color: #0f4c9b;
+                        }
+                        & button{
+                            border-radius: 50%;
+                            height: 40px;
+                            width: 40px;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+    
+                            & svg {
+                                height: 33px;
+                                width: 33px;
+                                fill:#0f4c9b;
+                            }                    
+                         }
+                    }
+                    & li.BULN_button_delete{
+                       
+                        border: none;
+                         & h1 {
+                             color: #E54650 !important;
+                         }
+    
+                         & button{
+                            border-radius: 50%;
+                            height: 40px;
+                            width: 40px;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            transform: rotate(45deg);
+    
+                            & svg {
+                                height: 33px;
+                                width: 33px;
+                                fill:rgb(255, 72, 72);
+                            }                    
+                         }
+                    }        
+                }
+    
+                & div.BUL_Details{
+                    display: none;
+                }
+    
+            }
+        }
+    }
+}
+
+// between 768 and 991
+@media only screen and (min-width: 768px){
+    .billsContainer{
+        min-height: 0;
+        min-width: 0;
+        position: relative;
+        height: auto;
+        width:100%;
+        padding: 30px 15px 30px 15px;
+        background: #F3F1F9 !important;
+        color: #3a426b;
+    }
+    .billsContainer{
+
+        & .BGContainer{
+            display: grid;
+            grid-template-columns: 1fr 50px;
+            grid-template-rows: auto 30px 30px;
+            grid-row-gap: 5px;
+            & h3 {
+                grid-area: 1/1/2/2;
+                display:flex;
+                align-items: center;
+            }
+            & button.BGMenuBtn{
+                grid-area: 1/2/2/3;
+                justify-self: end;
+            }
+            & p {
+                font-size: 14px;
+                font-weight: bold;
+            }
+    
+            & p.BGCreatedBy {
+                grid-area: 2/1/3/3;
+                align-self: end;
+             
+            }
+    
+            & p.BGCreatedAt{
+                grid-area: 3/1/4/2;
+             
+            }
+    
+            & button.BGButton{
+                display: none;
+            }
+        }
+    
+        & .BGDetailsContainer{
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: 100px 100px;
+            justify-items: start;
+            align-items:center;
+            & li {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                &:nth-child(1){
+                    border-top-left-radius: 8px;
+                }
+                &:nth-child(2){
+                    border-top-right-radius: 8px;
+                }
+                &:nth-child(3){
+                    border-bottom-left-radius: 8px;
+                }
+                &:nth-child(4){
+                    border-bottom-right-radius: 8px;
+                }
+                &:nth-child(1), &:nth-child(3){
+                    border-right: 1px solid rgb(228, 225, 225);
+                }
+                & h3, & h2{
+                }
+                & h3{
+                }
+                & h2 {            
+                }
+            }
+    
+            & button.B_closeBGDetails{
+            }
+        } 
+
+        & ul.BComponent{
+            list-style-type: none;
+            width: $BillsCommonWidth;
+            margin: 30px auto;
+            display: grid;
+            grid-auto-rows: auto;
+            grid-template-columns: 1fr;
+    
+            & li.BComponentList {
+                width: 100%;
+                height: auto;
+                background: #fff;
+                border-radius: 8px;
+    
+                & ul.BULNested{
+                    list-style-type: none;
+                    height: 100%;
+                    width:100%;
+                    padding: 10px 18px;
+                    font-size: 18px;
+                    color: $fontColor;
+                    display: grid;
+                    grid-template-columns: repeat(6, 1fr);
+                    grid-template-rows: auto;
+                    /* common BULN IST */
+                    & li {
+                        & h1 {
+                            font-size: 12px;
+                            font-weight: 800;
+                            text-transform: uppercase;
+                            color: #3a426b;
+                            color: #000;
+                        }
+    
+                        & p {
+                            font-size: 16px;
+                            font-weight: 600;
+                            color: #000;
+                        }
+
+                        & p.paidByp {
+                            font-size: 14px;
+                            font-weight: 600;
+                            color: #3a426b;
+                        }
+    
+                        & button {
+                            cursor: pointer;
+                            outline: none;
+                            margin-top: 0px;
+                            border: none;
+                            background: #fff;
+                            box-shadow: 0px 1px 2px rgb(167, 165, 165);
+                            &:hover {
+                                background: #fff;
+                                
+                            }
+                        }
+                    }
+                    & li.BULN_Date{
+                        font-weight: bold;
+                        color: #000;
+                        display: flex;
+                        flex-direction: column;
+                        & div.month{
+                            font-weight: 400;
+                            font-size: 13px;
+                            font-weight: bold;
+                        }
+    
+                        & div.day{
+                            font-size: 25px;
+                            margin-top: -6px;
+                        }
+                    }
+                    & li.BULN_button_show, & li.BULN_button_delete{
+                        border-top: none;
+                        justify-self: center;
+                    }
+                    & li.BULN_button_show{
+                        width: auto;
+                        grid-area: 1/5/2/6;
+                        justify-self: center;
+                        & h1{
+                            color: #0f4c9b;
+                        }
+                        & button{
+                            border-radius: 50%;
+                            height: 40px;
+                            width: 40px;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            
+    
+                            & svg {
+                                height: 33px;
+                                width: 33px;
+                                fill:#0f4c9b;
+                            }                    
+                         }
+                    }
+                    & li.BULN_button_delete{
+                        grid-area: auto;
+                        border: none;
+                         & h1 {
+                             color: #E54650 !important;
+                         }
+    
+                         & button{
+                            border-radius: 50%;
+                            height: 40px;
+                            width: 40px;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            transform: rotate(45deg);
+    
+                            & svg {
+                                height: 33px;
+                                width: 33px;
+                                fill:rgb(255, 72, 72);
+                            }                    
+                         }
+                    }        
+                }
+    
+                & div.BUL_Details{
+                    padding: 15px;
+                    width: auto;
+                    display: grid;
+                    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+                    justify-items: start;
+                    & div {
+                        display: grid;
+                        grid-template-columns: auto auto;
+                        justify-items: center;
+                        align-items: center;
+                        grid-column-gap: 5px;
+                        p {
+                            font-size: 14px;
+                            font-weight: 600;
+                            color: #0f4b9b;
+                            font-size: 14px;
+                            font-weight: bold;
+                            color: #3a426b;
+                        }
+                        // circle div
+                        & div {
+                            height: 18px;
+                            width: 18px;
+                            border-radius: 50%;
+                            color: #fff;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                        }
+
+                        & div.divAmongCircle{
+                            font-size: 11px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}

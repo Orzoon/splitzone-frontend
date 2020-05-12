@@ -149,15 +149,32 @@ $navSideBarBorderRadius: 0px;
                    color: rgba(255, 255, 255, 0.87) !important;
                }
             }
-
         }
+
+        li.navLogout{
+            height: 90px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            & button {
+                width: 80%;
+                height: 45px; 
+                background: #fff;
+                border: 0px solid red;
+                border-radius: 25px;
+                font-size: 14px;
+                font-weight: 600;
+                letter-spacing: 1px;
+                color: #1563c9;
+                cursor: pointer;
+                outline: none;
+            }
+        } 
 
     }
 }
 
 /* PSEUDO LEFTNAV MOBILE */
-
-
 .leftNavContainerClose{
     left: -170px;
     transition: left 0.3s 0.2s ease-in-out;
