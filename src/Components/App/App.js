@@ -14,23 +14,25 @@ import {
 import Token from '../../helpers/token'
 // importing ServerURIS
 import {serverURI} from '../../helpers/GlobalVar'
-
+import socketIOClient from "socket.io-client";
 // REACT_ICONS
 import {MdKeyboardArrowRight} from 'react-icons/md';
 
 export const AppUserContext = createContext();
-
+export const socketContext = createContext();
+export const notificationContext = createContext();
+const HOST = 'http://localhost:5000';
 function App(){
+    const ioInstance = socketIOClient(HOST);
     const [user,setUser] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [mblMenuOpen, setMblMenuOpen] = useState(false);
-
+    const [notificationCount, setNotificationCount] = useState(0)
     useEffect(() => {
         async function getUserData(){
             setLoading(true);  // setting loading to true
             const token = Token.getLocalStorageData('splitzoneToken');
-            console.log(token);
             try {
                 const response = await fetch(`${serverURI}/api/app/user`, {
                                     method: 'GET',
@@ -47,6 +49,7 @@ function App(){
                 console.log("userData", userData)
                 setUser(userData);
                 setLoading(false)
+                ioInstance.emit('loggedIn', {userId: userData._id, userEmail: userData.email})
             }
             catch(error){
                 setError(error)
@@ -77,6 +80,8 @@ function App(){
         <div className = "appContainer"> 
             {/* AppUserContextProvider */}
             <AppUserContext.Provider value = { user }>
+            <socketContext.Provider value = {ioInstance}>
+            <notificationContext.Provider value = {{notificationCount, setNotificationCount}}>
                 {/*topNavBar That Contains Logo and UserIcon*/}
                 <TopBar/>
                 {/*Main side Nav*/}
@@ -97,6 +102,8 @@ function App(){
                     >Menu
                     {/* <MdKeyboardArrowRight/> */}
                 </div>
+            </notificationContext.Provider>
+            </socketContext.Provider>
             </AppUserContext.Provider>
         </div>
     )

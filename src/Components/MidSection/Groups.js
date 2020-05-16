@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, useReducer} from 'react';
+import React, {useState, useEffect, useRef, useReducer, useContext} from 'react';
 import {useHistory, useRouteMatch} from "react-router-dom";
 import {serverURI} from "../../helpers/GlobalVar"
 import Token from "../../helpers/token"
@@ -8,7 +8,7 @@ import ComLoader from "./ComLoader";
 import {MdAddCircleOutline} from "react-icons/md";
 
 import "../../css/Groups.scss";
-
+import {socketContext, notificationContext} from '../App/App';
 /*************
  *
  * MAIN GROUP COMPONENT 
@@ -27,6 +27,16 @@ const groupReducer = function (state, action){
             return {...state, createGroupError:action.payload}
         case "loadingButtonCreateGroup":
             return {...state, loadingButtonCreateGroup: action.payload}
+        /* SOCKET ACTIONS */
+        case "S_AddedTOGroup":
+            
+            return {...state, groupsData: [action.payload, ...state.groupsData]}
+        case "S_RemoveFromGroup":
+            const filteredData = state.groupsData.filter(item => item._id.toString() !== action.payload.toString())
+            return {...state, groupsData: filteredData}
+        case "S_DeleteGroup": 
+            const filteredGroupData = state.groupsData.filter(item => item._id.toString() !== action.payload.toString())
+            return {...state, groupsData: filteredGroupData}
         default: 
             return state;
     }
@@ -41,6 +51,8 @@ const initialGroupState = {
     loadingButtonCreateGroup: false
 }
 export default function Groups(){
+    const IO = useContext(socketContext);
+    const notification = useContext(notificationContext)
     const [state, dispatch] = useReducer(groupReducer, initialGroupState);
 
     const {url} = useRouteMatch();
@@ -65,7 +77,6 @@ export default function Groups(){
 
                 dispatch({type: "setGroupsData", payload: data})
                 dispatch({type: "setLoadingB", payload: false})
-
             }catch(error){
               // error dispatch
             }
@@ -73,6 +84,24 @@ export default function Groups(){
         getGroups();
     }, [])
 
+    /* SOCKET IO FUNCTONS */
+    useEffect(() => {
+        IO.on("S_AddedTOGroup", groupData => {
+            console.log("addedTOGroup")
+            dispatch({type: "S_AddedTOGroup", payload: groupData})
+        })
+        IO.on("S_RemoveFromGroup", groupId => {
+            dispatch({type: "S_RemoveFromGroup", payload: groupId})
+        })
+        IO.on('S_DeleteGroup', groupId => {
+            dispatch({type: "S_DeleteGroup", payload: groupId})
+        })
+        // IO.on('S_NotificationCount', () => {
+        //     notification.setNotificationCount(prevCount => prevCount + 1)
+        // })
+
+    }, [])
+    /* END OF SOCKET FUNCTIONS */
     function ToBills(groupID){
         history.push(url + "/" + groupID);
     }

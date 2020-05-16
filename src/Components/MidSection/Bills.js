@@ -10,7 +10,7 @@ from 'react';
 import {useHistory} from 'react-router-dom';
 import {serverURI} from "../../helpers/GlobalVar";
 import Token from "../../helpers/token"
-import {AppUserContext} from "../App/App"
+import {AppUserContext, socketContext, notificationContext} from "../App/App"
 
 // ICONS
 import {
@@ -70,6 +70,8 @@ const billReducer = (state, action) => {
 
 /* MAIN COMPONENT */
 export default function Bills(props){
+    const notification= useContext(notificationContext);
+    const IO = useContext(socketContext)
     const [state, dispatch] = useReducer(billReducer, initialBillState)
     const {groupID} = props.match.params;
     //const [isLoading, setisLoading] = useState(true);
@@ -125,6 +127,14 @@ export default function Bills(props){
         }
         getData(groupID);
     },[])
+
+    /* IO EVENTS */
+    useEffect(() => {
+        // IO.on('S_NotificationCount', () => {
+        //     notification.setNotificationCount(prevCount => prevCount + 1)
+        // })
+    },[])
+    /*END OF IOEVENTS */
     function HideShowSectionDetailsHandler(){
             dispatch({type: "showSectionDetails", payload: !state.showSectionDetails})
     }
@@ -823,38 +833,44 @@ function EditRemoveMembers(props){
                     }
                 })
 
-
                 if(getFriendsResponse.status !== 200 || getGroupResponse.status !== 200){
                     //----SET ------getting data error
                 }
-    
                 const friendsData = await getFriendsResponse.json();
                 const groupsData = await getGroupResponse.json();
+                console.log("friendsData", friendsData)
+                // checking for empty JUST IN CASE IT WONT CAUSE BUG IN GROUPS FRIENDSLIST
+                let friends; 
+                if(friendsData.friends &&  friendsData.friends.length > 0 ){
+                    friends = friendsData.friends;
+                }else {
+                    friends = [];
+                }
 
-
-                if(!friendsData.friends.length > 0){
-                    // no friends in friend list --handle
-                    return 
-                } 
-
-
-                const friends = friendsData.friends;
                 const members = groupsData.members;
-
+                
                 // filtering out the user from the member
                 const filteredMembers = members.filter(member => member._id !== user._id);
 
                 // setting the groupsMembers
-                setGroupMembers(filteredMembers);
+                //setGroupMembers(filteredMembers);
             
                 let filteredFriends;
+
+                /* fixed later */
+                /* END OF FIx */
                 if(filteredMembers.length <= 0 ){
                     filteredFriends = friends;
                 }
                 else {
                     filteredFriends = friends.filter(friend => !filteredMembers.some(member => member._id === friend._id))
                 }
+                if(filteredFriends.length <= 0 && filteredMembers.length <=0){
+                    // Later on show the message that groupMembers and firends doesnot exist
+                    showEditRemoveMembersHandler();
+                }
                 // setting filtered friends
+                setGroupMembers(filteredMembers);
                 setFriendsArray(filteredFriends)
 
             }catch(error){

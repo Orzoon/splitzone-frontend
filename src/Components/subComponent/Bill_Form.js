@@ -10,7 +10,7 @@ export default function BillForm(props){
     const {groupID,newBillsAdditionHandler} = props;
     const [groupMembers, setGroupMembers] = useState(null);
     const [splitAmongB, setSplitAmongB] = useState(false);
-    const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState(null);
     // setting initialValues if groupmembers exist
 
     let [initialValues, setInitialValues] = useState(null)
@@ -82,8 +82,9 @@ export default function BillForm(props){
     }, [])
 
     function outsideUtil(e){
+        console.log("event")
         if(BillFormRef.current && !BillFormRef.current.contains(e.target)){
-            props.showBillFormToggleHandler();
+            //props.showBillFormToggleHandler();
         }
     }
     /* --based on this OPEN/CLOSE splitView */
@@ -198,9 +199,14 @@ export default function BillForm(props){
                 }
                 break;
             default: 
-            const amount = e.target.value.trim();
-            setInitialValues({...initialValues,paidAmount: Number(amount)})
-
+            let amount = e.target.value.trim();
+            if(typeof(amount) !== "number"){
+                amount = null
+            }
+            setErrors({amountError: 'Amount must be a number'})
+            if(typeof(amount) === "number"){
+                setInitialValues({...initialValues,paidAmount: Number(amount)})
+            }
         }
     }
 
@@ -244,7 +250,12 @@ export default function BillForm(props){
             valuesCopy.divided = dividedArray
         }
         
-        
+
+        // TODO
+        // make sure the division is not more than the sum amount later on
+
+
+
         // sending data
         const token = Token.getLocalStorageData('splitzoneToken');
 
@@ -276,6 +287,7 @@ export default function BillForm(props){
     }
     return (
         <div className = "Bill_Form_Container" >
+            {console.log("splitAMongB", splitAmongB)}
             <form className = "Bill_Form"  ref = {BillFormRef} id = "Bill_Form" onSubmit={(e) => submitBillFormHandler(e)} >
                 {/* Form close button */}
                 <button  
@@ -287,14 +299,17 @@ export default function BillForm(props){
 
                 <h1 className = "formTitle">Add a bill</h1>
 
-
+                { errors && errors.amountError ? 
+                    <p>{errors.amountError}</p>:
+                    null
+                }
                 {/* Amount field */}
                 <div className = "commonF_div">
                     <input 
                         className = "Amount"
                         name = "Amount"
-                        placeholder = "Amount"
-                        value = {(initialValues) ? initialValues.paidAmount : " "}
+                        placeholder = "Enter Amount"
+                        value = {(initialValues) ? initialValues.paidAmount : ""}
                         onChange = {(e) => handleBillFormChange(e)}
                     />   
                 </div>  
@@ -340,7 +355,17 @@ export default function BillForm(props){
                 </div>
                 <div id = {splitAmongB ? "splittedAmongParentDivFix": "splittedAmongParentDivFixFirstParent"} >
                     <h1>Among</h1>
-                    {splitAmongB ? 
+
+                        {   splitAmongB ? null: 
+                            !initialValues ? "Enter Amount": 
+                            ((initialValues.hasOwnProperty('paidAmount') && typeof(initialValues.paidAmount) === "number")) ?  
+                            <input className = "FormButton" type = "button" value = "all"
+                            onClick = {splitAmongBHandler}
+                            /> :
+                            "Enter Amount above"
+                        }
+                    {
+                    splitAmongB ? 
                     <SplitAmongBComponent 
                         groupMembers = {groupMembers} 
                         paidAmount = {initialValues.paidAmount}
@@ -353,10 +378,10 @@ export default function BillForm(props){
                         errors = {errors}
                         errorHandler = {errorHandler}
                     /> 
-                    : 
-                    <input className = "FormButton" type = "button" value = "all"
-                     onClick = {splitAmongBHandler}
-                    /> 
+                    : null
+                    // <input className = "FormButton" type = "button" value = "all"
+                    //  onClick = {splitAmongBHandler}
+                    // /> 
                 } 
                 </div>
                 
@@ -403,7 +428,7 @@ function SplitAmongBComponent(props){
                                         <h1>{members.name} </h1>
                                         {dividedEqually ? 
                                             <div className = "Form_amount">
-                                                {(dividedEqually) ? (parseInt(paidAmount, 10)/parseInt(splittedAmongNumber, 10)).toFixed(2) : "not equally" }
+                                                {(dividedEqually && paidAmount) ? (parseInt(paidAmount, 10)/parseInt(splittedAmongNumber, 10)).toFixed(2) : "not equally" }
                                             </div>
                                             :
                                             <DividedUnequallyInput 

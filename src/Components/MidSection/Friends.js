@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useReducer, useRef} from 'react';
+import React, {useState, useEffect, useReducer, useRef, useContext} from 'react';
 import {serverURI} from "../../helpers/GlobalVar";
 import Token from "../../helpers/token";
 
@@ -12,6 +12,7 @@ import {
 } from "react-icons/md";
 import DBanner from "../Dashboard/DBanner";
 import ComLoader from "./ComLoader";
+import {notificationContext, socketContext} from "../App/App";
 // scss
 import "../../css/Friends.scss";
 
@@ -47,8 +48,9 @@ const initialFriendsState = {
 }
 
 export default function Friends(){
+    const notification= useContext(notificationContext);
+    const IO = useContext(socketContext)
     const [state, dispatch] =useReducer(friendsReducer, initialFriendsState)
-
    useEffect(() => {
      async function getFriends() {
         const token = Token.getLocalStorageData('splitzoneToken');
@@ -75,8 +77,13 @@ export default function Friends(){
 
      getFriends();
    }, [])
-
-
+   /*IO EVENTS */
+   useEffect(() => {
+        IO.on('S_NotificationCount', () => {
+         notification.setNotificationCount(prevCount => prevCount + 1)
+        })
+   }, [])
+   /* IO EVENTS END */
    async function createNewFriendHandler(e, values){
         dispatch({type: "addFrindBtnStatus", payload: true})
         e.preventDefault();
@@ -191,7 +198,6 @@ export default function Friends(){
        // setting error msgg later on
     }
    }
-
    async function sendSplitzoneInvite(e, email){
     e.preventDefault();
    }

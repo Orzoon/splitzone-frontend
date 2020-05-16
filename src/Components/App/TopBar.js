@@ -1,36 +1,34 @@
 import React, {useContext} from 'react'
 
-import {AppUserContext} from "./App";
+import {AppUserContext, notificationContext, socketContext} from "./App";
 
 // ICONS REACT-ICONS
 import {MdNotifications} from 'react-icons/md';
 
 // CSS
 import '../../css/TopBar.scss';
-
-
-
-
 /********************* 
-
 MINI TOPBAR COMPONENTS 
-
 *********************/
-
-
-
 function SplitzoneLogo(){
     return <img src = "" alt = "logoImage" />
 }
 
-
-
 function NotificationIcon(){
+    const notification= useContext(notificationContext);
+    const IO = useContext(socketContext)
+    IO.on('S_NotificationCount', () => {
+        notification.setNotificationCount(prevCount => prevCount + 1)
+    })
     return (<div  className = "notificationIcon">
-                <MdNotifications />
-        </div>)
+                <div className = "notificationIconDiv">
+                    <MdNotifications />
+                    <h1>
+                    {notification.notificationCount}
+                    </h1>
+                </div>
+            </div>)
 }
-
 
 function ProfileNameIcon(props){
     return (
@@ -45,28 +43,11 @@ function ProfileNameIcon(props){
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /********************* 
 
 MAIN TOPBAR COMPONENT
 
 *********************/
-
-
 export default function TopBar(props){
     const user = useContext(AppUserContext);
     return (

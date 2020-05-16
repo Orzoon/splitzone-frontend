@@ -2,12 +2,11 @@ import React, {useEffect, useContext, useReducer} from 'react';
 
 import Token from "../../helpers/token";
 import {serverURI} from "../../helpers/GlobalVar";
-
 /* D_Components Imports */
 import ComLoader from "./ComLoader";
 import DBanner from "../Dashboard/DBanner";
 import LineChart from "../Dashboard/LineChart";
-import {AppUserContext} from "../App/App";
+import {AppUserContext, socketContext, notificationContext} from "../App/App";
 
 import {MdError} from "react-icons/md";
 // scss style
@@ -15,10 +14,6 @@ import "../../css/Dashboard.scss";
 
 // ICONS  DS
 import {MdReceipt,MdAttachMoney,MdCollectionsBookmark} from 'react-icons/md';
-
-
-
-
 
 /* DASHBOARD REDUCER */
 function DashboardReducer(state, action){
@@ -40,6 +35,12 @@ function DashboardReducer(state, action){
 
         case "activityLoading":
             return {...state, loadActivity: action.payload}
+        /* SOCKET IO EVENTS */
+        case "S_ActivityDataDashboard": 
+            const activityDataCopy = {...state.activityData}
+            const activitiesAdded = [action.payload, ...activityDataCopy.activities]
+            activityDataCopy.activities = activitiesAdded;
+            return {...state, activityData: activityDataCopy}
         default:
         return state
     }
@@ -56,6 +57,8 @@ const initialDashboardState = {
 }
 
 export default function Dashboard(props){
+    const notification= useContext(notificationContext);
+    const IO = useContext(socketContext)
     const [state, dispatch] = useReducer(DashboardReducer, initialDashboardState)
 
     useEffect(() => {
@@ -175,6 +178,17 @@ export default function Dashboard(props){
 
     }, [])
 
+    /* IO EVENTS */
+    useEffect(() => {
+        // IO.on('S_NotificationCount', () => {
+        //     notification.setNotificationCount(prevCount => prevCount + 1)
+        // })
+        //S_NotificationDataDashboard // NotifacationData
+        IO.on('S_ActivityDataDashboard', data => {
+            dispatch({type: "S_ActivityDataDashboard", payload: data})
+        })
+    },[])
+    /*END OF IOEVENTS */
     async function getAdditionalActivityData(){
         dispatch({type: "activityLoading", payload: true});
 

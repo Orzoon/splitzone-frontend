@@ -176,70 +176,147 @@
 
 
 /* SECOND LOADER */
+// .ComLoader_container{
+//     position: relative;
+//     height: 100vh;
+//     width: 100vw; 
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+// }
+// .boxContainer{
+//     position: relative;
+//     height: 100px;
+//     width: 100px;
+//     background: #fff;
+//     border-radius: 50%;
+// }
+
+// .firstCircle{
+//     position: absolute;
+//     height: 80px;
+//     width: 80px;
+//     background:red;
+//     left: 10px;
+//     top: 10px;
+//     overflow: hidden;
+//     animation: Anim 3s linear infinite;
+//     border-radius: 50%;
+//     &::after, &::before{
+//         position: absolute;
+//         content: '';
+//     }
+
+//     &::after{
+//         width: 70px;
+//         height: 70px;
+//         background: green;
+//         left: 50%;
+//         top: 50%;
+//         transform: translate(-50%, -50%);
+//         border-radius: 50%;
+//     }
+
+//     &::before{
+//         height: 100px;
+//         width: 100px;
+//         top: 30%;
+//         left: 50%;
+//         background: #0f4c9b;
+//     }
+// }
+
+// // diff 10px
+// .secondCircle{
+//     position: absolute;
+//     height: 60px;
+//     width: 60px;
+//     background:#fff;
+//     left: 10px;
+//     top: 10px;
+//     overflow: hidden;
+//     animation: Anim 3s linear infinite;
+//     border-radius: 50%;
+//     left: 0;
+//     right: 0;
+// }
+// @keyframes Anim{
+//     100%{transform: rotate(360deg)}
+// }
+
+
 .ComLoader_container{
     position: relative;
+    width: 100%;
     height: 100vh;
-    width: 100vw; 
     display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.boxContainer{
-    position: relative;
-    height: 100px;
-    width: 100px;
-    background: #fff;
-    border-radius: 50%;
-}
 
-.firstCircle{
-    position: absolute;
-    height: 80px;
-    width: 80px;
-    background:red;
-    left: 10px;
-    top: 10px;
-    overflow: hidden;
-    animation: Anim 3s linear infinite;
-    border-radius: 50%;
-    &::after, &::before{
-        position: absolute;
-        content: '';
-    }
-
-    &::after{
-        width: 70px;
-        height: 70px;
-        background: green;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        border-radius: 50%;
-    }
-
-    &::before{
-        height: 100px;
-        width: 100px;
-        top: 30%;
-        left: 50%;
-        background: #0f4c9b;
+    & div.boxContainer{
+     position: absolute;
+     top: 50%;
+     left: 50%;
+     transform: translate(-50%,-50%);
+     height: 100px;
+     width: 100px;
+     background: #fff;
+     display: grid;
+     grid-template-columns: 1fr 1fr;
+     grid-template-rows: 1fr 1fr;
+     grid-gap: 3px;
     }
 }
 
-// diff 10px
-.secondCircle{
-    position: absolute;
-    height: 60px;
-    width: 60px;
-    background:#fff;
-    left: 10px;
-    top: 10px;
-    overflow: hidden;
-    animation: Anim 3s linear infinite;
-    border-radius: 50%;
-    left: 0;
-    right: 0;
+
+
+.box1{
+    background: rgba(207, 55, 55, 0.61);
+    animation: box1 1s 1s ease-in infinite;
 }
-@keyframes Anim{
-    100%{transform: rotate(360deg)}
+.box2{
+    background: rgba(0, 128, 0, 0.664);
+    animation: box2 1s 2s ease-in infinite;
 }
+.box3{
+    background: rgb(47, 47, 192);
+    animation: box3 1s 3s ease-in infinite;
+}
+.box4{
+    background: rgb(196, 196, 17);
+    animation: box4 1s 4s ease-in infinite;
+}
+
+@keyframes box1{
+    0%{ 
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+@keyframes box2{
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+@keyframes box3{
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+@keyframes box4{
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+
+
+
