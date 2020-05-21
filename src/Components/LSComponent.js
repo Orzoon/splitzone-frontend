@@ -1,7 +1,7 @@
-import React, {useState} from "react";
-import {useLoginForm} from "../hooks/appHooks";
+import React, {useState, useEffect} from "react";
+import {useLoginForm, useSignupForm} from "../hooks/appHooks";
 import {ReactComponent as GoogleIconSVG} from '../assets/icons/googleicon.svg';
-
+import {ReactComponent as Illustration} from '../assets/illustrationLS.svg';
 /* Token */
 
 /* CSS */
@@ -13,30 +13,48 @@ const initialLoginValues = {
     emailPlaceholder: "example@gmail.com",
     passwordPlaceholder: "*****"
 }
+
+
+const initialSignupValues = {
+    name:'',
+    email:'',
+    password:'',
+    usernamePlaceholder:'username',
+    emailPlaceholder: "example@gmail.com",
+    passwordPlaceholder: "*********"
+}
 export default function LSComponent(){
-    localStorage.clear();
-    const [stop, setStop] = useState(false);
-    const [showForm, setShowForm] = useState('login');
+    localStorage.clear()
 
+    const [showForm, setShowForm] = useState('LOGIN');
+    const [allSet, setAllSet] = useState(false);
 
-    if(stop) return (
-        <div className = "LSC_container">
-            <LoginForm />
-            <SignupForm />
-        </div>
-    )
-    else return (
+    function allSetHandler(){
+        setAllSet(true);
+    }
+    function LSFormHandler(FormType){
+        setShowForm(FormType)
+    }
+
+    return (
         <div className = "main_container">
             <div className = "blue_container blue_container_transition">
                 <div className= "white_container white_container_transition">
                     <div className="form_container">
                         <div className = "form_Illustration">
+                            <Illustration />
                         </div>
 
                         {/* Actual LOGIN/SIGNUP FORM */}
-                        {showForm==="login" ? 
-                            <LoginForm /> :
-                            <SignupForm/>
+                        {showForm==="LOGIN" ? 
+                            <LoginForm 
+                                allSetHandler = {allSetHandler}
+                                allSet = {allSet}
+                                LSFormHandler = {LSFormHandler}/> :
+                            <SignupForm 
+                                allSetHandler = {allSetHandler}
+                                allSet = {allSet}
+                                LSFormHandler = {LSFormHandler}/>
                         }
                     </div>
                 </div>
@@ -45,73 +63,270 @@ export default function LSComponent(){
     )
 }
 
-
-function LoginForm(){
+function LoginForm({LSFormHandler, allSetHandler, allSet}){
     const {
+            errors,
             values, 
             loginHandler,
             changeHandler
         } = useLoginForm(initialLoginValues);
+
+    const [loginType, setLoginType] = useState("NONE")
+    const TitleData = {
+        headingTitle: "Welcome Back :)",
+        headingParagraph:"Login and start splitting bills with your friends"
+    }
+    const SocialData = {
+        quick: "Quick Login",
+        action: "Register!!",
+        name: "LOGIN",
+        oppName: "SIGNUP"
+    }
+    function loginStatusHandler(allSetTF, action){
+        if(allSetTF === true){
+            allSetHandler()
+        }
+        setLoginType(action)
+    }
+
+    useEffect(() => {
+        if(Object.keys(errors).length > 0){
+            setLoginType("NONE")
+        }
+    }, [errors])
     return (
         <div className = "login_form_container">
-            <FormHeading/>
-            <form onSubmit = {(e) => loginHandler(e, values)} className = "loginForm">
+            <FormHeading  
+                headingTitle = {TitleData.headingTitle}
+                headingParagraph = {TitleData.headingParagraph}
+                allSet = {allSet}
+            />
+            <form onSubmit = {(e) => {
+                    allSetHandler()
+                    loginStatusHandler(true, "LOGIN")
+                    loginHandler(e, values)}
+                } 
+                className = "loginForm" 
+                style = {{marginTop: Object.keys(errors).length > 0 ? '10px' : '10px'}}
+                >
                 <input
+                    className = {allSet ? "SC_fix":"topFormInputAnimation"}
                     name = "email"
                     value = {values.email}
-                    type = "email"
+                    type = "text"
                     placeholder = {values.emailPlaceholder}
                     onChange = {(e) => changeHandler(e)}
                 />
-    
+                {errors.email && <p>{errors.email}</p>}
                 <input
+                    className = {allSet ? "SC_fix":"topFormInputAnimation"}
                     name = "password"
                     value = {values.password}
                     type = "password"
                     placeholder = {values.passwordPlaceholder}
                     onChange = {e => changeHandler(e)}
                 />
-
-                <div className = "B_Effect">
-                    <button 
+                {errors.password && <p>{errors.password}</p>}
+                {errors.message && <p>{errors.message}</p>}
+                <div className = {allSet ? "B_Effect loginBTNFix" :"B_Effect topFormInputAnimation"} >
+                    {loginType === "LOGIN" ? 
+                        <ButtonLoaderLogin/>
+                        :
+                        <button 
+                        disabled = {(loginType === "GOOGLE") && true}
                         className = "loginButton"
                         type = "submit" 
-                    >LOGIN</button>
+                        >LOGIN</button>
+                    }
                 </div>
             </form>
-            <SocialLogin/>
+            <SocialLogin 
+                loginStatusHandler = {loginStatusHandler}
+                loginType = {loginType}
+                LSFormHandler = {LSFormHandler}
+                SocialData = {SocialData}
+                allSet = {allSet}
+                allSetHandler = {allSetHandler}
+            />
         </div>
     )
 }
 
-function SignupForm(){
+
+function SignupForm({LSFormHandler, allSetHandler, allSet}){
+    /* NOTE FIX THIS TO DISABLE BUTTONS -NOTE LATERON*/
+
+    const {values, signupHandler, changeHandler, errors} = useSignupForm(initialSignupValues);
+    const [signupType, setSignupType] = useState('NONE');
+    const TitleData = {
+        headingTitle: "Welcome to omnisplit :)",
+        headingParagraph:"Create your new account and start splitting bills"
+    }
+    const SocialData = {
+        quick: "Quick Signup",
+        action: "SignIn!!",
+        name: "signup",
+        oppName: "LOGIN"
+    }
+
+
+    function signupStatusHandler(action){
+        setSignupType(action)
+    }
+
+    useEffect(() => {
+        if(Object.keys(errors).length > 0){
+            setSignupType("NONE")
+        }
+    }, [errors])
     return (
-        <div className = "LSS_container">
+        <div className = "signup_form_container">
+        <FormHeading
+            headingTitle = {TitleData.headingTitle}
+            headingParagraph = {TitleData.headingParagraph}
+            allSet = {allSet}
+        />
+        <form
+            onSubmit = {e => {
+                allSetHandler()
+                signupStatusHandler("SIGNUP")
+                signupHandler(e, values)
+            }}
+            className = "signupForm" 
+            style = {{marginTop: Object.keys(errors).length > 0 ? '10px' : '10px'}}
+        > 
+            <input
+                className = "SC_fix"
+                name = "name"
+                type = "text"
+                placeholder = {values.usernamePlaceholder}
+                onChange = {e => changeHandler(e)}
+            />
+            {errors.name && <p>{errors.name}</p>}
+            <input
+                className = "SC_fix"
+                name = "email"
+                type = "email"
+                placeholder = {values.emailPlaceholder}
+                onChange = {e => changeHandler(e)}
+            />
+            {errors.email && <p>{errors.email}</p>}
+            <input
+                className = "SC_fix"
+                name = "password"
+                type = "password"
+                placeholder = {values.passwordPlaceholder}
+                onChange = {e => changeHandler(e)}
+            />
+            {errors.password && <p>{errors.password}</p>}
+            {errors.message && <p>{errors.message}</p>}
+            <div className = "B_Effect SC_fix">
+                {signupType === "SIGNUP" ? 
+                    <ButtonLoaderLogin/>
+                    :
+                    <button 
+                    disabled = {(signupType === "GOOGLE") && true}
+                    className = "loginButton"
+                    type = "submit"
+                    >SIGNUP</button>
+                }
+            </div>
+        </form>
+
+        {/* SOCIAL BARE COMPONENT AVOIDING MULTIPLE CHECKS */}
+        <div className = "social_login_container">
+            <h1 className = {allSet ? "SC_fix MarginFix" :"bottomFormAnimation"}>{SocialData.quick}</h1>
+            {signupType ==="GOOGLE" ? 
+                <ButtonLoaderGoogle/>
+                :
+                <button 
+                    onClick = {e => signupStatusHandler("GOOGLE")}
+                    className = {allSet ? "SC_fix MarginFix" :"bottomFormAnimation"}
+                    disabled = {(signupType ==="LOGIN") && true }
+                    >
+                    <a href = "http://localhost:5000/auth/google">
+                        <span>Google</span>
+                        <GoogleIconSVG/>
+                    </a>
+                </button>
+            }
+            <h3 
+                className ={allSet ? "SC_fix MarginFix" :"bottomFormAnimation"}
+                onClick = {e => {
+                    allSetHandler()
+                    LSFormHandler(SocialData.oppName)
+                }}
+            >
+                {SocialData.action}
+            </h3>
+        </div>
+    </div>
+    )
+}
+
+function FormHeading({headingTitle, headingParagraph, allSet}){
+    return (
+        <div className = {allSet ? "formHeading SC_fix": "formHeading"}>
+            <h1 className = {allSet ? "SC_fix MarginFix": "topFormHeadAnimation"}>{headingTitle}</h1>
+            <p className = {allSet ? "SC_fix MarginFix": "topFormHeadAnimation"} >{headingParagraph}</p>
+        </div>
+    )
+}
+function SocialLogin({loginStatusHandler, loginType, LSFormHandler, SocialData, allSet,allSetHandler}){
+    return(
+        <div className = "social_login_container">
+            <h1 className ={allSet ? "SC_fix MarginFix": "bottomFormAnimation"}>{SocialData.quick}</h1>
+            {loginType ==="GOOGLE" ? 
+                <ButtonLoaderGoogle/>
+                :
+                <button 
+                    onClick = {e => loginStatusHandler(true, "GOOGLE")}
+                    className = {allSet ? "SC_fix MarginFix": "bottomFormAnimation"}
+                    disabled = {(loginType ==="LOGIN") && true }
+                    >
+                    <a href = "http://localhost:5000/auth/google">
+                        <span>Google</span>
+                        <GoogleIconSVG/>
+                    </a>
+                </button>
+            }
+            <h3 
+                className = {allSet ? "SC_fix MarginFix": "bottomFormAnimation"}
+                onClick = {e => {allSetHandler(); LSFormHandler(SocialData.oppName)}}
+            >
+                {SocialData.action}
+            </h3>
+        </div>
+    )
+}
+
+/* Function TOPBARLS */
+function TopBar(){
+    return (
+        <div className = "top_bar_container">
             
         </div>
     )
 }
 
 
-function FormHeading(){
-    return (
-        <div className = "formHeading">
-            <h1>Welcome Back :)</h1>
-            <p>Some sub heading describing something</p>
-        </div>
-    )
+// LOADER COMPONENTS
+function ButtonLoaderLogin(){
+  return(
+    <button className = "loaderButton Btn_login">
+        <div className = "l_circle"></div>
+        <div className = "l_circle"></div>
+        <div className = "l_circle"></div>
+    </button>
+  )  
 }
 
-
-function SocialLogin(){
+function ButtonLoaderGoogle(){
     return(
-        <div className = "social_login_container">
-            <button>
-                <a href = "http://localhost:5000/auth/google">
-                    <span>Google</span>
-                    <GoogleIconSVG/>
-                </a>
-            </button>
-        </div>
-    )
+      <button className = "loaderButton Btn_google">
+          <div className = "l_circle C_first"></div>
+          <div className = "l_circle C_second"></div>
+          <div className = "l_circle C_third"></div>
+      </button>
+    )  
 }

@@ -11,3 +11,7 @@
 [0417/200225.107:ERROR:scoped_process_suspend.cc(40)] NtResumeProcess: An attempt was made to access an exiting process. (0xc000010a)
 [0417/200225.107:ERROR:scoped_process_suspend.cc(40)] NtResumeProcess: An attempt was made to access an exiting process. (0xc000010a)
 [0506/222646.714:ERROR:settings.cc(320)] Settings magic is not 1129342067
+[0519/030316.616:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0519/030318.027:ERROR:exception_snapshot_win.cc(98)] thread ID 12964 not found in process
+[0519/030316.616:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0519/030318.027:ERROR:exception_snapshot_win.cc(98)] thread ID 12824 not found in process

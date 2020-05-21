@@ -1,24 +1,60 @@
-import React, {useEffect, useState, useContext, useRef} from "react";
+import React, {useEffect, useState, useContext, useRef, useReducer} from "react";
 import Token from "../../helpers/token";
 import {serverURI} from "../../helpers/GlobalVar";
 import {AppUserContext} from "../App/App"
+import {MdAnnouncement, MdKeyboardArrowUp, MdClose} from "react-icons/md"
+import {AiFillDollarCircle} from "react-icons/ai"
+import { IconContext } from "react-icons";
 
+
+
+function billReducer(state, action){
+    switch(action.type){
+        case "setErrors":
+           return {...state, errors: action.payload}
+        case "setGroupMembers":
+            return {...state, groupMembers: action.payload}
+        case "initialValues":
+            return {...state, initialValues: action.payload}
+        case "showSplitAmongDropDown":
+            return {...state, showSplitAmongDropDown: action.payload}
+        case "btnSubmit":
+            return{...state, btnSubmit: action.payload}
+        default:
+            return state
+    }
+}
+
+
+
+const billFormInitialState = {
+    groupMembers: null,
+    initialValues: null,
+    showSplitAmongDropDown: false,
+    errors: {},
+    btnSubmit : false
+}
 
 export default function BillForm(props){
+    const [state, dispatch] = useReducer(billReducer, billFormInitialState);
     const BillFormRef = useRef(null);
     const user = useContext(AppUserContext);
     const {groupID,newBillsAdditionHandler} = props;
-    const [groupMembers, setGroupMembers] = useState(null);
-    const [splitAmongB, setSplitAmongB] = useState(false);
-    const [errors, setErrors] = useState(null);
-    // setting initialValues if groupmembers exist
 
-    let [initialValues, setInitialValues] = useState(null)
-    /*---------------*/
-    //--------> moving and setting everything within first useEffect
-    // form hook
+    // Check for errors ErrorComponent
+    const [noMember, setNomember] = useState(null);
+    const [errorMessage, setErrorMessage] = useState("");
+    // const [groupMembers, setGroupMembers] = useState(null);
+    // const [splitAmongB, setSplitAmongB] = useState(false);
+    // const [errors, setErrors] = useState(null);
+    // let [initialValues, setInitialValues] = useState(null)
 
     useEffect(() => {
+        // setting errors to null on loading
+        dispatch({type:"setErrors", payload: {}})
+        dispatch({type:"btnSubmit", payload: false})
+
+        // set propsValues in the firstPlace
         async function fetchGroupMembersData(){
             try{
                 const token = Token.getLocalStorageData('splitzoneToken');
@@ -29,49 +65,69 @@ export default function BillForm(props){
                         'Authorization': 'Bearer '+ token
                     }
                 })
-
-                if(groupMemberResponse.status !== 200){
-                        console.log("some thing went wrong/// find that in catch statement")
-                        return 
+                if(!groupMemberResponse.ok){
+                       const errorData = await groupMemberResponse.json()
+                       throw(errorData)
                 }   
-
                 const groupData = await groupMemberResponse.json();
-                if(groupData.members.length > 1){
-                    setGroupMembers(groupData.members)
 
-                    /* ---------------
-                        setting initialArray to pass dowm to the next component
-                    */
-                    const tempGroupMembers = groupData.members;
-                    const tempArr = [];
-                    const gM = tempGroupMembers.forEach(member => tempArr.push(member._id))
-                    
-                    const tempInitialValues = {
-                        paidBy: {
-                            _id: user._id,
-                            name: user.username
-                        },
-                        addedBy:{
-                            _id: user._id,
-                            name: user.username
-                        },
-                        paidAmount: null,
-                        splittedAmongNumber: tempArr.length,
-                        //paid date
-                        dividedEqually: 1,
-                        splittedAmongMembers: tempArr,
-                        divided: [],
-                        customObj: {
-                            incExc: "including"
-                        }
-                    }
-                    setInitialValues(tempInitialValues)
-                    
+                // if groupMembers.length is not greater than 1 throw error [ErrorMsessage]
+                if(groupData.members.length <= 1){
+                    // let errorObj = {}
+                    // errorObj.NoMember = "Add your friends to the group as a member before adding a bill";
+                    setNomember(true)
+                    setErrorMessage("Add your friends to the group as a member before adding a bill")
+                    return
                 }
-        }
-        catch(error){
-            console.log(error)
-        }
+
+                // setting groupMembers
+                dispatch({type:"setGroupMembers", payload: groupData.members})
+                setNomember(false)
+                /* setting initialArray to pass dowm to the next component */
+                const tempGroupMembers = groupData.members;
+                const tempArr = [];
+                const gM = tempGroupMembers.forEach(member => tempArr.push(member._id))
+                const tempInitialValues = {
+                    paidBy: {
+                        _id: user._id,
+                        name: user.username
+                    },
+                    addedBy:{
+                        _id: user._id,
+                        name: user.username
+                    },
+                    paidAmount: null,
+                    splittedAmongNumber: tempArr.length,
+                    //paid date
+                    dividedEqually: 1,
+                    splittedAmongMembers: tempArr,
+                    divided: [],
+                    customObj: {
+                        incExc: "including"
+                    }
+                }
+                // setting initial Values
+                dispatch({type:"initialValues", payload: tempInitialValues})
+            }
+            catch(error){
+                let errorObj = {};
+                // catch for serverSideErrors
+                if(error.statusCode === 400 && error.hasOwnProperty('message') && Array.isArray(error.message)){
+                            const messageArray = error.message;
+                            messageArray.forEach(message => errorObj[message.param] = message.msg)
+                }
+                else if(error.statusCode === 400 || error.status === 400) {
+                        errorObj.message = error.message
+                }
+                else if (error.status === 500){
+                    errorObj.message = error.message
+                    }
+                else{
+                    errorObj.message = "Something went wrong try again later"
+                }
+                // errors got while inititing the component not while submission
+                dispatch({type: "setFormErros", payload: errorObj})
+            }
         }
 
         fetchGroupMembersData();
@@ -82,7 +138,6 @@ export default function BillForm(props){
     }, [])
 
     function outsideUtil(e){
-        console.log("event")
         if(BillFormRef.current && !BillFormRef.current.contains(e.target)){
             //props.showBillFormToggleHandler();
         }
@@ -90,16 +145,15 @@ export default function BillForm(props){
     /* --based on this OPEN/CLOSE splitView */
     function splitAmongBHandler(e){
         e.preventDefault();
-        setSplitAmongB(!splitAmongB)
-    }
-
+        dispatch({type:"showSplitAmongDropDown", payload: !state.showSplitAmongDropDown})
+    }// fixed
     function handleRemoveAddBillMembers(e,_id, action){
         if(e){
             e.preventDefault();
         }
         // removing initial values
         if(action === "remove"){
-            const copy = [...initialValues.splittedAmongMembers];
+            const copy = [...state.initialValues.splittedAmongMembers];
             const copyFiltered = copy.filter(m_id => m_id !== _id);
             const tempLength = copyFiltered.length;
             // setting initial values and the length
@@ -108,12 +162,15 @@ export default function BillForm(props){
                 customObj.incExc = "excluding"
             }
             else {
-                customObj = {...initialValues.customObj}
+                customObj = {...state.initialValues.customObj}
             }
-            setInitialValues({...initialValues,  splittedAmongMembers: copyFiltered, splittedAmongNumber: tempLength, customObj: customObj})
+
+            // setting overAll initialValues 
+            dispatch({type:"initialValues", payload: {...state.initialValues,  splittedAmongMembers: copyFiltered, splittedAmongNumber: tempLength, customObj: customObj}})
+            // setInitialValues({...initialValues,  splittedAmongMembers: copyFiltered, splittedAmongNumber: tempLength, customObj: customObj})
         }
         if(action === "add"){
-            const newCopy = [...initialValues.splittedAmongMembers, _id];
+            const newCopy = [...state.initialValues.splittedAmongMembers, _id];
             const tempLength = newCopy.length;
             // setting initial values and the length
             let customObj = {};
@@ -121,9 +178,10 @@ export default function BillForm(props){
                 customObj.incExc = "including"
             }
             else {
-                customObj = {...initialValues.customObj}
+                customObj = {...state.initialValues.customObj}
             }
-            setInitialValues({...initialValues,  splittedAmongMembers: newCopy, splittedAmongNumber: tempLength, customObj: customObj})
+            dispatch({type:"initialValues", payload:{...state.initialValues,  splittedAmongMembers: newCopy, splittedAmongNumber: tempLength, customObj: customObj}})
+            //setInitialValues({...initialValues,  splittedAmongMembers: newCopy, splittedAmongNumber: tempLength, customObj: customObj})
         }
     }
 
@@ -138,12 +196,14 @@ export default function BillForm(props){
                 break;
             case "paidBy":
                 const paidById = e.target.value;
-                const paidByName = groupMembers.filter(member => member._id === paidById);
+                const paidByName = state.groupMembers.filter(member => member._id === paidById);
                 const paidBy = {
                     _id: paidByName[0]._id,
                     name:paidByName[0].name
                 } 
-                setInitialValues({...initialValues,paidBy: paidBy})
+                console.log("paidBy", paidBy)
+                dispatch({type:"initialValues", payload:{...state.initialValues,paidBy: paidBy}})
+                //setInitialValues({...initialValues,paidBy: paidBy})
                 break;
             case "eqUneq":
                 const value = e.target.value;
@@ -155,81 +215,127 @@ export default function BillForm(props){
                 }
                 else {
                     trueFalse = 0
-                    divided = [...initialValues.divided]
+                    divided = [...state.initialValues.divided]
                 }
-                setInitialValues({...initialValues, dividedEqually: trueFalse, divided: divided})
+                dispatch({type:"initialValues", payload:{...state.initialValues, dividedEqually: trueFalse, divided: divided}})
+                //setInitialValues({...initialValues, dividedEqually: trueFalse, divided: divided})
                 break;
             case "divided":
                 let Amount = e.target.value.trim();
-                let regEx = /^\d*\.?\d{0,2}$/;
-                if(!Amount.match(regEx)){
-                    errorHandler("amountValueError", "Entered Amount must be a number")
-                    return false
-                }
-              
-                // if(isNaN(AmountValue)){
-                //     errorHandler("amountValueError", "Entered Amount must be a number")
-                //     return false
-                // }
-                if( Object.keys(errors).length > 0 ){
-                    if( errors.hasOwnProperty("amountValueError")){
-                        const errorsCopy = {...errors};
-                        delete errorsCopy.amountValueError;
-                        setErrors(errorsCopy)
-                    }
-                }
-                let  dividedCopy = [...initialValues.divided]
+                // let regEx = /^\d*\.?\d{0,2}$/;
+                let  dividedCopy = [...state.initialValues.divided]
                 const dataExists = dividedCopy.filter(member => member._id === _id);
                 if( dataExists.length > 0){
                     const filtredArray = dividedCopy.filter(member => member._id !== _id);
                     const oldObj = dataExists[0];
                     oldObj.amount = Amount;
-                    setInitialValues({...initialValues, divided: [...filtredArray, oldObj]})
+                    dispatch({type:"initialValues", payload:{...state.initialValues, divided: [...filtredArray, oldObj]}})
+                    // setInitialValues({...initialValues, divided: [...filtredArray, oldObj]})
                 }
                 else {
-                    const name = groupMembers.filter(member => member._id === _id)[0].name;
-                    const copyArray = [...initialValues.divided]
+                    const name = state.groupMembers.filter(member => member._id === _id)[0].name;
+                    const copyArray = [...state.initialValues.divided]
                     const newObj = {
                         _id: _id,
                         name: name,
                         amount: Amount
                     }
                     copyArray.push(newObj)
-                    setInitialValues({...initialValues, divided: copyArray})
+                    dispatch({type:"initialValues", payload:{...state.initialValues, divided: copyArray}})
+                    //setInitialValues({...initialValues, divided: copyArray})
                 }
                 break;
             default: 
             let amount = e.target.value.trim();
-            if(typeof(amount) !== "number"){
-                amount = null
-            }
-            setErrors({amountError: 'Amount must be a number'})
-            if(typeof(amount) === "number"){
-                setInitialValues({...initialValues,paidAmount: Number(amount)})
+            dispatch({type:"initialValues", payload:{...state.initialValues,paidAmount: amount}})
+            if(Number(amount) < 0 || !Number(amount)){
+                dispatch({type:"showSplitAmongDropDown", payload: false})
             }
         }
     }
 
-    function errorHandler(errorname, error){
-        setErrors({...errors, [errorname]: error})
-    }
-
-
     function submitBillFormHandler(e){
         e.preventDefault();
-        const valuesCopy = {...initialValues}
-
-        /* Values to be set Later ??*/
+        dispatch({type:"setErrors", payload: {}});
+        dispatch({type:"btnSubmit", payload: true})
+      
+        const valuesCopy = {...state.initialValues}
+        /* Values to be set made available later*/
         valuesCopy.paidCategory= "some category for now";
         valuesCopy.ownerGroup = groupID;
         valuesCopy.paidDate = "somedate";
+
         // deleting customCopy
         delete valuesCopy.customObj;
-        
+        let errorObj = {}
+        /* some validation */
+        // checking the amount type
+        if(!Number(valuesCopy.paidAmount)){
+           errorObj.amountError = "Amount must be a number"
+        }
+
+        // if divided unequally check the sum
+        if(!valuesCopy.dividedEqually){
+           const dividedArrayCopy = [...valuesCopy.divided]
+           if (dividedArrayCopy.length <=0){
+               errorObj.divided = "You forgot to split the amount"
+           }
+           if(dividedArrayCopy.length === 1){
+                if(dividedArrayCopy[0]._id.toString() === user._id.toString()){
+                    errorObj.useronly = "You cannot split to yourself only"
+                }
+           }
+           // number check
+           if(dividedArrayCopy.length >= 1){
+                const lengthCheck = dividedArrayCopy.every(item => {
+                    if(item.amount.trim().length <=0){
+                        return false
+                    }
+                    else{
+                        return true
+                    }
+                })
+
+                if(!lengthCheck){
+                    errorObj.amountInput = "You forgot to split the amount"
+                }
+               // Number check
+               const allNumber = dividedArrayCopy.every(item => {
+                    if(Number(item.amount)){
+                        return true
+                    }
+                    else{
+                        return false
+                    }
+                })
+               if(!allNumber){
+                errorObj.amountError = "Amount must be a number"
+               }
+                // sumCheck
+               if(allNumber && Number(valuesCopy.paidAmount)){
+                    const total = dividedArrayCopy.reduce((sum, item) => {
+                        const amount = item.amount;
+                        sum = sum + Number(amount)
+                        return sum
+                    },0)
+                    if(total !== Number(valuesCopy.paidAmount)){
+                        errorObj.sumError = "Sum of splitted amount must be equal to total amount"
+                    }
+               } 
+           }
+        }
+        if(Object.keys(errorObj).length > 0){
+            dispatch({type:"btnSubmit", payload: false})
+            dispatch({type:"setErrors", payload: errorObj});
+            return 
+        }
+        /* IF ANY ERRORS */
+        /* END OF CHECK *?
+        // REST IMPLEMENT ON SERVER
         /* NOTE Added divided info even for split here */
-        // validate here
+        /* this is for the INFO --> NOTE ---> to make iteration extendable*/
         if(valuesCopy.dividedEqually) {
-            const groupMembersCopy = [...groupMembers];
+            const groupMembersCopy = [...state.groupMembers];
             const splittedAmongMembersCopy = [...valuesCopy.splittedAmongMembers];
             const splittedAmongNo = splittedAmongMembersCopy.length;
 
@@ -250,12 +356,6 @@ export default function BillForm(props){
             valuesCopy.divided = dividedArray
         }
         
-
-        // TODO
-        // make sure the division is not more than the sum amount later on
-
-
-
         // sending data
         const token = Token.getLocalStorageData('splitzoneToken');
 
@@ -270,67 +370,93 @@ export default function BillForm(props){
                     body: JSON.stringify(valuesCopy)
                 })
 
-                if(Billsresponse.status !== 200){
-
-                    // setErrors
-                    return false
+                if(!Billsresponse.ok){
+                    const errorData = await Billsresponse.json();
+                    throw(errorData)
                 }
                 // cosing the bill form
                 const addedBill = await Billsresponse.json();
                 newBillsAdditionHandler(addedBill);
                 props.showBillFormToggleHandler();
             }catch(error){
-               // errros while adding
+                let errorObj = {};
+                // catch for serverSideErrors
+                if(error.statusCode === 400 && error.hasOwnProperty('message') && Array.isArray(error.message)){
+                            const messageArray = error.message;
+                            messageArray.forEach(message => errorObj[message.param] = message.msg)
+                }
+                else if(error.statusCode === 400 || error.status === 400) {
+                        errorObj.message = error.message
+                }
+                else if (error.status === 500){
+                    errorObj.message = error.message
+                    }
+                else{
+                    errorObj.message = "Something went wrong try again later"
+                }
+                // setting errors
+                dispatch({type:"setErrors", payload: errorObj});
+                dispatch({type:"btnSubmit", payload: false})
             }
         }
         sendBillFormData();
     }
     return (
         <div className = "Bill_Form_Container" >
-            {console.log("splitAMongB", splitAmongB)}
+
+            {noMember &&
+                <NoMemberComponent message = {errorMessage} closeHandler = {props.showBillFormToggleHandler}/>
+            }
+            { !noMember &&
             <form className = "Bill_Form"  ref = {BillFormRef} id = "Bill_Form" onSubmit={(e) => submitBillFormHandler(e)} >
                 {/* Form close button */}
                 <button  
                     type = "button"
                     onClick = {props.showBillFormToggleHandler}
                     className = "Bill_Form_Close">
-                        close
+                     <MdClose />
                 </button>
 
                 <h1 className = "formTitle">Add a bill</h1>
 
-                { errors && errors.amountError ? 
-                    <p>{errors.amountError}</p>:
-                    null
-                }
+                {/* SHOWING ALL THE FORM ERRORS ON THE TOP */}        
+                {/* AMOUNT ERROR */}
+                {state.errors && state.errors.amountError && <p className = "error">{state.errors.amountError}</p>}
+                {state.errors && state.errors.divided && <p  className = "error">{state.errors.divided}</p>}
+                {state.errors && state.errors.useronly && <p  className = "error">{state.errors.useronly}</p>}
+                {state.errors && state.errors.amountInput && <p  className = "error">{state.errors.amountInput}</p>}
+                {state.errors && state.errors.sumError && <p  className = "error">{state.errors.sumError}</p>}
                 {/* Amount field */}
                 <div className = "commonF_div">
                     <input 
+                        type = "number"
                         className = "Amount"
                         name = "Amount"
                         placeholder = "Enter Amount"
-                        value = {(initialValues) ? initialValues.paidAmount : ""}
+                        value = {(state.initialValues) ? state.initialValues.paidAmount : ""}
                         onChange = {(e) => handleBillFormChange(e)}
                     />   
+                        <IconContext.Provider value={{ color: "#2DB177"}}>
+                            <AiFillDollarCircle/>
+                        </IconContext.Provider>                    
                 </div>  
               
 
                 {/* including/excluding field */}
                 <div className = "commonF_div">
-                    <select onChange = { e => handleBillFormChange(e, "incExc")} value = {initialValues ? initialValues.customObj.incExc : "including"}>
+                    <select onChange = { e => handleBillFormChange(e, "incExc")} value = {state.initialValues ? state.initialValues.customObj.incExc : "including"}>
                         <option value = "including">including</option>
                         <option value = "excluding">excluding</option>
                     </select> 
                     <h1>you</h1>
-
                 </div>
-            
+
                 {/* paidby member */}
                 <div className = "commonF_div">
                     <h1>Paid by</h1>
                     <select onChange = {e => handleBillFormChange(e, "paidBy")}>
-                            {groupMembers && groupMembers.length > 1 && 
-                                groupMembers.map(member => {
+                            {state.groupMembers && 
+                                state.groupMembers.map(member => {
                                     if(member._id === user._id){
                                         return <option key = {member._id} value = {member._id} defaultChecked>You</option>
                                     }
@@ -343,8 +469,8 @@ export default function BillForm(props){
                 </div>
                 <div className = "commonF_div">
                     <h1>Split</h1>
-                    <select onChange = {e => handleBillFormChange(e, "eqUneq")} value = {initialValues ? 
-                            initialValues.dividedEqually ? "equally" : "unequally"
+                    <select onChange = {e => handleBillFormChange(e, "eqUneq")} value = {state.initialValues ? 
+                            state.initialValues.dividedEqually ? "equally" : "unequally"
                             :
                             "equally"
                             }
@@ -352,83 +478,82 @@ export default function BillForm(props){
                         <option value = "equally">equally</option>  
                         <option value = "unequally">unequally</option>  
                     </select>
-                </div>
-                <div id = {splitAmongB ? "splittedAmongParentDivFix": "splittedAmongParentDivFixFirstParent"} >
-                    <h1>Among</h1>
-
-                        {   splitAmongB ? null: 
-                            !initialValues ? "Enter Amount": 
-                            ((initialValues.hasOwnProperty('paidAmount') && typeof(initialValues.paidAmount) === "number")) ?  
-                            <input className = "FormButton" type = "button" value = "all"
+                </div>              
+                <div id = {state.showSplitAmongDropDown ? "splittedAmongParentDivFix":"splittedAmongParentDivFixFirstParent"} >
+                    {state.initialValues && console.log(Number(state.initialValues.paidAmount))}
+                    {/* SHOWING _ ENTER AMOUNT FOR ADDITIONAL OPTIONS BASED ON THE AMOUNT VALUE */}
+                    {   state.initialValues && 
+                        (state.initialValues.hasOwnProperty('paidAmount') && Number(state.initialValues.paidAmount) > 0) &&
+                        <h1>Among</h1>
+                    }
+                    {   state.initialValues && 
+                        (state.initialValues.hasOwnProperty('paidAmount') && Number(state.initialValues.paidAmount) > 0) &&
+                        <button className = "FormButton" type = "button" 
                             onClick = {splitAmongBHandler}
-                            /> :
-                            "Enter Amount above"
-                        }
+                        >
+                            {state.showSplitAmongDropDown ? <MdKeyboardArrowUp/> : "all"}
+                        </button>
+                    }
+                    {(state.initialValues && (state.initialValues.hasOwnProperty('paidAmount') && Number(state.initialValues.paidAmount) > 0)) ?
+                        null :
+                        <h1 className = "FormShowAllRestriction">
+                            <MdAnnouncement />
+                            <p>Enter Amount for more options</p>
+                        </h1>
+                    }
+                    {/* Showing show all form below */}
                     {
-                    splitAmongB ? 
-                    <SplitAmongBComponent 
-                        groupMembers = {groupMembers} 
-                        paidAmount = {initialValues.paidAmount}
-                        splittedAmongNumber = {initialValues.splittedAmongNumber}
-                        splittedAmongMembers = {initialValues.splittedAmongMembers}
-                        dividedEqually = {initialValues.dividedEqually}
-                        divided = {initialValues.divided}
-                        handleRemoveAddBillMembers = {handleRemoveAddBillMembers}
-                        handleBillFormChange = {handleBillFormChange}
-                        errors = {errors}
-                        errorHandler = {errorHandler}
-                    /> 
-                    : null
-                    // <input className = "FormButton" type = "button" value = "all"
-                    //  onClick = {splitAmongBHandler}
-                    // /> 
-                } 
+                    (state.initialValues && Number(state.initialValues.paidAmount) > 0 && state.showSplitAmongDropDown) ? 
+                        <SplitAmongComponent 
+                            groupMembers = {state.groupMembers} 
+                            paidAmount = {state.initialValues.paidAmount}
+                            splittedAmongNumber = {state.initialValues.splittedAmongNumber}
+                            splittedAmongMembers = {state.initialValues.splittedAmongMembers}
+                            dividedEqually = {state.initialValues.dividedEqually}
+                            divided = {state.initialValues.divided}
+                            handleRemoveAddBillMembers = {handleRemoveAddBillMembers}
+                            handleBillFormChange = {handleBillFormChange}
+                            errors = {state.errors}
+                        /> 
+                        : null
+                    } 
                 </div>
-                
                 <div className = "commonF_div">
                      <input className = "FormButton" type = "submit" value = "submit"/>
                 </div>
-            </form>
+                </form> }
         </div>
     )
 }
-
 /*-----------------
     splitAmongBComponent
 *------------------*/
 
-function SplitAmongBComponent(props){
-    /*  
-        splittedAmongMembersisanArray
-    */
+function SplitAmongComponent({
+    groupMembers,
+    paidAmount,
+    splittedAmongNumber,
+    splittedAmongMembers,
+    dividedEqually,
+    divided,
+    handleRemoveAddBillMembers,
+    handleBillFormChange,
+    errors,
+    }){
+    /* splittedAmongMembersisanArray */
     const user = useContext(AppUserContext);
-    const {
-        groupMembers, 
-        splittedAmongMembers, 
-        handleRemoveAddBillMembers, 
-        paidAmount, 
-        splittedAmongNumber,
-        dividedEqually,
-        divided,
-        handleBillFormChange,
-        errorHandler,
-        errors 
-        }
-         = props;
 
     return (
         <div className = "BF_splitAmongBComponentContainer">
-
             {
                 groupMembers.map(members => {
                         const memberIncludedB = splittedAmongMembers.some(sAMembers => members._id === sAMembers)
-
                         if(memberIncludedB){
                             return (<div key = {members._id} className = "F_List">
-                                        <h1>{members.name} </h1>
+                                        <h1>{members._id.toString() === user._id.toString() ? "you": members.name} </h1>
                                         {dividedEqually ? 
                                             <div className = "Form_amount">
-                                                {(dividedEqually && paidAmount) ? (parseInt(paidAmount, 10)/parseInt(splittedAmongNumber, 10)).toFixed(2) : "not equally" }
+                                                {(dividedEqually && paidAmount) ? "$" + (parseInt(paidAmount, 10)/parseInt(splittedAmongNumber, 10)).toFixed(2) : "not equally" }
                                             </div>
                                             :
                                             <DividedUnequallyInput 
@@ -436,7 +561,6 @@ function SplitAmongBComponent(props){
                                                 members = {members}
                                                 handleBillFormChange = {handleBillFormChange}
                                                 errors = {errors}
-                                                errorHandler = {errorHandler}
                                                 paidAmount = {paidAmount}
                                             />  
                                         }
@@ -457,7 +581,6 @@ function SplitAmongBComponent(props){
                         }
                 })
             }
-
         </div>
     )
 }
@@ -472,9 +595,27 @@ function DividedUnequallyInput({
     })
     {   
         const index = divided.findIndex(member => member._id === members._id)
+        let amount = ""
+        if(index > -1){
+            amount = divided[index].amount;
+        
+        }
         return (<input className = "input_amount"
-            value = { index > -1 ? divided[index].amount : " "} 
-            placeholder = "input value" 
+            value = {amount} 
+            placeholder = "$" 
             onChange = {e => handleBillFormChange(e, "divided",members._id )}
             />)
+}
+
+
+function NoMemberComponent({message, closeHandler}){
+    return(
+        <div className = "No_Member">
+            <h1>oops!</h1>
+            <p>{message}</p>
+            <button onClick = {e => closeHandler()}>
+                close
+            </button>
+        </div>
+    )
 }

@@ -256,67 +256,88 @@
      top: 50%;
      left: 50%;
      transform: translate(-50%,-50%);
-     height: 100px;
-     width: 100px;
-     background: #fff;
+     height: 50px;
+     width: 50px;
+     background: none;
      display: grid;
-     grid-template-columns: 1fr 1fr;
-     grid-template-rows: 1fr 1fr;
+     grid-template-columns: 1fr 1fr 1fr;
+     grid-template-rows: 1fr 1fr 1fr;
      grid-gap: 3px;
+
+        & div.box3{
+            grid-area: 2/2/3/3;
+        }
     }
 }
 
 
+@for $i from 1 through 6 {
+    div.box:nth-child(#{$i}){
+        opacity: 0;
+        animation: box1 2s linear infinite;
+        animation-delay: (#{$i*0.25s});
+    }
 
+}
+
+.box{
+    background: #0f4b9b;
+}
 .box1{
-    background: rgba(207, 55, 55, 0.61);
-    animation: box1 1s 1s ease-in infinite;
+    background: rgba(252, 87, 106, 0.774);
+    background: #0f4b9b;
 }
 .box2{
-    background: rgba(0, 128, 0, 0.664);
-    animation: box2 1s 2s ease-in infinite;
+    background: rgba(63, 202, 121, 0.705);
+    background: #0f4b9b;
+    //background: #6E65FF;
+    //background: #ddd;
 }
 .box3{
-    background: rgb(47, 47, 192);
-    animation: box3 1s 3s ease-in infinite;
+    background: rgba(48, 182, 240, 0.747);
+    background: #0f4b9b;
 }
 .box4{
-    background: rgb(196, 196, 17);
-    animation: box4 1s 4s ease-in infinite;
+    background: rgba(255, 213, 73, 0.808);
+    background: #0f4b9b;
+    //background: #6E65FF;
+}
+.box5{
+    background: #ddd;
+}
+.box6{
+    background: #ddd;
 }
 
+
 @keyframes box1{
-    0%{ 
+    0% {
+        opacity: 1;
+    }
+    25%{
+        opacity: 1;
+    }
+    45%{
+        opacity: 1;
+    }
+    // omit above
+    50%{
         opacity: 0;
+    }
+    60%{
+        opacity: 0;
+    }
+    90% {
+        opacity: 0;
+    }
+    95%{
+        opacity: 1;
     }
     100%{
         opacity: 1;
     }
 }
-@keyframes box2{
-    0%{
-        opacity: 0;
-    }
-    100%{
-        opacity: 1;
-    }
-}
-@keyframes box3{
-    0%{
-        opacity: 0;
-    }
-    100%{
-        opacity: 1;
-    }
-}
-@keyframes box4{
-    0%{
-        opacity: 0;
-    }
-    100%{
-        opacity: 1;
-    }
-}
+
 
 
 

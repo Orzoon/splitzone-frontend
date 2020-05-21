@@ -1,0 +1,142 @@
+.BSummary{
+    padding: 18px;
+    padding-top: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+    height: auto;
+    width: 100%;
+    background: #fff;
+    position: relative;
+
+    & button.BSummaryCloseButton{
+        position: absolute;
+        height: 30px;
+        width: 30px;
+        background: #fff;
+        right: 25px;
+        top: 0%;
+        transform: translateY(-50%);
+        color: #1C2483;
+        border-radius: 50%;
+        cursor: pointer;
+        outline: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #0f4c9b;
+        font-size: 18px;
+        background: #0f4c9b;
+        color: #fff;
+        outline: none;
+        box-shadow: 0px 0px 3px #929090;
+        border: none;
+    }
+    & p.BS_ErrosP {
+        padding-top: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #3a426b;
+    }
+    & div.BSummary_LISTDIV{
+        width: 100%;
+        height: auto;
+        border-bottom: 1px solid rgba(236, 233, 233, 0.61);    
+    }
+    & div.BSHeading{
+        color: #0f4c9b;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        padding: 10px 0px;
+    }
+    & div.BSummary_LISTDIV_Loading{
+        display: flex;
+        justify-content: center !important;
+        align-items: center !important;
+        border-bottom: none;
+    }
+
+
+    /* Main List DIVS UNDER*/
+    /* BSummary_LISTDIV */
+    & div.BSummary_LISTDIV {
+        & div.BSummary_LISTDIV_Upper{
+            width: 100%;
+            height: auto;
+            padding: 10px 0px;
+            display: grid;
+            grid-template-columns: 60px 1fr auto;
+            grid-template-rows: auto;
+            grid-column-gap: 13px;
+            & h3 {
+              background: #0f4c9b;
+              width: 100%;
+              color: #fff;
+              height: 55px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              border-radius: 8px;
+            }
+
+
+            & p{
+                color: #3a426b;
+                font-size: 14px;
+                font-weight: 600;
+                align-self: center;
+            }
+
+            & button {
+                justify-self: center;
+                align-self: center;
+                width: 120px;
+                height: 40px;
+                text-transform: uppercase;
+                background: #fff;
+                border: none;
+                cursor: pointer;
+                background: #0f4b9b;
+                color: #FFF;
+                font-weight: 600;
+                font-size: 13px;
+                letter-spacing: 1px;
+                outline: none;
+            }
+        }
+
+        & ul.BSummary_LISTDIV_Lower{
+            height: auto;
+            width: 100%;
+            padding-bottom: 18px;
+            padding-top: 10px;
+            //border: 1px solid red;
+            border-top: 1px solid rgba(236, 233, 233, 0.61);    
+            
+            & li:nth-child(even){
+                background: rgb(241, 237, 237);
+            }
+            & li {
+                display: grid;
+                grid-template-columns: 2fr 1fr 1fr 1fr;
+                grid-template-rows: auto;
+                padding: 4px 0px;
+                padding-left: 10px;
+
+                & h2 {
+                    font-size: 15px;
+                    font-weight: 600;
+                }
+            }
+            & li.S_L_heading{
+                
+                & h1 {
+                    font-size: 14px;
+                    font-weight: 600;
+                }
+            }
+
+        }
+    }
+}
+

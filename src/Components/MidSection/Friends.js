@@ -2,17 +2,19 @@ import React, {useState, useEffect, useReducer, useRef, useContext} from 'react'
 import {serverURI} from "../../helpers/GlobalVar";
 import Token from "../../helpers/token";
 
-
 // ICONS
 import {
     MdAddCircleOutline, 
     MdLink,
     MdDelete,
-    MdChat
+    MdChat,
+    MdEmail
 } from "react-icons/md";
 import DBanner from "../Dashboard/DBanner";
 import ComLoader from "./ComLoader";
-import {notificationContext, socketContext} from "../App/App";
+import {notificationContext, socketContext, AppUserContext} from "../App/App";
+import {LoaderButton,
+    CardConfirmation} from "../UIC/UIC";
 // scss
 import "../../css/Friends.scss";
 
@@ -42,16 +44,19 @@ const initialFriendsState = {
     userFriends: null,
     showFriendForm: false,
     addFrindBtnStatus: false,
-    formErrors: null,
+    formErrors: {},
     updateFriendName: null,
-    updateFriendId: null
+    updateFriendId: null,
 }
 
 export default function Friends(){
+    const user = useContext(AppUserContext);
     const notification= useContext(notificationContext);
     const IO = useContext(socketContext)
-    const [state, dispatch] =useReducer(friendsReducer, initialFriendsState)
-   useEffect(() => {
+    const [state, dispatch] =useReducer(friendsReducer, initialFriendsState);
+    //Implement ErrorHadling logic-> component-TODO
+    // setErros and show errors
+    useEffect(() => {
      async function getFriends() {
         const token = Token.getLocalStorageData('splitzoneToken');
         try{
@@ -62,19 +67,21 @@ export default function Friends(){
                     'Authorization': 'Bearer '+ token
                 }
             })
-            if(friendsResponse.status !== 200){
-                // check error and set error
+
+            /* ERROR ? */
+            if(!friendsResponse.ok){
+                const errorData = await friendsResponse.json();
+                throw(errorData)
             }
+
             const userFriendsdata = await friendsResponse.json();
             dispatch({type: "setUserFriends", payload:userFriendsdata})
             dispatch({type: "setLoading"})
         }
         catch(error){
-          // catching errors later on
+            // handle Errors later with error component
         }
      }
-
-
      getFriends();
    }, [])
    /*IO EVENTS */
@@ -85,12 +92,27 @@ export default function Friends(){
    }, [])
    /* IO EVENTS END */
    async function createNewFriendHandler(e, values){
+        e.preventDefault()
+        // clearing out the initial errors
+        dispatch({type: "setFormErros", payload: {}})
         dispatch({type: "addFrindBtnStatus", payload: true})
-        e.preventDefault();
-        if(values.name.length <= 5 || values.name.length === 0){
-            dispatch({type: "setFormErros", payload: "Friend name cannot be empty and should be 6 characters long" })
-            dispatch({type: "addFrindBtnStatus", payload: false})
-            return null
+        // new logic if the length of email is zero just send the name key pair
+        // SERVERSIDEVALIDATON FOR NOW -- SET BELOW VALIDTION FOR EMAIL AND USERNAME LATER
+        // if(values.name.length <= 4 || values.name.length === 0){
+        //     let errorObj = {};
+        //     errorObj.name = "Friend name cannot be less than 4 characters"
+        //     dispatch({type: "setFormErros", payload: errorObj})
+        //     dispatch({type: "addFrindBtnStatus", payload: false})
+        //     return null
+        // }
+        // check for the same email--> CANNOT ADD YOURSELF
+        const email = values.email;
+        if(email.toString().trim().toLowerCase() ===  user.email.toString().trim().toLowerCase()){
+            let errorObj = {};
+                errorObj.message = "You cannot add yourself to the list"
+                dispatch({type: "setFormErros", payload: errorObj})
+                dispatch({type: "addFrindBtnStatus", payload: false})
+                return 
         }
 
         const token = Token.getLocalStorageData('splitzoneToken');
@@ -103,37 +125,43 @@ export default function Friends(){
                 },
                 body: JSON.stringify(values)
             })
-            if(createdFriendResponse.status !== 200){
-                if(createdFriendResponse.status === 400){
-                    const errorData = await createdFriendResponse.json();
-                    dispatch({type: "setFormErros", payload: errorData.error})
-                    dispatch({type: "addFrindBtnStatus", payload: false})
-                }
-                if(createdFriendResponse.status === 422){
-                    const errorData = await createdFriendResponse.json();
-                    dispatch({type: "setFormErros", payload: errorData[0].msg})
-                    dispatch({type: "addFrindBtnStatus", payload: false})
-                }
-                return null
-            }else {
-                const Friendsdata = await createdFriendResponse.json();
-                // friendsData contains all the freinds adata and the _id
-                dispatch({type: "setUserFriends", payload:Friendsdata});
-                dispatch({type: "addFrindBtnStatus", paylaod: false})
-                dispatch({type: "showFriendForm", payload: false});
+            if(!createdFriendResponse.ok){
+                const errorData = await createdFriendResponse.json();
+                throw (errorData);
             }
+
+            const Friendsdata = await createdFriendResponse.json();
+            // friendsData contains all the freinds adata and the _id
+            dispatch({type: "setUserFriends", payload:Friendsdata});
+            dispatch({type: "addFrindBtnStatus", paylaod: false})
+            dispatch({type: "showFriendForm", payload: false});
         }
         catch(error){
-           // handling errors
+            let errorObj = {};
+            // catch for serverSideErrors
+            if(error.statusCode === 400 && error.hasOwnProperty('message') && Array.isArray(error.message)){
+                        const messageArray = error.message;
+                        messageArray.forEach(message => errorObj[message.param] = message.msg)
+            }
+            else if(error.statusCode === 400 || error.status === 400) {
+                    errorObj.message = error.message
+            }
+            else if (error.status === 500){
+                errorObj.message = error.message
+                }
+            else{
+                errorObj.message = "Something went wrong try again later"
+            }
+            dispatch({type: "setFormErros", payload: errorObj})
+            dispatch({type: "addFrindBtnStatus", payload: false})
         }
    }
    async function updateFriendsEmail(e, formValues){
+        dispatch({type: "setFormErros", payload: {}})
         dispatch({type: "addFrindBtnStatus", payload: true})
         e.preventDefault();
-
         const token = Token.getLocalStorageData('splitzoneToken');
         try{
-
             const values = {
                 name: state.updateFriendName,
                 email: formValues.email,
@@ -146,31 +174,39 @@ export default function Friends(){
                     'Authorization': 'Bearer '+ token
                 },
                 body: JSON.stringify(values)
-            })
-
-            if(createdFriendResponse.status !== 200){
-                if(createdFriendResponse.status === 400){
-                    const errorData = await createdFriendResponse.json();
-                    dispatch({type: "setFormErros", payload: errorData.error})
-                    dispatch({type: "addFrindBtnStatus", payload: false})
-                }
-                if(createdFriendResponse.status === 422){
-                    const errorData = await createdFriendResponse.json();
-                    dispatch({type: "setFormErros", payload: errorData[0].msg})
-                    dispatch({type: "addFrindBtnStatus", payload: false})
-                }
-                return null
-            }else {
-                const Friendsdata = await createdFriendResponse.json();
-                // friendsData contains all the freinds adata and the _id
-                dispatch({type: "setUserFriends", payload:Friendsdata});
-                dispatch({type: "addFrindBtnStatus", paylaod: false})
-                dispatch({type: "updateFriendName", payload: null})
-                dispatch({type: "updateFriendId", payload: null})
-                dispatch({type: "showFriendForm", payload: false})
+                    })
+            if(!createdFriendResponse.ok){
+                const errorData = await createdFriendResponse.json();
+                throw (errorData)
             }
-        }catch(error){
-            console.log("error")
+            
+            const Friendsdata = await createdFriendResponse.json();
+            // friendsData contains all the freinds adata and the _id
+            dispatch({type: "setUserFriends", payload:Friendsdata});
+            dispatch({type: "addFrindBtnStatus", paylaod: false})
+            dispatch({type: "updateFriendName", payload: null})
+            dispatch({type: "updateFriendId", payload: null})
+            dispatch({type: "showFriendForm", payload: false});
+        }
+        catch(error){
+            let errorObj = {};
+            console.log("error", error)
+            // catch for serverSideErrors
+            if(error.statusCode === 400 && error.hasOwnProperty('message') && Array.isArray(error.message)){
+                        const messageArray = error.message;
+                        messageArray.forEach(message => errorObj[message.param] = message.msg)
+            }
+            else if(error.statusCode === 400 || error.status === 400) {
+                    errorObj.message = error.message
+            }
+            else if (error.status === 500){
+                errorObj.message = error.message
+                }
+            else{
+                errorObj.message = "Something went wrong try again later"
+            }
+            dispatch({type: "setFormErros", payload: errorObj})
+            dispatch({type: "addFrindBtnStatus", payload: false})
         } 
    }
    async function removeFriendHandler(e, id){
@@ -202,17 +238,15 @@ export default function Friends(){
     e.preventDefault();
    }
    function outSideUtil(){
-    dispatch({type: "setFormErros", payload: null})
+    dispatch({type: "setFormErros", payload: {}})
     dispatch({type: "showFriendForm", payload: false});
     // clearing friends update data
     dispatch({type: "updateFriendName", payload: null})
     dispatch({type: "updateFriendId", payload: null})
-
      if(state.addFrindBtnStatus){
         dispatch({type: "showFriendForm", payload: false})
      }
    }
-
    function showUpdateForm(e, _id, name){
        e.preventDefault();
         /* the forms used are the same */
@@ -243,7 +277,6 @@ export default function Friends(){
                         </button>
                     </li>
                 }
-                {console.log("userFrendssatet", state.userFriends)}
                 {!state.Loading && state.userFriends && 
                     state.userFriends.friends
                     .map(friendItem => <FriendList 
@@ -273,7 +306,7 @@ export default function Friends(){
 
 function AddFriendForm({createNewFriendHandler, addFrindBtnStatus, outSideUtil, formErrors, updateFriendId, updateFriendName, updateFriendsEmail}){
     const [values, setValues] = useState({name: "", email: ""})
-    const formRef = useRef(null)
+    const formRef = useRef(null);
 
     function createNewFormHandler(e){
         const name = e.target.name;
@@ -307,23 +340,36 @@ function AddFriendForm({createNewFriendHandler, addFrindBtnStatus, outSideUtil, 
                          } 
                         ref = {formRef}
                         >
-                        <h3>{updateFriendId ? `Enter ${updateFriendName}'s email` : "Enter friend Details"}</h3>
-                        {formErrors && <p>{formErrors}</p>}
-                        <input
-                            type = 'text'
-                            name = "name"
-                            placeholder = "JohnDoe *"
-                            onChange = {createNewFormHandler}
-                            value = {updateFriendId ? updateFriendName: values.name}
-                            disabled =  {updateFriendId ? true: false}
-                        />
+                        {updateFriendId ? <h3>Enter {updateFriendName}'s email</h3> : <h3>Enter friend Details</h3>}
+                        {updateFriendId ? 
+                            <input
+                                type = 'text'
+                                name = "name"
+                                placeholder = "JohnDoe *"
+                                onChange = {createNewFormHandler}
+                                value = {updateFriendName}
+                                disabled =  {updateFriendId ? true: false}
+                            />
+                                : 
+                            <input
+                                type = 'text'
+                                name = "name"
+                                placeholder = "JohnDoe *"
+                                onChange = {createNewFormHandler}
+                                value = {values.name}
+                                disabled =  {updateFriendId ? true: false}
+                            />
+                        }
+                       {formErrors && formErrors.name && <p>{formErrors.name}</p>}
                         <input
                             type = "email"
                             name = "email"
                             placeholder = "example@gmail.com"
                             onChange = {createNewFormHandler}
                         />
-                        <button>{addFrindBtnStatus ? "..." : "Add to friend list"}</button>
+                        {formErrors && formErrors.email && <p>{formErrors.email}</p>}
+                        {formErrors && formErrors.message && <p>{formErrors.message}</p>}
+                        {addFrindBtnStatus ? <LoaderButton/> : <button>Add to friend list</button>}
                     </form>
                 </div>
     )
@@ -367,7 +413,7 @@ function FriendList(props){
                         onClick = {e => props.sendSplitzoneInvite(e, email)}
                         className = "friendBtnInvite GlobalBtnSecondary">
                             <span className = "FBText ButtonText blueColor">send invite</span>
-                            <span className = "FBIcon ButtonIcon blueBg"><MdLink /></span>
+                            <span className = "FBIcon ButtonIcon blueBg"><MdEmail /></span>
                     </button>
                 }
                 { registered && 

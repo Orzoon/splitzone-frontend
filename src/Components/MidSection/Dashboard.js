@@ -58,7 +58,7 @@ const initialDashboardState = {
 
 export default function Dashboard(props){
     const notification= useContext(notificationContext);
-    const IO = useContext(socketContext)
+    const socket = useContext(socketContext)
     const [state, dispatch] = useReducer(DashboardReducer, initialDashboardState)
 
     useEffect(() => {
@@ -184,10 +184,15 @@ export default function Dashboard(props){
         //     notification.setNotificationCount(prevCount => prevCount + 1)
         // })
         //S_NotificationDataDashboard // NotifacationData
-        IO.on('S_ActivityDataDashboard', data => {
+        socket.on('S_ActivityDataDashboard', data => {
+            console.log("Data",data)
             dispatch({type: "S_ActivityDataDashboard", payload: data})
         })
-    },[])
+
+        return () => {
+            socket.off("S_ActivityDataDashboard")
+        }
+    }, [])
     /*END OF IOEVENTS */
     async function getAdditionalActivityData(){
         dispatch({type: "activityLoading", payload: true});
@@ -316,7 +321,7 @@ function DRecentActivity({
                                         {/* INVOKEDBY NAME -> TITLES */}
                                         {activity.invokedBy._id === userID ? 
                                             <span className = "AP_Username">You </span> :  
-                                            <span className = "AP_Username">{activity.invokedBy.name}</span>
+                                            <span className = "AP_Username">{activity.invokedBy.name} </span>
                                         }
                                         {/* Check for CREATED_VALUE group activity or bill activity  or userActivity*/}
                                            {/* ACTIVITY */}
@@ -343,10 +348,32 @@ function DRecentActivity({
                                             " "
                                         }
                                         {/* AFTER ACTIVITY*/}
+                                        {/* <span className = "AP_Member_name"> {activity.member.name}</span> */}
+                                        {/* <span className = "AP_Member_name">{activity.member.name}</span> */}
                                         {
                                             (activity.activityGroupId && (activity.activity === "created" || activity.activity === "deleted")) ? <> a group <span className = "AP_GroupName">{activity.groupName}</span> at </> :
-                                            (activity.activityGroupId && activity.activity === "added") ? <> <span className = "AP_Member_name">{activity.member.name}</span> to the group  <span className = "AP_GroupName">{activity.groupName}</span> at </> :
-                                            (activity.activityGroupId && activity.activity === "removed") ? <> <span className = "AP_Member_name">{activity.member.name}</span> from the group  <span className = "AP_GroupName">{activity.groupName}</span> at </> :
+                                            (activity.activityGroupId && activity.activity === "added") ? <> 
+                                                {activity.groupParties.filter(item => item._id.toString() === userID.toString())
+                                                    .map(item => {
+                                                            if(item._id.toString() !== activity.invokedBy._id.toString()){
+                                                                return <span className = "AP_Member_name"> You </span>
+                                                            }else{
+                                                                return <span className = "AP_Member_name"> {activity.member.name} </span>
+                                                            }
+                                                    })
+                                                } 
+                                            to the group  <span className = "AP_GroupName">{activity.groupName}</span> at </> :
+                                            (activity.activityGroupId && activity.activity === "removed") ? <> 
+                                               {activity.groupParties.filter(item => item._id.toString() === userID.toString())
+                                                    .map(item => {
+                                                            if(item._id.toString() !== activity.invokedBy._id.toString()){
+                                                                return <span className = "AP_Member_name"> You </span>
+                                                            }else{
+                                                                return <span className = "AP_Member_name"> {activity.member.name} </span>
+                                                            }
+                                                    })
+                                                }                                             
+                                            from the group  <span className = "AP_GroupName">{activity.groupName}</span> at </> :
                                             (activity.activityUserId && activity.acitvity === "updated") ? "your details":  
                                             ''
                                         }

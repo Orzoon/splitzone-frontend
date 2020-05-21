@@ -21,393 +21,6 @@ $testBorder: 1px solid red;
 @mixin commmonRadius{
     border-radius: 8px;
 }
-// .groupsContainer{
-//     position: relative;
-
-//     & ul.Gul {
-//         display: grid;
-//         grid-auto-flow: row;
-//         grid-auto-rows: 200px;
-//         grid-template-columns: repeat(3, 1fr);
-//         grid-gap: $GgridGap;
-//         padding: 30px;
-
-//         & li {
-//             display: block;
-//             height: 100%;
-//             width: 100%;
-//             box-shadow: 0px 3px 3px rgb(183, 175, 238);
-//         }
-//         & li.GLoaderSIContainer, & li.GListSIContainer{
-//             position: relative;
-//             overflow: visible;
-//             display: block;
-//             height: 100%;
-//             max-width: 100%;
-//             overflow: hidden;
-//             background: #fff;
-//             & div.GL_groupName, & div.GLi_groupName{
-//                 position: relative;
-//                 height: 67%;
-//                 width: 100%;
-//                 background: inherit;
-//                 border-bottom: 1px solid #ddd;
-
-//                 &::after{
-//                     position: absolute;
-//                     content: "";
-//                     top: 50%;
-//                     left: 10px;
-//                     transform: translateY(-50%);
-//                     height: 40px;
-//                     width: 90%;
-//                     background: linear-gradient(to right, #eee, #ddd);
-//                     //animation: GL_groupName 2s linear infinite;
-//                 }
-//                 & div.GL_menu{
-//                     position: absolute;
-//                     right: 20px;
-//                     top: 15px;
-//                     width: 7px;
-//                     height: 7px;
-//                     background: #ddd;
-//                     border-radius: 50%;
-//                     z-index: 6;
-
-//                     &::after, &::before{
-//                         content: "";
-//                         position: absolute;
-//                         height: 100%;
-//                         width: 100%;
-//                         animation: GLP_second 1.5s ease-in infinite;
-//                     }
-
-//                     &::before{
-//                         left: -9px;
-//                         border-radius: inherit;
-//                         background: #eee;
-//                         animation: GLP_first 1.5s ease-in infinite;
-//                     }
-//                     &::after{
-//                         right: -9px;
-//                         border-radius: inherit;
-//                         background: #eee;
-//                         animation: GLP_first 1.5s ease-in infinite;
-//                     }
-//                 }
-//                 //CommonMidCard
-//                 & div.GL_dateCreated, & div.GL_billsNumber, & div.GL_billsMembers{
-//                     @extend %GN_commonMidCard;
-//                 }
-
-//                 & div.GL_dateCreated{
-//                     left: 10px;
-//                     background: #eee;
-//                     animation: GLP_first 1.5s ease-in infinite;
-//                 }
-//                 & div.GL_billsNumber{
-//                     left: calc(10px + #{$commonMidCardMargin} + #{$commonMidCardWidth});
-//                     animation: GLP_second 1.5s ease-in infinite;
-//                 }
-//             }
-//             & div.GL_profileIcons {
-//                 position: relative;
-//                 height: 38%;
-//                 width: 100%;
-//                 border-bottom: 1px solid #ddd;
-//                 background: inherit;
-//                 & div.GL_profileIcon{
-//                     position: absolute;
-//                     height: 35px;
-//                     width: 35px;
-//                     border-radius: 50%;
-//                     background: #eee;
-//                     top: 55%;
-//                     transform: translateY(-50%);
-//                 }
-//                 & div.GL_profileIcon:first-child{
-//                     left: 10px;
-//                     animation: GLP_first 1.5s ease-in infinite;
-//                 }
-//                 & div.GL_profileIcon:last-child{
-//                     left: 30px;
-//                     background: #ddd;
-//                     animation: GLP_second 1.5s ease-in infinite;
-//                 }
-//             }
-//         }
-
-
-//         & li button.createGButton{
-//             display: flex;
-//             flex-direction: column;
-//             height: 100%;
-//             width: 100%;
-//             background: #fff;
-//             border: none;
-//             justify-content: center;
-//             align-items: center;
-//             font-size: 50px;
-//             color: $iconColor; 
-//             transition: all .2s ease-in;
-//             cursor: pointer;
-//             // 3B3B9D
-//             &:hover{
-//                 font-size: 56px;
-//                 transition: all .19s ease-in;
-//                 //margin-bottom: -10px;
-//             }
-
-//             &:hover .createGButtonIconC svg{
-//                 transform: rotate(90deg);
-//                 transition: all .2s ease-in;
-//             }
-//             & span.createGButtonIconC{
-//                 height: 60px;
-//                 width: 100px;
-//             }
-
-//             & span.createGButtonIconC svg{
-//                 transition: all .2s ease-in;
-//             }
-
-//             & span.createGButtonText{
-//                 font-size: 18px;
-//                 height: 50px;
-//                 width: 100%;
-//                 font-weight: bold;
-//             }
-
-//         }
-
-//         & li.GListSIContainer{
-
-//             div.GLi_groupName{
-//                 // fixing commong after
-//                 &::after{
-//                     height: 0px;
-//                     width: 0px;
-//                     display: none;
-//                 }
-
-//                 // h3 instead of after
-//                 & h3 {
-//                     position: absolute;
-//                     top: 50%;
-//                     left: 10px;
-//                     transform: translateY(-50%);
-//                     height: 40px;
-//                     width: 90%;
-//                     display: block;
-//                     overflow: hidden;
-//                     text-overflow: ellipsis;
-//                     font-weight: bold;
-//                     font-size: 19px;
-//                     text-transform: uppercase;
-//                     color: $groupNameColor;
-//                 }
-//                 // skipping menu
-//                 & div.GLi_dateCreated, & div.GLi_billsNumber, & div.GL_billsMembers{
-//                     @extend %GN_commonMidCard;
-//                     background: #fff;
-//                     box-shadow: 0px 2px 3px rgb(130, 118, 209);
-//                     border-radius: 4px;
-//                 }
-//                 & div.GLi_dateCreated{
-//                     left: 10px;
-
-//                     & h3 {
-//                         color: #2A1AB1;
-//                         font-weight: bold;
-//                         font-size: 22px;
-//                         text-align: center;
-//                         width: 100%;
-//                         left: 0px;
-//                         position: relative;
-//                     }
-
-//                     & p {
-//                         position: absolute;
-//                         bottom: 3px;
-//                         width: 100%;
-//                         height: auto;
-//                         text-align: center;
-//                         font-size: 12px;
-//                         color: #2A1AB1;
-//                         font-weight: bold;
-//                         letter-spacing: 0px;
-//                     }
-//                 }
-//                 & div.GLi_billsNumber{
-//                     left: calc(10px + #{$commonMidCardMargin} + #{$commonMidCardWidth});
-//                     & h3 {
-//                         color: #2A1AB1;
-//                         font-weight: bold;
-//                         font-size: 22px;
-//                         text-align: center;
-//                         width: 100%;
-//                         left: 0px;
-//                         position: relative;
-//                     }
-
-//                     & p {
-//                         position: absolute;
-//                         bottom: 3px;
-//                         width: 100%;
-//                         height: auto;
-//                         text-align: center;
-//                         font-size: 12px;
-//                         color: #2A1AB1;
-//                         font-weight: bold;
-//                     }
-//                 }
-//             }
-//             div.GLi_profileIcons{
-//                 position: relative;
-//                 height: 38%;
-//                 width: 100%;
-//                 border-bottom: 1px solid #ddd;
-//                 background: #fff;
-
-//                 // IMG and P tag
-//                 & .GLi_profileIcon{
-//                     height: 35px;
-//                     width: $profileIconWidth;
-//                     top: 55%;
-//                     transform: translateY(-50%);
-//                 }
-
-//                 & img.GLi_profileIcon{
-//                     position: absolute;
-//                     left: 10px;
-//                     border-radius: 50%;
-//                 }
-//                 & p.GLIP_second{
-//                     display: block;
-//                     margin-left: 48px;
-//                     position: relative;
-//                     margin-right: 10px;
-//                     width: auto;
-//                     overflow: hidden;
-//                     border-radius: none !important;
-//                     text-overflow: ellipsis;
-//                     font-size: 14px;
-//                     line-height: 2.5;
-//                     color:#2A1AB1;
-//                 }
-//             }
-//         }
-//     }
-
-// }
-
-// .groupsContainer {
-//     & .GCreateContainer{
-//         position: absolute;
-//         height: 100%;
-//         width: 100%;
-//         top: 0;
-//         left: 0;
-//         background: rgba(248, 245, 245, 0.9);
-//         z-index: 6;
-
-//         & .createGroup{
-//             margin: 100px auto;
-//             width: 250px;
-//             height: 180px;
-//             background: #fff;
-//             z-index: 9999;
-//             display: grid;
-//             grid-template-columns: 1fr;
-//             grid-template-rows: 1fr 1fr 1fr;
-//             grid-row-gap: 10px;
-//             border-radius: 5px;
-//             overflow: hidden;
-//             box-shadow: 0px 2px 3px rgb(130, 118, 209);
-//             padding-bottom: 20px;
-//             & h3 {
-//                 background: $groupNameColor;
-//                 color: #fff;
-//             }
-//             & input {
-//                 height: 40px;
-//                 height: 100%;
-//                 border-radius: 4px;
-//                 margin: 5px 10px;
-//                 padding: 2px;
-//                 font-size: 16px;
-//             }
-
-//             & button {
-//                 margin: 10px 10px 0px 10px;
-//                 height: 40px;
-//                 align-self: center;
-//                 border-radius: 4px;
-//                 cursor: pointer;
-//             }
-//         }
-//     }
-// }
-
-
-// // animations
-// @keyframes GL_groupName{
-//     0%{
-//         background: linear-gradient(to right, #eee, #ddd);
-//     }
-//     10%{
-//         background: linear-gradient(to right, #eee 20%, #ddd);
-//     }
-//     20% {
-//         background: linear-gradient(to right, #eee 40%, #ddd);
-//     }
-//     30%{
-//         background: linear-gradient(to right, #eee 60%, #ddd);
-//     }
-//     40%{
-//         background: linear-gradient(to right, #eee 100%, #ddd);
-//     }
-//     50%{
-//         background: linear-gradient(to left, #eee 100%, #ddd);
-//     }
-//     60%{
-//         background: linear-gradient(to left, #eee 80%, #ddd);
-//     }
-//     70%{
-//         background: linear-gradient(to left, #eee 60%, #ddd);
-//     }
-//     80%{
-//         background: linear-gradient(to left, #eee 40%, #ddd);
-//     }
-//     90%{
-//         background: linear-gradient(to left, #eee 20%, #ddd);
-//     }
-//     100%{
-//         background: linear-gradient(to left, #eee 0%, #ddd);
-//     }
-// }
-// @keyframes GLP_first{
-//     0%{
-//         background: #eee;
-//     }
-//     50%{
-//         background: rgb(165, 161, 161);
-//     }
-//     100%{
-//         background: #eee;
-//     }
-// }
-// @keyframes GLP_second{
-//     0%{
-//         background: #ddd;
-//     }
-//     50%{
-//         background: #eee;
-//     }
-//     100%{
-//         background: #ddd;
-//     }
-// }
 
 /* -------------------------- */
 /* START OF MBL DEVICE */
@@ -418,7 +31,7 @@ $testBorder: 1px solid red;
     position: relative;
     height: auto;
     width:100%;
-    padding: 35px 5px 30px 5px;
+    padding: 10px 5px 30px 5px;
     background: #F3F1F9 !important;
     display: grid;
     grid-row-gap: 30px;
@@ -456,6 +69,25 @@ $testBorder: 1px solid red;
             max-width: 100%;
             overflow: hidden;
             background: #fff;
+            border-bottom: 3px solid #ddd;
+
+            //Hover effect 
+            &:hover{
+                border-bottom: 3px solid #F3F1F9;
+            }
+            &:after{
+                position: absolute;
+                content: '';
+                bottom: 0px;
+                width: 0%;
+                height: 2px;
+                //background: linear-gradient(to top right, rgba(89, 116, 205, 0.767), #662571ce);
+                background: #0f4c9bab;
+                transition: all 0.2s ease-in-out;
+            }
+            &:hover:after{
+                width: 100%;
+            }
             & div.GL_groupName, & div.GLi_groupName{
                 position: relative;
                 height: 67%;
@@ -524,7 +156,6 @@ $testBorder: 1px solid red;
                 position: relative;
                 height: 38%;
                 width: 100%;
-                border-bottom: 1px solid #ddd;
                 background: inherit;
                 & div.GL_profileIcon{
                     position: absolute;
@@ -739,7 +370,7 @@ $testBorder: 1px solid red;
                 position: relative;
                 height: 40%;
                 width: 100%;
-                border-bottom: 1px solid #ddd;
+                //border-bottom: 1px solid #ddd;
                 background: #fff;
 
                 // IMG and P tag
@@ -809,7 +440,7 @@ $testBorder: 1px solid red;
             display: grid;
             grid-template-columns: 1fr;
             grid-auto-rows: auto;
-            grid-row-gap: 15px;
+            grid-row-gap: 10px;
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0px 2px 3px rgb(130, 118, 209);
@@ -848,8 +479,8 @@ $testBorder: 1px solid red;
             }
 
             & button {
-                margin: 0px 10px 0px 10px;
-                height: 40px;
+                margin: 10px 10px 0px 10px;
+                height: 44px;
                 align-self: center;
                 border-radius: 4px;
                 cursor: pointer;
@@ -937,7 +568,7 @@ $testBorder: 1px solid red;
 // between 480 and 767
 @media only screen and (min-width: 480px){  
     .groupsContainer{
-        padding: 25px 15px 30px 15px;
+        padding: 20px 15px 30px 15px;
         display: grid;
         grid-row-gap: 30px;
         grid-template-columns: repeat(1, 1fr);
@@ -960,7 +591,7 @@ $testBorder: 1px solid red;
 // groups doublecolumn 
 @media only screen and (min-width: 660px){  
     .groupsContainer{
-        padding: 25px 15px 30px 15px;
+        padding: 20px 15px 30px 15px;
         display: grid;
         grid-row-gap: 30px;
         grid-template-columns: repeat(1, 1fr);

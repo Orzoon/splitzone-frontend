@@ -1,88 +1,6 @@
 //$iconColor: #1C2483;
 $iconColor: #0f4b9b;
 
-
-// .topBarContainer{
-//     display: grid;
-//     align-items: center;
-//     grid-template-columns: 170px 1fr  50px 180px;
-//     grid-template-rows: auto;
-//     grid-template-areas: 'Logo . NotificationIcon ProfileNameIcon';
-//     // grid Areas
-//     & img {
-//         grid-area: Logo;
-//     }
-//     & .notificationIcon{
-//         margin-right: 15px;
-//         grid-area: NotificationIcon;
-//         font-size: 25px;
-//         justify-self: center;
-//         color: rgb(107, 109, 109);
-//         cursor: pointer;
-//         transition: all .1s ease-in;
-
-//         &:hover {
-//             font-size: 28px;
-//             color: #1C2483 !important;
-//             transition: all .1s ease-in;
-//         }
-//     }
-//     & .profileNameIcon{
-//         grid-area: ProfileNameIcon;
-//         width: auto;
-//     }
-
-
-//     /*********************     
-//     INDIVIDUAL COMPONENT STYLES
-//     *********************/
-//     & img {
-//         width: 80%;
-//         margin: 0 auto;
-//         height: 40px;
-//     }
-//     .profileNameIcon{
-//         width: 90%;
-//         color: $iconColor;
-//         display: flex;
-//         flex-direction: row;
-//         align-items: center;
-//         box-shadow: 0px 0px 2px #ddd;
-//         & .profileImage{
-//             display: flex;
-//             justify-content: center;
-//             align-items: center;
-//             background: $iconColor;
-//             color: #fff;
-//             height: 42px;
-//             width: 42px;
-//             font-weight: 900;
-//             font-size: 24px;
-//             margin-right: 10px;
-//         }
-
-//         & h3 {
-//             display: block;
-//             overflow: hidden;
-//             text-overflow: ellipsis;
-//             width: 100px;
-//         }
-//     }
-
-
-//     /*********************     
-//     ADDITIONAL CLASS STYLES
-//     *********************/
-//     .notificationIconActive{
-//         font-size: 25px;
-//         transition: all .1s ease-in;
-//     }
-
-    
-// }
-
-
-
 //------------------------------------------------------------
 .topBarContainer{
     display: grid;
@@ -264,6 +182,7 @@ $iconColor: #0f4b9b;
             grid-area: Logo;
         }
         & div.notificationIcon{
+            margin-left: -10px;
             display: grid;
             justify-self: end;
          }
@@ -420,6 +339,7 @@ $iconColor: #0f4b9b;
         & div.notificationIcon{
            display: grid;
            justify-self: end;
+           margin-right: 10px;
         }
         & div.notificationIcon div.notificationIconDiv{
             display: grid;

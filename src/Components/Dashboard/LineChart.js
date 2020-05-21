@@ -7,7 +7,6 @@ import { Line } from 'react-chartjs-2';
 export default function LineChart({billsGraphData}){
     const lineBarRef = useRef(null);
     const lineChartRef = useRef(null);
-    console.log("billsGraphData", billsGraphData)
 
     const data = canvas => {
         const ctx = canvas.getContext("2d")

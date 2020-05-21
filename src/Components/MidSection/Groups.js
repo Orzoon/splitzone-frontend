@@ -24,12 +24,12 @@ const groupReducer = function (state, action){
         case "setCreateGroupB":
             return {...state, createGroup: action.payload}
         case "setError": 
-            return {...state, createGroupError:action.payload}
+            return {...state, errors:action.payload}
         case "loadingButtonCreateGroup":
             return {...state, loadingButtonCreateGroup: action.payload}
         /* SOCKET ACTIONS */
         case "S_AddedTOGroup":
-            
+            console.log("Grouppayloadis", action.payload)
             return {...state, groupsData: [action.payload, ...state.groupsData]}
         case "S_RemoveFromGroup":
             const filteredData = state.groupsData.filter(item => item._id.toString() !== action.payload.toString())
@@ -44,14 +44,14 @@ const groupReducer = function (state, action){
 
 const initialGroupState = {
     loading: true,
-    errors: null,
+    errors: {},
     groupsData: null,
     createGroup: false,
     createGroupError: null,
     loadingButtonCreateGroup: false
 }
 export default function Groups(){
-    const IO = useContext(socketContext);
+    const socket = useContext(socketContext);
     const notification = useContext(notificationContext)
     const [state, dispatch] = useReducer(groupReducer, initialGroupState);
 
@@ -69,16 +69,17 @@ export default function Groups(){
                                         'Authorization': 'Bearer '+ token
                                     }
                                 })
-                if(!response.status === 200){
-                    // check for other status code and set errors accordingly
-                    throw Error ("something went wrong")
-                }
-                const data = await response.json();
 
+                if(!response.ok){
+                    const errorData = await response.json()
+                    throw (errorData)
+                }
+
+                const data = await response.json();
                 dispatch({type: "setGroupsData", payload: data})
                 dispatch({type: "setLoadingB", payload: false})
             }catch(error){
-              // error dispatch
+              // handle initial loading errors with groupError --LATERON
             }
         }
         getGroups();
@@ -86,21 +87,36 @@ export default function Groups(){
 
     /* SOCKET IO FUNCTONS */
     useEffect(() => {
-        IO.on("S_AddedTOGroup", groupData => {
-            console.log("addedTOGroup")
-            dispatch({type: "S_AddedTOGroup", payload: groupData})
+      
+        setTimeout(() => {
+            console.log("socket", socket)
+        }, 3000)
+        socket.on("S_AddedTOGroup", groupData => {
+            S_AddedTOGroup(groupData)
         })
-        IO.on("S_RemoveFromGroup", groupId => {
+        socket.on("S_RemoveFromGroup", groupId => {
             dispatch({type: "S_RemoveFromGroup", payload: groupId})
         })
-        IO.on('S_DeleteGroup', groupId => {
+        socket.on('S_DeleteGroup', groupId => {
             dispatch({type: "S_DeleteGroup", payload: groupId})
         })
-        // IO.on('S_NotificationCount', () => {
-        //     notification.setNotificationCount(prevCount => prevCount + 1)
-        // })
+     
 
+        return () => {
+            socket.off("S_AddedTOGroup")
+            socket.off("S_RemoveFromGroup")
+            socket.off("S_DeleteGroup")
+        }
     }, [])
+
+
+    /* SOCKET FUNCTIONs */
+    function S_AddedTOGroup(groupData){
+        console.log("addedTOGroup", groupData)
+        dispatch({type: "S_AddedTOGroup", payload: groupData})
+    }
+
+
     /* END OF SOCKET FUNCTIONS */
     function ToBills(groupID){
         history.push(url + "/" + groupID);
@@ -111,32 +127,33 @@ export default function Groups(){
 
        // removing previously set Errors open component mount
        if(state.createGroup){
-        dispatch({type: "setError", payload: null})
+        dispatch({type: "setError", payload: {}})
        }
     }
 
     async function createGroupHandler(e, groupName){
         dispatch({type: "loadingButtonCreateGroup", payload: true})
+        dispatch({type: "setError", payload: {}})
         e.preventDefault();
-        if(!groupName || groupName.trim().length <= 0){
-            dispatch({type: "setError", payload: "Empty group name"})
-            dispatch({type: "loadingButtonCreateGroup", payload: false})
-            return null
-        }
 
-        if(groupName && groupName.trim().length > 15){
-            dispatch({type: "setError", payload: "Group name should be no more than 15 characters"})
-            dispatch({type: "loadingButtonCreateGroup", payload: false})
+        // if(!groupName || groupName.trim().length <= 0){
+        //     dispatch({type: "setError", payload: "Empty group name"})
+        //     dispatch({type: "loadingButtonCreateGroup", payload: false})
+        //     return null
+        // }
 
-            return null
-        }
+        // if(groupName && groupName.trim().length > 15){
+        //     dispatch({type: "setError", payload: "Group name should be no more than 15 characters"})
+        //     dispatch({type: "loadingButtonCreateGroup", payload: false})
+
+        //     return null
+        // }
 
         const groupData = {
             groupName : groupName
         }
         const token = Token.getLocalStorageData('splitzoneToken');
         try{
-
             const response = await fetch(`${serverURI}/api/app/group`, {
                                 method: "POST",
                                 headers: {
@@ -144,18 +161,38 @@ export default function Groups(){
                                     'Authorization': 'Bearer '+ token
                                 }, 
                                 body: JSON.stringify(groupData)
-                            })
-            if(!response.status === 200){
-                // false response
+                            })                            
+            if(!response.ok){
+                const errorData = await response.json();
+                throw (errorData);
             }
+
             const newGroup = await response.json();
             newGroup.billCount = 0;
             const newGroupsData = [newGroup, ...state.groupsData]
+
             dispatch({type: "setGroupsData", payload: newGroupsData})
             dispatch({type: "setCreateGroupB", payload: false})
             dispatch({type: "loadingButtonCreateGroup", payload: false})
+
         }catch(error){
-           
+            let errorObj = {};
+            // catch for serverSideErrors
+            if(error.statusCode === 400 && error.hasOwnProperty('message') && Array.isArray(error.message)){
+                        const messageArray = error.message;
+                        messageArray.forEach(message => errorObj[message.param] = message.msg)
+            }
+            else if(error.statusCode === 400 || error.status === 400) {
+                    errorObj.message = error.message
+            }
+            else if (error.status === 500){
+                errorObj.message = error.message
+                }
+            else{
+                errorObj.message = "Something went wrong try again later"
+            }
+            dispatch({type: "setError", payload: errorObj})
+            dispatch({type: "loadingButtonCreateGroup", payload: false})
         }  
     }
     if(state.loading) return <ComLoader />
@@ -179,7 +216,6 @@ export default function Groups(){
                 {!state.loading && <GroupList groups = {state.groupsData} ToBills = {ToBills}></GroupList>}
                 
             </ul>
-
             {state.createGroup 
                 && 
                 <CreateGroupComponent 
@@ -187,6 +223,7 @@ export default function Groups(){
                     createGroupHandler = {createGroupHandler}
                     createGroupError = {state.createGroupError}
                     loadingButtonCreateGroup = {state.loadingButtonCreateGroup}
+                    errors = {state.errors}
                 />}
 
         </div>
@@ -300,7 +337,7 @@ function GroupList(props){
     })
 }
 
-function CreateGroupComponent({createGroupClickHandler,createGroupHandler, createGroupError, loadingButtonCreateGroup}){
+function CreateGroupComponent({createGroupClickHandler,createGroupHandler, createGroupError, loadingButtonCreateGroup, errors}){
     const createGroupRef = useRef(null);
     const [groupName, setGroupName] = useState("");
 
@@ -319,10 +356,9 @@ function CreateGroupComponent({createGroupClickHandler,createGroupHandler, creat
             window.removeEventListener("click", outsideClickHandler, false);
         })
     })
-
     return (
         <div className = "GCreateContainer">
-            <div className="createGroup" ref = {createGroupRef}>
+            <form className="createGroup" ref = {createGroupRef} onSubmit = {e =>  createGroupHandler(e,groupName)}>
                 <h3>Enter Group Name</h3>
                 {createGroupError && <p>{createGroupError}</p>}
                 <input 
@@ -332,12 +368,13 @@ function CreateGroupComponent({createGroupClickHandler,createGroupHandler, creat
                     value = {groupName}
                     onChange = {(e) => setGroupName(e.target.value)}
                 />
+                {errors && errors.groupName && <p>{errors.groupName}</p>}
+                {errors && errors.message && <p>{errors.message}</p>}
                 <button 
                     disabled = {loadingButtonCreateGroup}
-                    onClick = {e => {
-                        createGroupHandler(e,groupName)}
-                    }>{loadingButtonCreateGroup ? "..." : "create group"}</button>
-            </div>
+                    type = "submit"
+                   >{loadingButtonCreateGroup ? "..." : "create group"}</button>
+            </form>
         </div>
     )
 }

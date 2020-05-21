@@ -10,20 +10,31 @@ import {
     useRouteMatch
 } from 'react-router-dom'
 
-
+import jwt from 'jwt-decode';
 import Token from '../../helpers/token'
 // importing ServerURIS
 import {serverURI} from '../../helpers/GlobalVar'
-import socketIOClient from "socket.io-client";
+import io from "socket.io-client";
 // REACT_ICONS
 import {MdKeyboardArrowRight} from 'react-icons/md';
 
 export const AppUserContext = createContext();
 export const socketContext = createContext();
 export const notificationContext = createContext();
+
+/* getting userID */
+const tokenToDecode = Token.getLocalStorageData('splitzoneToken');
+
+const decode = jwt(tokenToDecode)
+const decodedUserID = decode.userID;
 const HOST = 'http://localhost:5000';
 function App(){
-    const ioInstance = socketIOClient(HOST);
+    const socket = io(HOST, {
+        'reconnection delay': 800, // defaults to 500
+        'reconnection limit': 100, // defaults to Infinity
+        'max reconnection attempts': Infinity,
+        query: `userID=${decodedUserID}` // defaults to 10
+      });
     const [user,setUser] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -44,17 +55,15 @@ function App(){
                 if(!response.status === 200){
                     throw new Error('invalid response');
                 }
-                console.log(response.status)
                 const userData = await response.json();
-                console.log("userData", userData)
                 setUser(userData);
                 setLoading(false)
-                ioInstance.emit('loggedIn', {userId: userData._id, userEmail: userData.email})
+                socket.open()
+                socket.emit('loggedIn', {userId: userData._id, userEmail: userData.email})
             }
             catch(error){
                 setError(error)
-                console.log(error);
-                // redirect user to the login again
+                // handle app component loading error
             }
         }
 
@@ -80,7 +89,7 @@ function App(){
         <div className = "appContainer"> 
             {/* AppUserContextProvider */}
             <AppUserContext.Provider value = { user }>
-            <socketContext.Provider value = {ioInstance}>
+            <socketContext.Provider value = {socket}>
             <notificationContext.Provider value = {{notificationCount, setNotificationCount}}>
                 {/*topNavBar That Contains Logo and UserIcon*/}
                 <TopBar/>

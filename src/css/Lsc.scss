@@ -1,6 +1,5 @@
 $C_blue: #0f4b9b;
 
-
 .LSC_container{
     height: 550px;
     width: 700px;
@@ -48,28 +47,79 @@ $C_blue: #0f4b9b;
     }
 }
 
-
 /* Form  ELEMENTS*/
 .form_container{
-    margin-top:100px;
     opacity: 0;
+    position: relative;
     min-height: 400px;
     height: auto;
-    width: 500px;
-    box-shadow: 0px 0px 3px #ddd;
-    animation: form_container 0.4s 2.3s ease-in-out forwards;
+    width: 900px;
+    //box-shadow: 0px 0px 3px #ddd;
+    animation: form_container 0.4s 2.3s ease-in-out forwards,
+                form_container_boxshadow 0.5s 5s ease-in-out forwards;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr minmax(200px,300px);
     grid-template-rows: 1fr;
+    background: #fff;
+    overflow: hidden;
+    &::before, &::after{
+        position: absolute;
+        content: " ";
+        top: 0;
+        right: 0;
+        height: 100%;
+    }
+
+    &::before{
+        width: 0%;
+        //background: #fff;
+        z-index: 2;
+    }
+    &::after{
+        width: 0%;
+        background: $C_blue;
+        z-index: 3;
+        animation: FC_after 1.5s 2.3s ease-in-out forwards;
+    }
+}
+
+@keyframes FC_after{
+    30%{
+        width: 100%;
+        right: 0%;
+    }
+    100%{
+        right: 100%;
+    }
 }
 
 @keyframes form_container{
     100%{
-        margin-top: 0px;
         opacity: 1;
     }
 }
+@keyframes form_container_boxshadow{
+    100%{
+        box-shadow: 1px 2px 3px #aeaab4;
+    }
+}
 
+.form_Illustration{
+    position: relative;
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    padding: 10px;
+    opacity: 0;
+    animation: illustration 3.5s 3.5s ease-in-out forwards;
+    & svg {
+        width: 100%;
+        height: 98%;
+    }
+}
 
 /* Login_Form_container */
 .login_form_container{
@@ -81,8 +131,6 @@ $C_blue: #0f4b9b;
     grid-auto-rows: auto;
     grid-row-gap: 5px;
 }
-
-
 
 /* FORM HEADING */
 .formHeading{
@@ -100,25 +148,31 @@ $C_blue: #0f4b9b;
         color: #2F3355;
         display: flex;
         align-items: center;
+        opacity: 0;
+        margin-top: -20px;
     }
 
     & p {
         font-weight: 400;
         font-size: 14px;
         color: #2F3355;
+        opacity: 0;
+        margin-top: -20px;
     }
 }
 
 form.loginForm{
+    overflow: hidden;
     padding: 0px;
     width: 100%;
     height: auto;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
-    grid-gap: 10px;
+    grid-auto-rows: auto;
+    grid-gap: 5px;
     & input {
         width: 100%;
+        height: 40px;
         //height: 40px;
         border: none;
         outline: none;
@@ -126,9 +180,15 @@ form.loginForm{
         padding: 5px;
         border: 1px solid rgba(197, 197, 197, 0.493);
         //border-radius: 8px;
+        margin-left: -80%;
+        opacity: 0;
     }
-
-
+    // error messages
+    & p {
+        font-weight: 400;
+        font-size: 14px;
+        color: #FC5767;
+    }
     & div.B_Effect{
         margin-top:  8px;
         width: 100%;
@@ -136,6 +196,8 @@ form.loginForm{
         background: #0f4b9b;
         border-radius: 8px;
        // max-width: 195px;
+       opacity: 0;
+       margin-left: -80%;
         & .loginButton {
             background: inherit;
             width: 100%;
@@ -156,8 +218,22 @@ form.loginForm{
 }
 
 .social_login_container{
-
-
+    overflow: hidden;
+    height: 130px;
+    padding-top: 10px;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 50px 30px;
+    grid-row-gap: 5px;
+    justify-items: center;
+    & h1 {
+        font-weight: 600;
+        font-size: 14px;
+        color: #2F3355;
+        text-decoration: underline;
+        margin-top: -40%;
+        opacity: 0;
+    }
    & button{
     background: #fff;
     width: 100%;
@@ -170,29 +246,245 @@ form.loginForm{
     outline: none;
     border: 1px solid rgba(221, 221, 221, 0.459);
     box-shadow: 0px 2px 3px #ddd;
+    margin-top: -40%;
+    opacity: 0;
         & a {
             width: 100%;
             height: 100%;
             display: grid;
-            grid-template-columns: 1fr 80px;
+            grid-template-columns: auto auto;
             grid-template-rows: 1fr;
             overflow: hidden;
             justify-items: center;
             align-items: center;
             text-decoration: none;
             padding: 4px 18px;
+            justify-content: center;
+            grid-gap:30px;
          
             & span {
                 color: #2F3355;
                 font-weight: 600;
                 font-size: 16px;
-                justify-self: end;
+                justify-self: center;
             }
             & svg {
-                height: 38px;
-                width: 38px;
+                height: 32px;
+                width: 32px;
+            }
+        }
+    }
+    & h3 {
+        font-weight: 600;
+        font-size: 14px;
+        color: #2F3355;
+        color: #0f4b9b;
+        text-decoration: underline;
+        margin-top: -40%;
+        opacity: 0;
+        cursor: pointer;
+        &:hover {
+            cursor: pointer;
+            
+        }
+    }
+}
+
+/* pop_Animations */
+@for $i from 1 through 2 {
+    .topFormHeadAnimation:nth-child(#{$i}){
+        animation: topFormAnimation 0.8s ease-in forwards;
+        animation-delay: (#{2.5+($i)*0.25s});
+    }
+}
+
+@for $i from 1 through 3 {
+    .topFormInputAnimation:nth-child(#{$i}){
+        animation: topFormInputAnimation 0.8s ease-in-out forwards;
+        animation-delay: (#{3+($i)*0.25s});
+    }
+}
+
+@for $i from 1 through 3 {
+    .bottomFormAnimation:nth-child(#{$i}){
+        animation: bottomFormAnimation 0.8s ease-out forwards;
+        animation-delay: (#{4+($i)*0.25s});
+    }
+}
+
+@keyframes topFormAnimation{
+    100%{
+        opacity: 1;
+        margin-top: 0px;
+    }
+}
+
+@keyframes topFormInputAnimation{
+    100%{
+        opacity: 1;
+        margin-left: 0%;
+    }
+}
+
+@keyframes bottomFormAnimation{
+    100%{
+        margin-top: 0%;
+        opacity: 1;
+    }
+}
+
+@keyframes illustration{
+    30% {
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+
+
+
+/* BUTTON LOADERS */
+.loaderButton{
+    width: 100%;
+    height: 45px;
+    outline: none;
+    //border: 1px solid #fff;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.Btn_login{
+    background: #0f4b9b;
+    box-shadow: 0px 1px 1px rgba(202, 201, 201, 0.863);
+    border: 1px solid rgba(197, 197, 197, 0.493) !important;
+
+}
+
+.Btn_google{
+    opacity: 1 !important;
+    margin: 0px !important;
+}
+.l_circle{
+    width: 4px;
+    height: 0px;
+    background: #fff;
+    margin-right: 5px;
+    border-radius: 6px;
+}
+
+.C_first{
+    background: #FD5765;
+}
+
+.C_second{
+    background: rgb(64,204,120);
+}
+.C_third{
+    background: #30B5F0;
+}
+
+@for $i from 1 through 3 {
+    .l_circle:nth-child(#{$i}){
+        animation: loaderButton 1s ease-out infinite;
+        animation-delay: (#{($i)*0.25s});
+    }
+}
+
+@keyframes loaderButton{
+    0%{
+        height: 10px;
+    }
+    50%{
+        height: 25px;
+    }
+    100%{
+        height: 10px;
+    }
+}
+
+/* CSS STYLE FIXES */
+.loginBTNFix{
+    opacity: 1 !important;
+    margin-left: 0% !important;
+}
+
+// signUP form
+.signup_form_container{
+    padding: 18px;
+    height: auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+    grid-row-gap: 5px;
+}
+
+form.signupForm{
+    margin-top: 15px;
+    overflow: hidden;
+    padding: 0px;
+    width: 100%;
+    height: auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+    grid-gap: 5px;
+    & input {
+        width: 100%;
+        height: 40px;
+        //height: 40px;
+        border: none;
+        outline: none;
+        box-shadow: 0px 1px 1px rgba(202, 201, 201, 0.863);
+        padding: 5px;
+        border: 1px solid rgba(197, 197, 197, 0.493);
+        //border-radius: 8px;
+        margin-left: -80%;
+        opacity: 0;
+    }
+    // error messages
+    & p {
+        font-weight: 400;
+        font-size: 14px;
+        color: #FC5767;
+    }
+    & div.B_Effect{
+        margin-top:  8px;
+        width: 100%;
+        height: 45px;
+        background: #0f4b9b;
+        border-radius: 8px;
+       // max-width: 195px;
+       opacity: 0;
+       margin-left: -80%;
+        & .loginButton {
+            background: inherit;
+            width: 100%;
+            height: 100%;
+            //border-radius: 8px !important;
+            background: #0f4b9b;
+            color: #FFF;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 1px;
+            outline: none;
+            border: none;
+            &:hover{
+                cursor: pointer;
             }
         }
     }
 }
 
+// signup common fix
+.SC_fix{
+    opacity: 1 !important;
+    margin-left: 0% !important;
+    animation: none !important;
+}
+.MarginFix{
+    margin-top: 0% !important;
+}

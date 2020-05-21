@@ -4,7 +4,7 @@
     position: relative;
     height: auto;
     width:100%;
-    padding: 35px 5px 30px 5px;
+    padding: 10px 5px 30px 5px;
     background: #F3F1F9 !important;
     display: grid;
     grid-template-columns: 1fr;
@@ -183,7 +183,7 @@ div.profileCardCommonLower{
 
 @media only screen and (min-width: 480px){  
     .profileContainer{
-        padding: 25px 15px 30px 15px;
+        padding: 20px 15px 30px 15px;
         background: #F3F1F9 !important;        
         display: grid;
         grid-template-columns: 1fr;
