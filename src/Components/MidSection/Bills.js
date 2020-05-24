@@ -18,11 +18,14 @@ import {
     MdClose,
     MdKeyboardArrowDown,
     MdCheck,
-    MdKeyboardArrowUp
+    MdKeyboardArrowUp,
+    MdReceipt,
+    MdAttachMoney,
+    MdAccountBalanceWallet,
+    MdMoreHoriz,
+    MdError
 } from "react-icons/md"
-
-import {LoaderButton,
-    CardConfirmation} from "../UIC/UIC";
+import {LoaderButton} from "../UIC/UIC";
 
 // scss
 import "../../css/Bills.scss";
@@ -54,7 +57,6 @@ const initialBillState = {
 
 }
 
-
 const billReducer = (state, action) => {
     switch(action.type){
         case "isLoading":
@@ -78,17 +80,11 @@ const billReducer = (state, action) => {
 
 /* MAIN COMPONENT */
 export default function Bills(props){
+    const history = useHistory();
     const notification= useContext(notificationContext);
     const IO = useContext(socketContext)
     const [state, dispatch] = useReducer(billReducer, initialBillState)
     const {groupID} = props.match.params;
-    //const [isLoading, setisLoading] = useState(true);
-    //const [group, setGroup] = useState({});
-    //const [bills, setBills] = useState([]);
-    //const [errors, setErrors] = useState(null);
-    //const [showDetails, setShowDetails] = useState(true);
-    //const [showEditRemoveMembersB,setShowEditRemoveMembersB] = useState(false)
-    //const [showBillFormB, setShowBillFormB] = useState(false)
     useEffect(() => { 
         async function getData(groupID){
             if(!groupID){
@@ -112,25 +108,49 @@ export default function Bills(props){
                             }
                         })
         
-                if(groupResponse.status !== 200 || Billsresponse.status  !==200){
-                    return console.log('some error')
+                if(!groupResponse.ok || !Billsresponse.ok){
+                    let errorData = await groupResponse.json();
+                    throw(errorData)
                 }
 
                 const [groupData, billsData] = [await groupResponse.json(), await Billsresponse.json()]
-
                 dispatch({type: "group", payload: groupData})
                 dispatch({type: "bills", payload: billsData})
                 dispatch({type: "showSectionDetails", payload: true});
                 dispatch({type: "isLoading", payload: false})
-                //
-                //setGroup(groupData)
-                // setBills(billsData)
-                // setShowDetails(true)
-                // setisLoading(false)
-
-               
             }catch(error){
-               // handle error later on
+                let errorObj = {};
+                // catch for serverSideErrors
+                if(error.statusCode === 400 || error.status === 400) {
+                        errorObj.message = error.message
+                        console.log("error", error)
+                        setTimeout(() => {
+                            history.push("/app/groups")
+                        }, 500)
+                }
+                else if (error.status === 500){
+                    errorObj.message = error.message
+                    console.log("===============================")
+                    console.log("===============================")
+                    console.log("===============================")
+                    console.log("SOMETHING WENT WRONG TRY AT SERVER SIDE TRY AGAIN LATER")
+                    console.log("===============================")
+                    console.log("===============================")
+                    setTimeout(() => {
+                        history.push("/app/groups")
+                    }, 500)
+                    }
+                else{
+                    console.log("===============================")
+                    console.log("===============================")
+                    console.log("===============================")
+                    console.log("SOMETHING WENT WRONG TRY AGAIN LATER")
+                    console.log("===============================")
+                    console.log("===============================")
+                    setTimeout(() => {
+                        history.push("/app/groups")
+                    }, 500)
+                }
             }
         }
         getData(groupID);
@@ -156,6 +176,17 @@ export default function Bills(props){
     }
     function newBillsAdditionHandler(newBillFromForm){
         dispatch({type: "bills", payload: [newBillFromForm, ...state.bills]})
+        if(state.showSectionDetails){
+            // flipping changes
+            dispatch({type: "showSectionDetails", payload: false})
+            dispatch({type: "showSectionDetails", payload: true})
+        }
+
+        if(state.showSummaryReport){
+            // flipping changes
+            dispatch({type: "showSummaryReport", payload: false})
+            dispatch({type: "showSummaryReport", payload: true})
+        }
     }
     async function removeBillHandler(_id){
         const token = Token.getLocalStorageData('splitzoneToken');
@@ -180,6 +211,17 @@ export default function Bills(props){
             const billsCopy = [...state.bills];
             const filteredBill = billsCopy.filter(bill => bill._id !== billID)
             dispatch({type: "bills", payload: filteredBill})
+            if(state.showSectionDetails){
+                // flipping changes
+                dispatch({type: "showSectionDetails", payload: false})
+                dispatch({type: "showSectionDetails", payload: true})
+            }
+    
+            if(state.showSummaryReport){
+                // flipping changes
+                dispatch({type: "showSummaryReport", payload: false})
+                dispatch({type: "showSummaryReport", payload: true})
+            }
         }
         catch(error){
             // errors
@@ -189,23 +231,33 @@ export default function Bills(props){
 
     /* Summary report handler */
     function ShowHideSummaryReportHandler(action){
-        console.log("me")
-        console.log("action")
         if(action === "CLOSE"){
             console.log("close")
             dispatch({type: "showSummaryReport", payload: false})
         }
         else {
-            console.log("open")
             dispatch({type: "showSummaryReport", payload: true})
         }
 
     }
+
+    /* UPDATING THE GROUPMEMBERS UPON ADDING AND REMOVING */
+    function updateAddRemoveMembersHandler(entireGroup){
+        const data = {bgDetails:state.group.bgDetails, ...entireGroup}
+        dispatch({type: "group", payload: data})
+    }
+    
     if(state.isLoading){
         return <ComLoader />
     }
     else return (
         <div className = "billsContainer">
+            <div className = "Bills_Notification">
+                <div>
+                     <MdError/>
+                </div>
+                <h1>Make sure you have at least one friend in your friend list before being able to add members to this group</h1>
+            </div>
             <BillsGroup 
                 group = {state.group} 
                 showEditRemoveMembersHandler = {showEditRemoveMembersHandler} 
@@ -224,8 +276,6 @@ export default function Bills(props){
                     />
              }
             
-
-
             {state.showSummaryReport &&
                 <BillsSummary 
                 bills = {state.bills} 
@@ -247,61 +297,22 @@ export default function Bills(props){
                             groupID = {groupID}
                             groupCreatedById = {state.group.createdById}
                             groupMembers = {state.group.members}
+                            updateAddRemoveMembersHandler = {updateAddRemoveMembersHandler}
+
                         />}
             {state.showBillForm && <BillForm 
                                 showBillFormToggleHandler = {showBillFormToggleHandler}
                                 groupID = {groupID}
                                 newBillsAdditionHandler ={newBillsAdditionHandler}
                               />}
+
+            <div className = "BILLS_HEIGHT_FIX">
+
+            </div>
         </div>
     )
 }
 
-/*--------------
- LOADINGS COMPONENTS
-----------------*/
-function BillsLGContainer(){
-    return (
-        <div className = "BLGcontainer">
-            <BillsLGHeader />
-            <BillsLGHeaderDetails/>
-        </div>
-    )
-}
-
-function BillsLGHeader(){
-    return (
-        <div className = "BLGHeader">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-    )
-}
-
-function BillsLGHeaderDetails(){
-    return (
-        <ul className = "BLGHeaderDeatils">
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-        </ul>
-    )
-
-}
-
-function BillsLBContainer(){
-    return (
-        <ul className = "BLBcontainer">
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-        </ul>
-    )
-}
 
 /*--------------
  COMPONENTS
@@ -310,7 +321,8 @@ function BillsGroup(props){
     const history = useHistory();
     const [showBillsMenu, setshowBillsMenu] = useState(false);
     const {group} = props;
- 
+    const user = useContext(AppUserContext)
+    console.log("group", group)
     async function deleteGroupHandler(){
         // ask for  confirmation that group together with all the bills will get deleted
         const token = Token.getLocalStorageData('splitzoneToken');
@@ -346,8 +358,15 @@ function BillsGroup(props){
     return (
         <div className = "BGContainer">
             <h3>{group.groupName}</h3>
-            <button className = "BGMenuBtn" onClick = {(e) => setshowBillsMenu(true)}>...</button>
-            <p className = "BGCreatedBy"><span>created By: </span><span>{group.createdBy.replace(group.createdBy.charAt(0), group.createdBy.charAt(0).toUpperCase())}</span></p>
+            <button className = "BGMenuBtn" onClick = {(e) => setshowBillsMenu(true)}>
+                <MdMoreHoriz />
+            </button>
+            <p className = "BGCreatedBy"><span>created By: </span>
+                <span>{user._id.toString()===group.createdById.toString() ? "You" : 
+                
+                    group.createdBy.replace(group.createdBy.charAt(0), group.createdBy.charAt(0).toUpperCase())}
+                </span>
+            </p>
             <p className = "BGCreatedAt"><span>created At: </span><span>{new Date(group.createdAt).toDateString() }</span></p>
 
             <button className = "BGButton BGFirst">Add a Bill</button>
@@ -419,23 +438,90 @@ function BillsGroupMenu(props){
 }
 
 function BillsGroupDetails({HideShowSectionDetailsHandler, group}){
-   
-    return (
+    const [groupDetailsData, setGroupDetailsData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setErrors] = useState({})
+
+    useEffect(() => {
+        async function getData(groupID){
+            setLoading(true);
+            const token = Token.getLocalStorageData('splitzoneToken');
+            try{
+                const groupResponse = await fetch(`${serverURI}/api/app/group/${groupID}?bgDetails=${true}`, {
+                            method: "GET",
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer '+ token
+                            }
+                        })
+
+                    if(!groupResponse.ok){
+                        const errorData = await groupResponse.json();
+                        throw(errorData)
+                    }
+
+                    const groupResponseData = await groupResponse.json();
+                    setGroupDetailsData(groupResponseData.bgDetails)
+                    setTimeout(() => {
+                        setLoading(false)
+                    }, 400)
+            }catch(error){
+                let errorObj = {};
+                // catch for serverSideErrors
+                if(error.statusCode === 400 || error.status === 400) {
+                        errorObj.message = error.message
+                }
+                else if (error.status === 500){
+                    errorObj.message = error.message
+                    }
+                else{
+                    errorObj.message = "Something went wrong try again later"
+                }
+                setErrors(errorObj)
+                setTimeout(() => {
+                    setLoading(false)
+                }, 400)
+            }           
+        }
+
+        getData(group._id)
+    }, [])
+
+    if(loading){
+        return (
+        <ul className = "BGDetailsContainerLoaderUL">
+          <LoaderButton backgroundColor="Button_overlay_background" color="Button_Blue_color" fix= "Button_Loader_Fix"/>
+        </ul>
+        )
+    }
+    else return (
         <ul className = "BGDetailsContainer">
             <li>
-                <h2>{group && group.bgDetails.totalBills}</h2>
+                <div className = "LI_B_ICON ICON_RECEIPT">
+                    <MdReceipt/>
+                </div>
+                <h2>{groupDetailsData && groupDetailsData.totalBills}</h2>
                 <h3>Total Bills</h3>
             </li>
             <li>
-                <h2>$ {group && group.bgDetails.totalBalance}</h2>
+                <div className = "LI_B_ICON ICON_BALANCE">
+                    <MdAccountBalanceWallet />
+                </div>
+                <h2>$ {groupDetailsData && groupDetailsData.totalBalance}</h2>
                 <h3>Total Balance</h3>
             </li>
             <li>
-                <h2>$ {group && group.bgDetails.totalOwe}</h2>
+                 <div className = "LI_B_ICON ICON_OWE">
+                    <MdAttachMoney />
+                </div>
+                <h2>$ {groupDetailsData && groupDetailsData.totalOwe}</h2>
                 <h3>You owe</h3>
             </li>
             <li>
-                <h2>$ {group && group.bgDetails.totalLent}</h2>
+                <div className = "LI_B_ICON ICON_LENT">
+                    <MdAttachMoney />
+                </div>
+                <h2>$ {groupDetailsData && groupDetailsData.totalLent}</h2>
                 <h3>You lent</h3>
             </li>
             <button className = "B_closeBGDetails" onClick = {HideShowSectionDetailsHandler}>
@@ -456,7 +542,11 @@ function BillsSummary(props){
     const [loading, setLoading] = useState(false)
     const [refinedSummary, setRefinedSummary] = useState(null);
     const [errors, setErrors] = useState({})
+    const [mounted, setMounted] = useState(false);
     useEffect(() => {
+        if(!mounted){
+            setMounted(true);
+        }
         setLoading(true);
         setErrors({});
         const token = Token.getLocalStorageData('splitzoneToken');
@@ -493,14 +583,14 @@ function BillsSummary(props){
                     errorObj.message = error.message
                     }
                 else{
-                    errorObj.message = "Something went wrong try again later"
+                    errorObj.refresh = "Something went wrong try again later"
                 }
                 setErrors(errorObj)
                 setLoading(false)
             }
         }
         getSummary(props.groupID);
-    }, [])
+    }, [mounted])
 
 
     // bill is redined summary options object
@@ -649,7 +739,15 @@ function BillsSummary(props){
                 <MdClose />
             </button>
             <div className = "BSummary_LISTDIV BSHeading">
-                Summary Reports
+                <h1>Summary Reports</h1>
+                {errors.refresh && <p>Refresh this section!!</p>}
+                {errors.refresh 
+                    &&  
+                    <button onClick = {() => setMounted(!mounted)}
+                    >
+                        Refresh
+                    </button>
+                }
             </div>
             {errors.message && <p className = "BS_ErrosP">{errors.message}</p>}
             {/* While loading */}
@@ -718,20 +816,6 @@ function SummaryUL({bills}){
     )
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*--------------
  BILLS FILTER
 ----------------*/
@@ -755,17 +839,27 @@ function BillsFilter(){
 ----------------*/
 
 function BillsComponent({bills, removeBillHandler}){
-    return (
-        <ul className = "BComponent">
-            {bills.map(billItem => {
-                return <ListComponent  
-                            key= {billItem._id} 
-                            bill = {billItem}
-                            removeBillHandler = {removeBillHandler}
-                        />
-            })}
-        </ul>
-    )
+    if(bills.length > 0){
+        return (
+            <ul className = "BComponent">
+                {bills.map(billItem => {
+                    return <ListComponent  
+                                key= {billItem._id} 
+                                bill = {billItem}
+                                removeBillHandler = {removeBillHandler}
+                            />
+                })}
+            </ul>
+        )
+    }
+    else {
+        return (
+            <div className = "ADD_BILL_BOTTOM">
+                <h1>Add BILLS FOR MORE OPTIONS :)</h1>
+            </div>
+        )
+    }
+
 }
 
 
@@ -949,7 +1043,8 @@ function EditRemoveMembers(props){
     const editRemoveInnerRef = useRef();
     const [friendsArray, setFriendsArray] = useState(null);
     const [groupMembers, setGroupMembers] = useState(null)
-    const [mounted, setMounted] = useState(false)
+    const [mounted, setMounted] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     function outsideclickHandler(e){
         if(editRemoveInnerRef.current && !editRemoveInnerRef.current.contains(e.target)){
@@ -971,10 +1066,12 @@ function EditRemoveMembers(props){
             setMounted(true);
             return 
         }
-      
+        
         async function showGroupMemberHandler(){
+            setLoading(true)
             const token = Token.getLocalStorageData('splitzoneToken');
             try{
+
                 const getFriendsResponse = await fetch(`${serverURI}/api/app/friends`, {
                     method: "GET",
                     headers: {
@@ -990,8 +1087,11 @@ function EditRemoveMembers(props){
                     }
                 })
 
-                if(getFriendsResponse.status !== 200 || getGroupResponse.status !== 200){
-                    //----SET ------getting data error
+                if(!getFriendsResponse.ok || !getGroupResponse.ok){
+                    
+                    const errorObj = {};
+                    errorObj.message = "something went wrong try again later";
+                    throw(errorObj)
                 }
                 const friendsData = await getFriendsResponse.json();
                 const groupsData = await getGroupResponse.json();
@@ -1005,13 +1105,11 @@ function EditRemoveMembers(props){
                 }
 
                 const members = groupsData.members;
-                
                 // filtering out the user from the member
                 const filteredMembers = members.filter(member => member._id !== user._id);
 
                 // setting the groupsMembers
                 //setGroupMembers(filteredMembers);
-            
                 let filteredFriends;
 
                 /* fixed later */
@@ -1029,16 +1127,20 @@ function EditRemoveMembers(props){
                 // setting filtered friends
                 setGroupMembers(filteredMembers);
                 setFriendsArray(filteredFriends)
-
+                setTimeout(() => {
+                    setLoading(false)
+                }, 800)
+                
             }catch(error){
-                console.log(error)
+                // handle error Here later on
+                console.log("error", error)
+                setLoading(false)
             }   
        }
 
         showGroupMemberHandler();
         // eslint-disable-next-line
     },[mounted])
-
 
     //Functions
     async function addFriendToFriendsList(_id,actionName){
@@ -1047,7 +1149,6 @@ function EditRemoveMembers(props){
         switch(actionName){
             case "removeMember":
                 try{    
-
                         /* Member to be removed*/
                         const member = groupMembers.filter(member => member._id === _id)[0];
                         const removeMemberResponse = await fetch(`${serverURI}/api/app/group/${groupID}/${_id}`, {
@@ -1059,10 +1160,12 @@ function EditRemoveMembers(props){
                             body: JSON.stringify(member)
                         })
 
-                        if(removeMemberResponse.status !== 200){
+                        if(!removeMemberResponse.ok){
                                 console.log("some thing went wrong/// find that in catch statement")
                                 return 
-                        }   
+                        }  
+                        const newGroupData = await removeMemberResponse.json()
+                        props.updateAddRemoveMembersHandler(newGroupData)
                         setMounted (false)
                 }
                 catch(error){
@@ -1070,8 +1173,6 @@ function EditRemoveMembers(props){
                 }
 
             break;
-
-            
             case "addMember":
                 const filteredFriend = friendsArray.filter(friend => friend._id === _id)
                 try{
@@ -1083,10 +1184,12 @@ function EditRemoveMembers(props){
                             },
                             body: JSON.stringify({members : filteredFriend})
                         })
-                        if(addMemberResponse.status !== 200){
+                        if(!addMemberResponse.ok){
                                 console.log("some thing went wrong/// find that in catch statement")
                                 return 
                         }
+                        const newGroupData = await addMemberResponse.json()
+                        props.updateAddRemoveMembersHandler(newGroupData)
                         setMounted (false)
                 }
                 catch(error){
@@ -1102,41 +1205,49 @@ function EditRemoveMembers(props){
 
     return (
         <div className = "B_editRemoveMembersC">
-            <ul ref = {editRemoveInnerRef}>
-                {groupMembers && groupMembers.map(member => {
-                    return (
-                        <li className = "B_ERList" key = {member._id}>
-                            <p className = "FriendName">{member.name}</p>
+            {loading && 
+                <div className = "AR_LOADER" ref = {editRemoveInnerRef}>
+                        <LoaderButton 
+                            backgroundColor = "whiteBg"
+                            color = "blueBg"
+                        />
+                </div>}
+            {!loading && 
+                <ul ref = {editRemoveInnerRef}>
+                        {groupMembers && groupMembers.map(member => {
+                            return (
+                                <li className = "B_ERList" key = {member._id}>
+                                    <p className = "FriendName">{member.name}</p>
+        
+                                    {/* if email exists show else option for adding an email */}
+                                    {(member.email && member.email.length > 0) ? 
+                                        <p className = "FriendOption">{member.email}</p> :
+                                        <button className = "FriendOption emailBtn">Add Email +</button>
+                                    }
+                                   {member._id.toString() === groupCreatedById.toString() ? 
+                                        null: 
+                                        <button  className = "optionButton" onClick = {(e) => {addFriendToFriendsList(member._id, "removeMember")}}>remove</button>}
+                                </li>
+                            )
+                        })}
+        
+                        {friendsArray && friendsArray.map(friend => {
+                            return (
+                                <li className = "B_ERList" key = {friend._id} style = {{backgroundColor: 'rgb(224, 217, 217)'}}>
+                                    <p className = "FriendName">{friend.name}</p>
+                                    {/* if email exists show else option for adding an email */}
+                                    {(friend.email && friend.email.length > 0) ? 
+                                        //------- based on friend registered or not show invite
+                                        <p className = "FriendOption">{friend.email}</p> :
+                                        <button className = "FriendOption emailBtn">Add Email +</button>
+                                    }
+                                   <button className = "optionButton" onClick = {(e) => {addFriendToFriendsList(friend._id, "addMember")}}>Add</button>
+                                </li>
+                            )
+                        })}
+                    </ul>
+            }
 
-                            {/* if email exists show else option for adding an email */}
-                            {(member.email && member.email.length > 0) ? 
-                                <p className = "FriendOption">{member.email}</p> :
-                                <button className = "FriendOption emailBtn">Add Email +</button>
-                            }
-                           {member._id.toString() === groupCreatedById.toString() ? 
-                                null: 
-                                <button  className = "optionButton" onClick = {(e) => {addFriendToFriendsList(member._id, "removeMember")}}>remove</button>}
-                        </li>
-                    )
-                })}
-
-                {friendsArray && friendsArray.map(friend => {
-                    return (
-                        <li className = "B_ERList" key = {friend._id} style = {{backgroundColor: 'rgb(224, 217, 217)'}}>
-                            <p className = "FriendName">{friend.name}</p>
-                            {/* if email exists show else option for adding an email */}
-                            {(friend.email && friend.email.length > 0) ? 
-                                //------- based on friend registered or not show invite
-                                <p className = "FriendOption">{friend.email}</p> :
-                                <button className = "FriendOption emailBtn">Add Email +</button>
-                            }
-                           <button className = "optionButton" onClick = {(e) => {addFriendToFriendsList(friend._id, "addMember")}}>Add</button>
-                        </li>
-                    )
-                })}
-
-
-            </ul>
         </div>
     )
 } // END of EditRemoveMembers*//

@@ -1,4 +1,4 @@
-import React, {useEffect, useState, } from "react";
+import {useState} from "react";
 import { useHistory } from 'react-router-dom'
 
 /* TOKEN */
@@ -15,6 +15,7 @@ function useLoginForm(initialValues){
     }
 
     function validationCheck(values){
+        /* SERVER SIDE CHECK ACTIVE */
         let errorObj ={}
         // if (!values.email) {
         //     errorObj.email = 'Email is required';
@@ -42,7 +43,6 @@ function useLoginForm(initialValues){
             email: val.email,
             password: val.password
         }
-
         //send the values to the server
         async function makeLoginRequest(val){
             try{
@@ -95,13 +95,12 @@ function useSignupForm(initialValues){
     const history = useHistory();
     const [values, setValues] = useState(initialValues);
     const [errors, setErrors] = useState({});
-
     function changeHandler(e){
         const {name, value} = e.target;
         setValues({...values, [name] : value})
     }
-
     function validationCheck(values){
+        /* SERVER SIDE ACTIVE */
         let errorObj ={}
         // client side validation
         // if(!values.name){
@@ -121,7 +120,6 @@ function useSignupForm(initialValues){
         // }
         return errorObj;
     }
-
     function signupHandler(e,val){
         e.preventDefault();
         const validationErrors = validationCheck(val);
@@ -182,12 +180,8 @@ function useSignupForm(initialValues){
         }
         makeSignupRequest(val);
     }
-
     return {values, signupHandler, changeHandler, errors}
 }
-
-
-
 
 export {
     useLoginForm,

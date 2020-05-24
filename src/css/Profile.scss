@@ -15,7 +15,13 @@
     // common div
     & div {
         width: 100%;
-        border-radius: 8px;
+        border-radius: 0px;
+        overflow: hidden;
+        border-top-left-radius: 8px !important;
+        border-top-right-radius:  8px !important;
+    }
+    & div.normalDiv{
+        border-radius: 8px !important;
         overflow: hidden;
     }
 
@@ -25,6 +31,7 @@
         height: 300px;
         background: linear-gradient(to top right, #5975CD, #662571);
         margin-bottom:30px;
+        border-radius: 8px;
         & div.ProfilePicContainer{
             position: absolute;
             height: 90px;
@@ -32,7 +39,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: #ddd;
+            //background: #ddd;
             border-radius: 50%;
             overflow: visible !important;
             // commonClassName for Img and h1
@@ -167,12 +174,18 @@ div.profileCardCommonLower{
     background: #fff;
     border-radius: 0px;
     animation: showProfileLower 0.3s ease-in-out forwards;
+    padding: 18px;
+    color: rgb(172, 172, 172);
+    font-size: 16px;
+    font-weight: 600;
+    border-bottom-left-radius: 8px !important;
+    border-bottom-right-radius:  8px !important;
     
 }
 
 // INDIVIDUAL SECTIONS
 .ProfileLimitations{
-    height: 400px;
+   
 }
 
 // ANIMATIONS
@@ -192,7 +205,7 @@ div.profileCardCommonLower{
         // common div
         & div {
             width: 100%;
-            border-radius: 8px;
+            border-radius: 0px;
             overflow: hidden;
         }
     }

@@ -5,7 +5,10 @@ import Token from "../../helpers/token"
 import DBanner from "../Dashboard/DBanner";
 import ComLoader from "./ComLoader";
 // icons
+import {ReactComponent as BannerThird} from "../../assets/BannerThird.svg";
+import {ReactComponent as GroupBackground} from "../../assets/FinalGroupBakground.svg";
 import {MdAddCircleOutline} from "react-icons/md";
+import {LoaderButton} from "../UIC/UIC";
 
 import "../../css/Groups.scss";
 import {socketContext, notificationContext} from '../App/App';
@@ -48,7 +51,9 @@ const initialGroupState = {
     groupsData: null,
     createGroup: false,
     createGroupError: null,
-    loadingButtonCreateGroup: false
+    loadingButtonCreateGroup: false,
+    bannerHeading: "Create a group. From within the group you are able to add your friend as a member",
+    btnText: "Happy Splitting !"
 }
 export default function Groups(){
     const socket = useContext(socketContext);
@@ -112,10 +117,8 @@ export default function Groups(){
 
     /* SOCKET FUNCTIONs */
     function S_AddedTOGroup(groupData){
-        console.log("addedTOGroup", groupData)
         dispatch({type: "S_AddedTOGroup", payload: groupData})
     }
-
 
     /* END OF SOCKET FUNCTIONS */
     function ToBills(groupID){
@@ -173,7 +176,9 @@ export default function Groups(){
 
             dispatch({type: "setGroupsData", payload: newGroupsData})
             dispatch({type: "setCreateGroupB", payload: false})
-            dispatch({type: "loadingButtonCreateGroup", payload: false})
+            setTimeout(() => {
+                dispatch({type: "loadingButtonCreateGroup", payload: false})
+            }, 600);
 
         }catch(error){
             let errorObj = {};
@@ -192,19 +197,23 @@ export default function Groups(){
                 errorObj.message = "Something went wrong try again later"
             }
             dispatch({type: "setError", payload: errorObj})
-            dispatch({type: "loadingButtonCreateGroup", payload: false})
+            setTimeout(() => {
+                dispatch({type: "loadingButtonCreateGroup", payload: false})
+            }, 600);
         }  
     }
     if(state.loading) return <ComLoader />
     else return (
         <div className = "groupsContainer">
             {/* BANNER */}
-            <DBanner />
+            <DBanner
+                heading = {state.bannerHeading ? state.bannerHeading: ""}
+                btnText = {state.btnText ? state.btnText : ""}
+                change = {true}
+            >
+                <BannerThird />
+            </DBanner>
             <ul className = "Gul">
-
-                {/* disabled */}
-                {state.loading && <GroupLoader/>}
-
                 {/* Rest components to show */}
                 {!state.loading && 
                     <li className ="GulCreateLi">
@@ -214,8 +223,17 @@ export default function Groups(){
                     </li>
                 }
                 {!state.loading && <GroupList groups = {state.groupsData} ToBills = {ToBills}></GroupList>}
-                
+                    
             </ul>
+
+            {!state.loading && state.groupsData 
+                && state.groupsData.length <=0
+                &&
+                <div className = "ADD_GROUP_BOTTOM">
+                    <h1>Create a group and start adding bills :)</h1>
+                </div>
+            
+            }
             {state.createGroup 
                 && 
                 <CreateGroupComponent 
@@ -241,67 +259,6 @@ function CreateGroupButton({createGroupClickHandler}){
     ) 
 }
 
-function GroupLoader(){
-    return (
-        <React.Fragment>
-
-            <li className = "GLoaderSIContainer">
-                <div className = "GL_groupName">
-                    <div className = "GL_menu"></div>
-                    <div className = "GL_dateCreated"></div>
-                    <div className = "GL_billsNumber"></div>
-                    {/* <div className = "GL_billsMembers"></div> */}
-                </div>
-                <div className = "GL_profileIcons">
-                    <div className = "GL_profileIcon GLP_first"></div>
-                    <div className = "GL_profileIcon GLP_second"></div>
-                </div>
-            </li>
-
-            <li className = "GLoaderSIContainer">
-                <div className = "GL_groupName">
-                    <div className = "GL_menu"></div>
-                    <div className = "GL_dateCreated"></div>
-                    <div className = "GL_billsNumber"></div>
-                    {/* <div className = "GL_billsMembers"></div> */}
-                </div>
-                <div className = "GL_profileIcons">
-                    <div className = "GL_profileIcon GLP_first"></div>
-                    <div className = "GL_profileIcon GLP_second"></div>
-                </div>
-            </li>
-
-            <li className = "GLoaderSIContainer">
-                <div className = "GL_groupName">
-                    <div className = "GL_menu"></div>
-                    <div className = "GL_dateCreated"></div>
-                    <div className = "GL_billsNumber"></div>
-                    {/* <div className = "GL_billsMembers"></div> */}
-                </div>
-                <div className = "GL_profileIcons">
-                    <div className = "GL_profileIcon GLP_first"></div>
-                    <div className = "GL_profileIcon GLP_second"></div>
-                </div>
-            </li>
-
-            <li className = "GLoaderSIContainer">
-                <div className = "GL_groupName">
-                    <div className = "GL_menu"></div>
-                    <div className = "GL_dateCreated"></div>
-                    <div className = "GL_billsNumber"></div>
-                    {/* <div className = "GL_billsMembers"></div> */}
-                </div>
-                <div className = "GL_profileIcons">
-                    <div className = "GL_profileIcon GLP_first"></div>
-                    <div className = "GL_profileIcon GLP_second"></div>
-                </div>
-            </li>
-        </React.Fragment>
-    )
-
-
-}
-
 function GroupList(props){
     return props.groups.map(groupListItem => {
         const date = new Date(groupListItem.createdAt);
@@ -313,6 +270,13 @@ function GroupList(props){
         return(<li className = "GListSIContainer" key = {groupListItem._id} onClick = {() => {props.ToBills(groupListItem._id)}} >
                     {/* <div>{groupListItem.createdBy}</div>
                     <div>{groupListItem.members.length}</div> */}
+
+                {/* ABSOLUTE POSITIONED SVG */}
+                <div className  = "GroupBackground">
+                    <GroupBackground/>
+                </div>
+
+                      
                 <div className = "GLi_groupName">
                     <h3>{groupListItem.groupName}</h3>
                     <div className = "GLi_menu"></div>
@@ -370,10 +334,15 @@ function CreateGroupComponent({createGroupClickHandler,createGroupHandler, creat
                 />
                 {errors && errors.groupName && <p>{errors.groupName}</p>}
                 {errors && errors.message && <p>{errors.message}</p>}
-                <button 
-                    disabled = {loadingButtonCreateGroup}
-                    type = "submit"
-                   >{loadingButtonCreateGroup ? "..." : "create group"}</button>
+
+                {loadingButtonCreateGroup &&
+                    <LoaderButton />
+                }
+
+                {!loadingButtonCreateGroup &&
+                    <button type = "submit"> create group</button> 
+                                
+                }
             </form>
         </div>
     )

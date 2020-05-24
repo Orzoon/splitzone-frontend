@@ -1,9 +1,11 @@
 import React, {useState, useEffect} from "react";
+import {useHistory} from "react-router-dom"
 import {useLoginForm, useSignupForm} from "../hooks/appHooks";
 import {ReactComponent as GoogleIconSVG} from '../assets/icons/googleicon.svg';
 import {ReactComponent as Illustration} from '../assets/illustrationLS.svg';
-/* Token */
-
+import jwt from "jwt-decode";
+import Token from '../helpers/token';
+import {serverURI} from "../helpers/GlobalVar"
 /* CSS */
 import "../css/Lsc.scss";
 
@@ -11,9 +13,8 @@ const initialLoginValues = {
     email: '',
     password: '',
     emailPlaceholder: "example@gmail.com",
-    passwordPlaceholder: "*****"
+    passwordPlaceholder: "*****",
 }
-
 
 const initialSignupValues = {
     name:'',
@@ -24,46 +25,79 @@ const initialSignupValues = {
     passwordPlaceholder: "*********"
 }
 export default function LSComponent(){
-    localStorage.clear()
-
+    const history = useHistory();
     const [showForm, setShowForm] = useState('LOGIN');
     const [allSet, setAllSet] = useState(false);
-
+    const [checkingStatus, setCheckingStatus] = useState(true);
+    useEffect(() => {
+        async function checkToken(){
+            try{
+                // checking for token
+                const token = Token.getLocalStorageData("splitzoneToken")
+                if(!token){
+                  throw new Error("no Token")
+                }
+                const decode = jwt(token);
+                if(!decode){
+                    localStorage.clear();
+                    throw new Error("Invalid token")
+                }
+                const response = await fetch(`${serverURI}/api/app/user`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                        } 
+                    })
+                if(!response.ok){
+                    //clear the token 
+                    localStorage.clear();
+                    throw new Error("Invalid token")
+                }
+                history.push('/app')
+                setCheckingStatus(false)
+            }catch(error){
+                setCheckingStatus(false)
+            }
+        }
+        checkToken();
+    },[])
     function allSetHandler(){
         setAllSet(true);
     }
     function LSFormHandler(FormType){
         setShowForm(FormType)
     }
-
     return (
         <div className = "main_container">
+            <TopBar/>
             <div className = "blue_container blue_container_transition">
-                <div className= "white_container white_container_transition">
-                    <div className="form_container">
-                        <div className = "form_Illustration">
-                            <Illustration />
-                        </div>
-
-                        {/* Actual LOGIN/SIGNUP FORM */}
-                        {showForm==="LOGIN" ? 
-                            <LoginForm 
-                                allSetHandler = {allSetHandler}
-                                allSet = {allSet}
-                                LSFormHandler = {LSFormHandler}/> :
-                            <SignupForm 
-                                allSetHandler = {allSetHandler}
-                                allSet = {allSet}
-                                LSFormHandler = {LSFormHandler}/>
-                        }
-                    </div>
-                </div>
             </div> 
+            <div className= "white_container white_container_transition">
+                <div className="form_container">
+                    <div className = "form_Illustration">
+                        <Illustration />
+                    </div>
+                    {/* Actual LOGIN/SIGNUP FORM */}
+                    {showForm==="LOGIN" ? 
+                        <LoginForm 
+                            allSetHandler = {allSetHandler}
+                            allSet = {allSet}
+                            LSFormHandler = {LSFormHandler}
+                            checkingStatus = {checkingStatus}
+                        /> :
+                        <SignupForm 
+                            allSetHandler = {allSetHandler}
+                            allSet = {allSet}
+                            LSFormHandler = {LSFormHandler}/>
+                    }
+                </div>
+            </div>
         </div>
     )
 }
 
-function LoginForm({LSFormHandler, allSetHandler, allSet}){
+function LoginForm({LSFormHandler, allSetHandler, allSet, checkingStatus}){
     const {
             errors,
             values, 
@@ -128,6 +162,7 @@ function LoginForm({LSFormHandler, allSetHandler, allSet}){
                 />
                 {errors.password && <p>{errors.password}</p>}
                 {errors.message && <p>{errors.message}</p>}
+                {checkingStatus && <p style = {{color: "green"}}>checking status</p>}
                 <div className = {allSet ? "B_Effect loginBTNFix" :"B_Effect topFormInputAnimation"} >
                     {loginType === "LOGIN" ? 
                         <ButtonLoaderLogin/>
@@ -151,8 +186,6 @@ function LoginForm({LSFormHandler, allSetHandler, allSet}){
         </div>
     )
 }
-
-
 function SignupForm({LSFormHandler, allSetHandler, allSet}){
     /* NOTE FIX THIS TO DISABLE BUTTONS -NOTE LATERON*/
 
@@ -263,7 +296,6 @@ function SignupForm({LSFormHandler, allSetHandler, allSet}){
     </div>
     )
 }
-
 function FormHeading({headingTitle, headingParagraph, allSet}){
     return (
         <div className = {allSet ? "formHeading SC_fix": "formHeading"}>
@@ -299,17 +331,17 @@ function SocialLogin({loginStatusHandler, loginType, LSFormHandler, SocialData, 
         </div>
     )
 }
-
 /* Function TOPBARLS */
 function TopBar(){
     return (
         <div className = "top_bar_container">
-            
+            <div className = "text_logo_container">
+                <h1 className = "LOGO_TEXT">SplitZone</h1>
+                <p className = "LOGO_PARA">Bill Splitting Demo</p>
+            </div>
         </div>
     )
 }
-
-
 // LOADER COMPONENTS
 function ButtonLoaderLogin(){
   return(

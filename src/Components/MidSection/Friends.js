@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useReducer, useRef, useContext} from 'react';
 import {serverURI} from "../../helpers/GlobalVar";
 import Token from "../../helpers/token";
-
+import {ReactComponent as BannerSecond} from "../../assets/BannerSecond.svg";
 // ICONS
 import {
     MdAddCircleOutline, 
@@ -13,8 +13,7 @@ import {
 import DBanner from "../Dashboard/DBanner";
 import ComLoader from "./ComLoader";
 import {notificationContext, socketContext, AppUserContext} from "../App/App";
-import {LoaderButton,
-    CardConfirmation} from "../UIC/UIC";
+import {LoaderButton} from "../UIC/UIC";
 // scss
 import "../../css/Friends.scss";
 
@@ -47,6 +46,9 @@ const initialFriendsState = {
     formErrors: {},
     updateFriendName: null,
     updateFriendId: null,
+    bannerHeading: "Once you add your friends here, later you can add them to the groups you create as members",
+    btnText: "Next step!",
+    Route: "/app/groups"
 }
 
 export default function Friends(){
@@ -111,7 +113,9 @@ export default function Friends(){
             let errorObj = {};
                 errorObj.message = "You cannot add yourself to the list"
                 dispatch({type: "setFormErros", payload: errorObj})
-                dispatch({type: "addFrindBtnStatus", payload: false})
+                setTimeout(() => {
+                    dispatch({type: "addFrindBtnStatus", payload: false})
+                }, 600);
                 return 
         }
 
@@ -133,8 +137,10 @@ export default function Friends(){
             const Friendsdata = await createdFriendResponse.json();
             // friendsData contains all the freinds adata and the _id
             dispatch({type: "setUserFriends", payload:Friendsdata});
-            dispatch({type: "addFrindBtnStatus", paylaod: false})
             dispatch({type: "showFriendForm", payload: false});
+            setTimeout(() => {
+                dispatch({type: "addFrindBtnStatus", payload: false})
+            }, 600);
         }
         catch(error){
             let errorObj = {};
@@ -153,7 +159,9 @@ export default function Friends(){
                 errorObj.message = "Something went wrong try again later"
             }
             dispatch({type: "setFormErros", payload: errorObj})
-            dispatch({type: "addFrindBtnStatus", payload: false})
+            setTimeout(() => {
+                dispatch({type: "addFrindBtnStatus", payload: false})
+            }, 600);
         }
    }
    async function updateFriendsEmail(e, formValues){
@@ -190,7 +198,6 @@ export default function Friends(){
         }
         catch(error){
             let errorObj = {};
-            console.log("error", error)
             // catch for serverSideErrors
             if(error.statusCode === 400 && error.hasOwnProperty('message') && Array.isArray(error.message)){
                         const messageArray = error.message;
@@ -262,7 +269,13 @@ export default function Friends(){
     if(state.loading) return <ComLoader />
     else return (
         <div className = {state.showFriendForm ? "friendsContainer friendContainerHeightFix" : "friendsContainer"}>
-            <DBanner />
+            <DBanner
+                heading = {state.bannerHeading ? state.bannerHeading : " "}
+                btnText = {state.btnText ? state.btnText : " "}
+                Route = {state.Route ? state.Route: null}
+            >
+                <BannerSecond/>
+            </DBanner>
             <ul>
                 {!state.Loading &&
                     <li key = "1" className = "AddFriendButtonList">
@@ -277,6 +290,7 @@ export default function Friends(){
                         </button>
                     </li>
                 }
+                {/* If no friend in the friend list */}
                 {!state.Loading && state.userFriends && 
                     state.userFriends.friends
                     .map(friendItem => <FriendList 
@@ -288,6 +302,17 @@ export default function Friends(){
                         />)
                 }
             </ul>
+            
+            {!state.Loading && state.userFriends && 
+                    state.userFriends.friends <= 0
+                    &&
+                    <div className = "ADD_FRIEND_BOTTOM">
+                            <h1>Start by adding a friend :)</h1>
+                    </div>
+            }
+
+
+
 
             {state.showFriendForm &&
                 <AddFriendForm 

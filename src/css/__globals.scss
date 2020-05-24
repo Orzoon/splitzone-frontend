@@ -125,7 +125,17 @@ $btn-primary-fontSize: 13px;
 
 
 
-/* CUSTOM SCROLL BAR */
+.MODIFY_BANNER_BUTTON{
+    background: #fff !important;
+    color: #0f4b9b !important;
+    text-align: start;
+    text-decoration: underline;
+    
+
+    &:hover{
+        text-decoration: none;
+    }
+}
 
 
 

@@ -20,11 +20,3 @@ export default function ComLoader(){
     )
 }
 
-
-// First oader
-{/* <div className ="ComLoader_container">
-<div className = "boxContainer">
-    <div className = "box box1"></div>
-    <div className = "box box2"></div>
-</div>
-</div> */}

@@ -24,24 +24,28 @@ function MainAppContainer(){
           {/*App component that contains other Components*/}
             <App/>
           </ProtectedRoute>
-          <Route path = "/LS">
+          <Route exact path = "/">
             <LSComponent />
           </Route>
-          <Route path = "/social" component = {(props) => {
-            const token = queryString.parse(props.location.search).token;
-            if(!token){
-              //back to login
-
-              return
-            }
-            // checking token validity
-            // TODO --decode
-            //setting token
-            localStorage.setItem("splitzoneToken", token)
-            props.history.push("/app");
-            return null
-          }}>
-          </Route>
+          <Route path = "/social" exact component = {(props) => {
+                const token = queryString.parse(props.location.search).token;
+                if(!token){
+                  console.log("no token")
+                  props.history.push("/")
+                  return null
+                }
+                // checking token validity
+                // TODO --decode
+                //setting token
+                localStorage.setItem("splitzoneToken", token)
+                props.history.push("/app");
+                return null
+              }}>
+            </Route>
+            <Route component = {(props) => {
+              props.history.push("/")
+              return null
+            }} />
         </Switch>
       </Router>
     </div>

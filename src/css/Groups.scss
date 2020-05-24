@@ -70,24 +70,27 @@ $testBorder: 1px solid red;
             overflow: hidden;
             background: #fff;
             border-bottom: 3px solid #ddd;
+            transition: all 0.2s ease-in-out;
 
             //Hover effect 
             &:hover{
-                border-bottom: 3px solid #F3F1F9;
+                border-bottom: 3px solid #0f4b9b;
+                margin-top: -4px;
+
             }
-            &:after{
-                position: absolute;
-                content: '';
-                bottom: 0px;
-                width: 0%;
-                height: 2px;
-                //background: linear-gradient(to top right, rgba(89, 116, 205, 0.767), #662571ce);
-                background: #0f4c9bab;
-                transition: all 0.2s ease-in-out;
-            }
-            &:hover:after{
-                width: 100%;
-            }
+            // &:after{
+            //     position: absolute;
+            //     content: '';
+            //     bottom: 0px;
+            //     width: 0%;
+            //     height: 2px;
+            //     //background: linear-gradient(to top right, rgba(89, 116, 205, 0.767), #662571ce);
+            //     background: #0f4c9bab;
+            //     transition: all 0.2s ease-in-out;
+            // }
+            // &:hover:after{
+            //     width: 100%;
+            // }
             & div.GL_groupName, & div.GLi_groupName{
                 position: relative;
                 height: 67%;
@@ -200,6 +203,7 @@ $testBorder: 1px solid red;
             flex-direction: row-reverse;
             align-items:center;
             justify-items:center;
+            outline: none;
 
 
             //justify-content: center;
@@ -243,6 +247,9 @@ $testBorder: 1px solid red;
                 font-size: 30px;
                 align-self: center;
                 line-height: 1.6;
+                display: flex;
+                justify-content: center;
+                align-items: center;
 
                 &::after{
                     position: absolute;
@@ -254,7 +261,7 @@ $testBorder: 1px solid red;
                     border-bottom: 20px solid transparent;
                     border-left: 20px solid #fff;
                     top: 50%;
-                    transform: translateY(-58%);
+                    transform: translateY(-50%);
                     left: -13px;
                 }
              
@@ -300,6 +307,8 @@ $testBorder: 1px solid red;
                     text-transform: uppercase;
                     color: $groupNameColor;
                     padding-left: 18px;
+                    z-index: 9;
+                    color: #fff !important;
                 }
                 // skipping menu
                 & div.GLi_dateCreated, & div.GLi_billsNumber, & div.GL_billsMembers{
@@ -313,7 +322,7 @@ $testBorder: 1px solid red;
 
                     & h3 {
                         //color: #2A1AB1;
-                        color: #0f4b9b;
+                        color: #0f4b9b !important;
                         font-weight: bold;
                         font-size: 22px;
                         text-align: center;
@@ -342,7 +351,7 @@ $testBorder: 1px solid red;
                 & div.GLi_billsNumber{
                     left: calc(10px + #{$commonMidCardMargin} + #{$commonMidCardWidth});
                     & h3 {
-                        color: #0f4b9b;
+                        color: #0f4b9b !important;
                         font-weight: bold;
                         font-size: 22px;
                         text-align: center;
@@ -350,6 +359,7 @@ $testBorder: 1px solid red;
                         left: 0px;
                         position: relative;
                         padding: 0px;
+                        
                     }
 
                     & p {
@@ -498,6 +508,33 @@ $testBorder: 1px solid red;
     }
 }
 
+
+/* group SVGCONTAINER */
+div.GroupBackground{
+    position: absolute;
+    left: -100px;
+    top: -50px;
+    height: 250px;
+    width: 330px;
+    z-index: 5;
+
+    & svg {
+        height: 100%;
+        width: 100%;
+    }
+}
+/* ADD_GROUP_BOTTOM */
+.ADD_GROUP_BOTTOM{
+    width: 100%;
+    height: 200px;
+    padding: 18px;
+    margin-top: -50px;
+
+    & h1{
+        color: #ddd;
+        font-size: 30px;
+    }
+}
 
 // animations
 @keyframes GL_groupName{

@@ -24,9 +24,12 @@ export const notificationContext = createContext();
 
 /* getting userID */
 const tokenToDecode = Token.getLocalStorageData('splitzoneToken');
-
-const decode = jwt(tokenToDecode)
-const decodedUserID = decode.userID;
+let decode;
+let decodedUserID;
+if(tokenToDecode){
+     decode = jwt(tokenToDecode)
+     decodedUserID = decode.userID;
+}
 const HOST = 'http://localhost:5000';
 function App(){
     const socket = io(HOST, {

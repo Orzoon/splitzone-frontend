@@ -10,6 +10,9 @@ const Authentication = {
         if(!token.trim().length > 0) return false
         try{
             const decode = jwt(token);
+            if(!decode){
+                return false
+            }
             return true
         }catch(error){
             return false

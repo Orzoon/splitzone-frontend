@@ -45,9 +45,49 @@
     & div.BSHeading{
         color: #0f4c9b;
         font-weight: 600;
-        display: flex;
-        align-items: center;
+        width: 100%;
+        height: auto;
         padding: 10px 0px;
+        display: grid;
+        grid-template-columns: 1fr auto 120px;
+        align-items: center;
+        grid-column-gap: 10px;
+
+        & h1 {
+            color: #0f4c9b;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        & p {
+            color: #FF2D2D;
+            font-size: 14px;
+            font-weight: 400;
+
+        }
+        & button{
+            width: 120px;
+            height: 40px;
+            text-transform: uppercase;
+            background: #fff;
+            border: none;
+            cursor: pointer;
+            background: #0f4b9b;
+            color: #FFF;
+            font-weight: 600;
+            font-size: 13px;
+            letter-spacing: 1px;
+            outline: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            outline: none;
+            border: none;
+
+            & svg{
+                fill: #fff;
+                color: #fff;
+            }
+        }
     }
     & div.BSummary_LISTDIV_Loading{
         display: flex;

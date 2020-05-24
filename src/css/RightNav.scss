@@ -1,0 +1,85 @@
+div.rightNavContainer{
+    border: none;
+    & div.rightNavCardContainer {
+        margin: 0 auto;
+        margin-top: 18px;
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        grid-row-gap: 10px;
+        padding: 10px;
+        min-height: 0px;
+        min-width: 0px;
+        width: 93%;
+        border: 1px solid rgb(230, 229, 229);
+        box-shadow: 0px 2px 3px #ddd;
+        border-radius: 8px;
+        & > * {
+            overflow: hidden;
+        }
+
+        &::after{
+            position: absolute;
+            height: 50px;
+            width: 50px;
+
+        }
+        & div.Text_LOGO_Container_RIGHT{
+            position: relative;
+            width: 100%;
+            height: auto;
+            height: 40px;
+            & .LOGO_TEXT_RIGHT{
+                font-size: 20px;
+                font-weight: 800;
+                height: 100%;
+                width: 100%;
+                display: flex;
+                justify-content: flex-start;
+                align-items: flex-start;
+                color: #0f4b9b;
+                letter-spacing: 1px;
+            }
+
+            & .LOGO_PARA_RIGHT{
+                position: absolute;
+                bottom: 0px;
+                font-size: 12px;
+                font-weight: 600;
+                color: #2f2e41;
+                width: 150px;
+                left: 20px;
+            }
+        }
+
+        & p.right_para{
+            font-weight: 600;
+            font-size: 14px;
+            color: #2F3355;
+
+            & u {
+                color: #0f4b9b;
+            }
+        }
+
+        & a {
+            height: 44px;
+            width: 100%;
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            border: 3px solid #0f4b9b;
+            color: #fff;
+            background: #0f4b9b;
+            //border-radius: 8px;
+            text-transform: uppercase;
+            font-weight: 600;
+            font-size: 13px;
+            letter-spacing: 1px;
+            text-decoration: none;
+
+        }
+    }
+
+}

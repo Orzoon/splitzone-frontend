@@ -7,13 +7,14 @@ import ComLoader from "./ComLoader";
 import DBanner from "../Dashboard/DBanner";
 import LineChart from "../Dashboard/LineChart";
 import {AppUserContext, socketContext, notificationContext} from "../App/App";
-
+import {LoaderButton} from "../UIC/UIC";
 import {MdError} from "react-icons/md";
 // scss style
 import "../../css/Dashboard.scss";
 
 // ICONS  DS
 import {MdReceipt,MdAttachMoney,MdCollectionsBookmark} from 'react-icons/md';
+import {ReactComponent as BannerFirst} from "../../assets/BannerFirst.svg";
 
 /* DASHBOARD REDUCER */
 function DashboardReducer(state, action){
@@ -53,7 +54,10 @@ const initialDashboardState = {
     activityData: null,
     loading: true,
     stepCount: 1,
-    loadActivity: false
+    loadActivity: false,
+    bannerHeading: "This is your dashboard, from here you can get overall overview of your expenditure.",
+    btnText: "get started",
+    Route: "/app/friends"
 }
 
 export default function Dashboard(props){
@@ -185,7 +189,6 @@ export default function Dashboard(props){
         // })
         //S_NotificationDataDashboard // NotifacationData
         socket.on('S_ActivityDataDashboard', data => {
-            console.log("Data",data)
             dispatch({type: "S_ActivityDataDashboard", payload: data})
         })
 
@@ -213,16 +216,23 @@ export default function Dashboard(props){
 
                 dispatch({type: "activityDataSet", payload: responseData})
                 dispatch({type: "stepCount"});
-                dispatch({type: "activityLoading", payload: false});
+                setTimeout(() => {
+                    dispatch({type: "activityLoading", payload: false});
+                }, 400);
             }
             catch(error){
             }
     }
-
     if(state.loading) return <ComLoader />
     else return (
             <div className = "dashboardContainer">
-                <DBanner />
+                <DBanner 
+                    heading = {state.bannerHeading ? state.bannerHeading: " "}
+                    btnText = {state.btnText ? state.btnText : " "}
+                    Route = {state.Route ? state.Route: null}
+                    >
+                        <BannerFirst/>
+                </DBanner>
                 <div className = "DS_container">
                     <h1>Overview</h1>
                     <DTotalGroups totalGroupsNo = {state.miscData ? state.miscData.totalGroups : ""}/>
@@ -388,12 +398,20 @@ function DRecentActivity({
             
             {/* Load More Button */}
             {(recentActivitiesInfo && recentActivitiesInfo.stepInfo.exists )  ? 
-                <li className = "loadMoreList">
-                    <button 
-                        disabled = {loadActivity}
-                        onClick = {() => {
-                                getAdditionalActivityData()
-                        }}>{loadActivity ? "loading ..." : "Load More"}</button>
+                <li className = {loadActivity ? "loadMoreList loadMoreListBUTTONFix": "loadMoreList"}>
+                    {/* LoaderButton */}
+                    {loadActivity &&
+                        <LoaderButton fix = "ACTIVITY_FIX" color = "Button_Blue_color"/>
+                    }
+
+                    {!loadActivity
+                        &&
+                           <button 
+                           onClick = {() => {
+                                   getAdditionalActivityData()
+                           }}>Load More</button>
+
+                    }
                 </li> : 
                 null}
         </ul>

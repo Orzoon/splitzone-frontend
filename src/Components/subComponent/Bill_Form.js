@@ -6,7 +6,7 @@ import {MdAnnouncement, MdKeyboardArrowUp, MdClose} from "react-icons/md"
 import {AiFillDollarCircle} from "react-icons/ai"
 import { IconContext } from "react-icons";
 
-
+import {LoaderButton} from "../UIC/UIC";
 
 function billReducer(state, action){
     switch(action.type){
@@ -25,8 +25,6 @@ function billReducer(state, action){
     }
 }
 
-
-
 const billFormInitialState = {
     groupMembers: null,
     initialValues: null,
@@ -40,14 +38,9 @@ export default function BillForm(props){
     const BillFormRef = useRef(null);
     const user = useContext(AppUserContext);
     const {groupID,newBillsAdditionHandler} = props;
-
     // Check for errors ErrorComponent
     const [noMember, setNomember] = useState(null);
     const [errorMessage, setErrorMessage] = useState("");
-    // const [groupMembers, setGroupMembers] = useState(null);
-    // const [splitAmongB, setSplitAmongB] = useState(false);
-    // const [errors, setErrors] = useState(null);
-    // let [initialValues, setInitialValues] = useState(null)
 
     useEffect(() => {
         // setting errors to null on loading
@@ -396,7 +389,9 @@ export default function BillForm(props){
                 }
                 // setting errors
                 dispatch({type:"setErrors", payload: errorObj});
-                dispatch({type:"btnSubmit", payload: false})
+                setTimeout(() => {
+                    dispatch({type:"btnSubmit", payload: false})
+                }, 400)
             }
         }
         sendBillFormData();
@@ -519,7 +514,14 @@ export default function BillForm(props){
                     } 
                 </div>
                 <div className = "commonF_div">
-                     <input className = "FormButton" type = "submit" value = "submit"/>
+                    {state.btnSubmit && 
+                        <LoaderButton backgroundColor = "Button_Blue_color" color = "Button_White_background" fix = "FORM_FIX"/>
+                    }
+                    {
+                        !state.btnSubmit && 
+                        <button className = "FormButton" type = "submit" value = "submit">submit</button>
+                    }
+
                 </div>
                 </form> }
         </div>
@@ -606,8 +608,6 @@ function DividedUnequallyInput({
             onChange = {e => handleBillFormChange(e, "divided",members._id )}
             />)
 }
-
-
 function NoMemberComponent({message, closeHandler}){
     return(
         <div className = "No_Member">

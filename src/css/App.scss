@@ -1,50 +1,6 @@
 // Global styles
 @import './__globals.scss';
 
-/*
-.mainAppContainer{
-    width: 100%;
-    height: auto;
-}
-
-.appContainer {
-    width: 1000px;
-    height: 700px;
-    margin: 0px auto;
-    box-shadow: 0px 0px 3px #ddd;
-    display: grid;
-    grid-template-columns: 170px 1fr 180px;
-    grid-template-rows: 80px 1fr;
-    grid-template-areas: 
-        "topBar topBar topBar"
-        "leftNav midContainer rightNav";
-}
-
-
-.topBarContainer {
-    grid-area: topBar;
-    border-bottom: 1px solid #ddd;
-    border-bottom: none;
-}
-.leftNavContainer {
-    
-    grid-area: leftNav;
-}
-
-.midContainer{
-    grid-area: midContainer;
-    background: rgb(236, 236, 236);
-    background: #F5F6FD;
-}
-
-.rightNavContainer{
-    grid-area: rightNav;
-}
-
-.leftNavContainer, .rightNavContainer{
-    border-top: 1px solid rgba(170, 170, 170, 0.1);
-}
-*/
 
 .mainAppContainer{
     width: 100%;
@@ -59,7 +15,7 @@
     width: 100%;
     height: auto;
     margin: 0px auto;
-    box-shadow: 0px 0px 3px #ddd;
+    //box-shadow: 0px 0px 3px #ddd;
     display: grid;
     grid-template-columns:  1fr ;
     grid-template-rows: 60px 1fr;
@@ -73,6 +29,7 @@
 }
 
 .topBarContainer {
+    background: #fff;
     grid-area: topBar;
     border-bottom: 1px solid #ddd;
     border-bottom: none;
@@ -140,12 +97,18 @@
 
 
 @media only screen and (min-width: 320px){
-   
+    .rightNavContainer{
+        display: none;
+        grid-area: rightNav;
+    }
 }
 
 // between 480 and 767
 @media only screen and (min-width: 480px){  
-
+    .rightNavContainer{
+        display: none;
+        grid-area: rightNav;
+    }
 
 }
 
@@ -163,7 +126,7 @@
         width: 100%;
         height: auto;
         margin: 0px auto;
-        box-shadow: 0px 0px 3px #ddd;
+        //box-shadow: 0px 0px 3px #ddd;
         display: grid;
         display: grid;
         grid-template-columns: 160px 1fr;
@@ -179,6 +142,9 @@
         display: none !important;
         left: -80px;
         transition: left 0.2s ease-in-out;
+    }
+    .rightNavContainer{
+        display: none;
     }
 }
 
@@ -196,7 +162,7 @@
         width: 100%;
         height: auto;
         margin: 0px auto;
-        box-shadow: 0px 0px 3px #ddd;
+        //box-shadow: 0px 0px 3px #ddd;
         display: grid;
         display: grid;
         grid-template-columns: minmax(150px, 200px) 1fr;
@@ -223,10 +189,42 @@
         width: 100%;
         height: auto;
         margin: 0px auto;
-        box-shadow: 0px 0px 3px #ddd;
+        //box-shadow: 0px 0px 3px #ddd;
         display: grid;
         display: grid;
-        grid-template-columns: minmax(150px, 170px) 1fr minmax(150px, 170px);
+        grid-template-columns: minmax(150px, 180px) 1fr minmax(150px, 180px);
+        grid-template-rows: 80px 1fr;
+        grid-template-areas: 
+            "topBar topBar topBar"
+            "leftNav midContainer rightNav";
+    }
+    .leftNavContainer {
+        grid-area: leftNav;
+    }
+    .rightNavContainer{
+        display: block;
+        grid-area: rightNav;
+    }
+
+}
+// above 1200
+@media only screen and (min-width: 1200px){
+    .mainAppContainer{
+        width: 100%;
+        height: auto;
+    }
+    .appContainer {
+        position: relative;
+        min-height: 0;
+        min-width: 0;
+        //min-width: 1200px;
+        height: auto;
+        margin: 0px auto;
+        //box-shadow: 0px 0px 3px #ddd;
+        display: grid;
+        display: grid;
+        grid-template-columns: minmax(150px, 190px) 1fr minmax(150px, 190px);
+        //grid-template-columns: minmax(180px, 1fr) minmax(850px,900px) minmax(180px, 1fr);
         grid-template-rows: 80px 1fr;
         grid-template-areas: 
             "topBar topBar topBar"
@@ -241,24 +239,26 @@
     }
 
 }
-// above 1200
-@media only screen and (min-width: 1200px){
+
+@media only screen and (min-width: 1300px){
     .mainAppContainer{
         width: 100%;
         height: auto;
+        background: #F9F9F9 !important;
     }
-    
     .appContainer {
+        background: none;
         position: relative;
         min-height: 0;
         min-width: 0;
-        width: 1200px;
+        width: 1300px;
         height: auto;
         margin: 0px auto;
-        box-shadow: 0px 0px 3px #ddd;
+        //box-shadow: 0px 0px 3px #ddd;
         display: grid;
         display: grid;
-        grid-template-columns: minmax(150px, 170px) 1fr minmax(150px, 170px);
+        grid-template-columns: minmax(150px, 190px) 1fr minmax(150px, 190px);
+        //grid-template-columns: minmax(180px, 1fr) minmax(850px,900px) minmax(180px, 1fr);
         grid-template-rows: 80px 1fr;
         grid-template-areas: 
             "topBar topBar topBar"
@@ -268,7 +268,7 @@
         grid-area: leftNav;
     }
     .rightNavContainer{
-     
+        background: #fff;
         grid-area: rightNav;
     }
 

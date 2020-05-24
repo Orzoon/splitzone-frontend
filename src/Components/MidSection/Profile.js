@@ -68,7 +68,7 @@ function ProfileSettings(){
                 </div>
             </div>
             {expand ? 
-                <div className = "profileCardCommonLower">options Section</div> : 
+                <div className = "profileCardCommonLower">Options not available at the moment</div> : 
                 null
             }
         </div>
@@ -97,7 +97,7 @@ function ProfileLimitations(){
 
             {/* ProfileCardCommonLower */}
             {expand ? 
-                <div className = "profileCardCommonLower">options Section</div> : 
+                <div className = "profileCardCommonLower">Options not available at the moment</div> : 
                 null
             }
         </div>
@@ -122,7 +122,7 @@ function ProfileDeletion(){
                 </div>
             </div>
             {expand ? 
-                <div className = "profileCardCommonLower">options Section</div> : 
+                <div className = "profileCardCommonLower">Options not available at the moment</div> : 
                 null
             }
         </div>

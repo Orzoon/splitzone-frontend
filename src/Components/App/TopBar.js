@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import React, {useContext, useState} from 'react'
 
 import {AppUserContext, notificationContext, socketContext} from "./App";
 // ICONS REACT-ICONS
@@ -10,10 +10,17 @@ import '../../css/TopBar.scss';
 
 
 export default function TopBar(props){
+    const logoAvailable = false;
     const user = useContext(AppUserContext);
     return (
         <div className = "topBarContainer">
-           <SplitzoneLogo /> 
+            {
+                logoAvailable ? <SplitzoneLogo /> : 
+                <div className = "Text_LOGO_Container">
+                    <h1 className = "LOGO_TEXT">SplitZone</h1>
+                    <p className = "LOGO_PARA">Bill spliting Demo</p>
+                </div>
+            }
            <NotificationIcon />
            <ProfileNameIcon user = {user}/>
         </div>
@@ -35,7 +42,12 @@ function NotificationIcon(){
     socket.on('S_NotificationCount', () => {
         notification.setNotificationCount(prevCount => prevCount + 1)
     })
-    return (<div  className = "notificationIcon">
+
+    function ResetNotification(){
+        notification.setNotificationCount(0)
+        
+    }
+    return (<div  className = "notificationIcon" onClick = {ResetNotification}>
                 <div className = "notificationIconDiv">
                     <MdNotifications />
                     <h1>
