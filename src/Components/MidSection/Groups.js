@@ -94,7 +94,6 @@ export default function Groups(){
     useEffect(() => {
       
         setTimeout(() => {
-            console.log("socket", socket)
         }, 3000)
         socket.on("S_AddedTOGroup", groupData => {
             S_AddedTOGroup(groupData)

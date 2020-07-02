@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import {useHistory} from "react-router-dom"
+import {useHistory, Link} from "react-router-dom"
 import {useLoginForm, useSignupForm} from "../hooks/appHooks";
 import {ReactComponent as GoogleIconSVG} from '../assets/icons/googleicon.svg';
 import {ReactComponent as Illustration} from '../assets/illustrationLS.svg';
@@ -316,7 +316,7 @@ function SocialLogin({loginStatusHandler, loginType, LSFormHandler, SocialData, 
                     className = {allSet ? "SC_fix MarginFix": "bottomFormAnimation"}
                     disabled = {(loginType ==="LOGIN") && true }
                     >
-                    <a href = "http://localhost:5000/auth/google">
+                    <a href = {`${serverURI}/auth/google`}>
                         <span>Google</span>
                         <GoogleIconSVG/>
                     </a>

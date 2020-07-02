@@ -42,10 +42,10 @@ function MainAppContainer(){
                 return null
               }}>
             </Route>
-            <Route component = {(props) => {
-              props.history.push("/")
-              return null
-            }} />
+          <Route component = {(props) => {
+            props.history.push("/")
+            return null
+          }} />
         </Switch>
       </Router>
     </div>
