@@ -108,15 +108,15 @@ export default function LeftNaV(props) {
                         </CustomNavLink>
                     </li>
                     <li>
-                        {/* <NavLink  to ={`${url}/groups`} activeClassName = "leftNavActive">Groups</NavLink> */}
-                        <CustomNavLink to = {`${url}/groups`}  linkName = "Groups" activeOnlyWhenExact = {false}>
-                            <MdCollectionsBookmark />
-                        </CustomNavLink>
-                    </li>
-                    <li>
                         {/* <NavLink  to ={`${url}/friends`}  activeClassName = "leftNavActive" >Friends</NavLink> */}
                         <CustomNavLink to = {`${url}/friends`}  linkName = "Friends" activeOnlyWhenExact = {true}>
                             <MdGroup/>
+                        </CustomNavLink>
+                    </li>
+                    <li>
+                        {/* <NavLink  to ={`${url}/groups`} activeClassName = "leftNavActive">Groups</NavLink> */}
+                        <CustomNavLink to = {`${url}/groups`}  linkName = "Groups" activeOnlyWhenExact = {false}>
+                            <MdCollectionsBookmark />
                         </CustomNavLink>
                     </li>
                     <li>

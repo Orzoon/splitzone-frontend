@@ -5,9 +5,11 @@ import {serverURI} from "../../helpers/GlobalVar";
 /* D_Components Imports */
 import ComLoader from "./ComLoader";
 import DBanner from "../Dashboard/DBanner";
+import PieChart from "../Dashboard/PieChart";
 import LineChart from "../Dashboard/LineChart";
-import {AppUserContext, socketContext, notificationContext} from "../App/App";
-import {LoaderButton} from "../UIC/UIC";
+import DRecentActivity from "../Dashboard/DRecentActivity";
+import {socketContext, notificationContext} from "../App/App";
+
 import {MdError} from "react-icons/md";
 // scss style
 import "../../css/Dashboard.scss";
@@ -24,6 +26,9 @@ function DashboardReducer(state, action){
         
         case "lineGraphDataSet":
             return {...state, lineGraphData: action.payload}
+
+        case "pieChartData":
+                return {...state, pieChartData: action.payload}
 
         case "activityDataSet":
             return {...state, activityData: action.payload}
@@ -51,6 +56,8 @@ function DashboardReducer(state, action){
 const initialDashboardState = {
     miscData: null,
     lineGraphData: null,
+    /*Pie ChartInitialData NOTE pieChartData received from same endpoint */
+    pieChartData: null,
     activityData: null,
     loading: true,
     stepCount: 1,
@@ -99,10 +106,21 @@ export default function Dashboard(props){
                 }
                 const [MiscresponseData, lineChartResponseData, activityResponseData] = [await miscResponse.json(), await lineChartResponse.json(), await activityResponse.json()];
                 dispatch({type: "miscDataSet", payload: MiscresponseData})    
-                dispatch({type: "activityDataSet", payload: activityResponseData})    
+                dispatch({type: "activityDataSet", payload: activityResponseData})   
+                
+                /* grabbing pieChartData from lineChartResponseData */
+                const pieChartData = lineChartResponseData["pieData"];
+                // attaching dummy data to pieChartData 
+                pieChartData.totalLentCollected = 0;
+                pieChartData.totalOwedPaid = 0;
+                // pieChartData.totalOwe = 20;
+
+                //pieChartData.totalOwe = 50;
+                /* deleting pieChartData from the lineChartData */
+                delete lineChartResponseData.pieData;
+              
                 /* formatting LineGraphData */
                 const responseData = lineChartResponseData;
-              
                 // processing data
                 const responseDataPropArray = Object.keys(responseData);
                 const currentMonthLabel = [];
@@ -167,6 +185,8 @@ export default function Dashboard(props){
                 // setting lineGraph Data
                 dispatch({type:"lineGraphDataSet", payload: lineGraphData})
 
+                // setting pieChartData
+                dispatch({type:"pieChartData", payload: pieChartData})
                 // setting loading to false
                 dispatch({type:"loading", payload: false})
             }
@@ -231,7 +251,7 @@ export default function Dashboard(props){
                     btnText = {state.btnText ? state.btnText : " "}
                     Route = {state.Route ? state.Route: null}
                     >
-                        <BannerFirst/>
+                <BannerFirst/>
                 </DBanner>
                 <div className = "DS_container">
                     <h1>Overview</h1>
@@ -239,13 +259,62 @@ export default function Dashboard(props){
                     <DTotalBills totalBillsNo = {state.miscData ? state.miscData.totalBills : ""}/>
                     <DTotalAmount totalBalance = {state.miscData ? state.miscData.totalBalance: ""} />
                 </div>
+                {/* LineChart wrapper contains all lineChart and pieCharts */}
                 <div className = "DLineChart_wrapper">
                     <h1>Bill summary</h1>
+
+                    <div className = "DPieChart_Container DPieChart_Container_first">  
+                        <h1>Debit reports</h1> 
+                        <PieChart 
+                            type = {state.pieChartData ? "OWE" : null}
+                            totalOwe = {state.pieChartData ? state.pieChartData.totalOwe : null}
+                            totalOwedPaid = {state.pieChartData ? state.pieChartData.totalOwedPaid : null}
+                        />
+                        <ul className = "PieBtm_information"> 
+                            <li>
+                                <h1 className = "pieB_h1">Total debt</h1> 
+                                <p>{state.pieChartData ? state.pieChartData.totalOwe : ""}</p>
+                            </li>
+                            <li>
+                                <h1 className = "pieB_h1">Paid</h1> 
+                                <p>{state.pieChartData ? state.pieChartData.totalOwedPaid : ""}</p>
+                            </li>
+                            <li>
+                                <h1 className = "pieB_h1">Left</h1> 
+                                <p>{state.pieChartData ? state.pieChartData.totalOwe - state.pieChartData.totalOwedPaid : ""}</p>
+                            </li>
+                        </ul>
+                    </div>
+ 
+ 
+                    <div className = "DPieChart_Container DPieChart_Container_second">  
+                        <h1>Credit reports</h1> 
+                        <PieChart 
+                            type = {state.pieChartData ? "LENT" : null}
+                            totalLent = {state.pieChartData ? state.pieChartData.totalLent : null}
+                            totalLentCollected = {state.pieChartData ? state.pieChartData.totalLentCollected : null}
+                        />
+                        <ul className = "PieBtm_information"> 
+                            <li>
+                                <h1 className = "pieB_h1">Total Lent</h1> 
+                                <p>{state.pieChartData ? state.pieChartData.totalLent : ""}</p>
+                            </li>
+                            <li>
+                                <h1 className = "pieB_h1">Received</h1> 
+                                <p>{state.pieChartData ? state.pieChartData.totalLentCollected : ""}</p>
+                            </li>
+                            <li>
+                                <h1 className = "pieB_h1">Left</h1> 
+                                <p>{state.pieChartData ? state.pieChartData.totalLent - state.pieChartData.totalLentCollected: ""}</p>
+                            </li>
+                        </ul>
+                    </div>
+
                     {/* based on weather the bills exist or not and user has data in the bills related to him */}
                     {   (state.miscData && state.miscData.summaryOverlay) ? 
                         <div className = "DLineChart_SummaryOverlay"> 
                             <div className = "DLineWIcon"><MdError/></div>
-                            <p className="DLineP">Your pure expenditure excluding the amount you lent</p>
+                                <p className="DLineP">Your pure expenditure excluding the amount you lent</p>
                             <div className ="lineOverlayLegend">
                             <p className = "lineTMnth">This month</p>
                             <p className = "lineLMnth">Last month</p>
@@ -312,111 +381,7 @@ function DTotalAmount(props){
     )
 }
 
-function DRecentActivity({
-    recentActivitiesInfo, 
-    getAdditionalActivityData,
-    loadActivity
-}){
-    const userID = useContext(AppUserContext)._id;
 
-    return (
-        <ul className = "DRecentActivity_container">
-            {recentActivitiesInfo && recentActivitiesInfo.activities.map((activity,index) => {
-             const list = (<li key = {activity._id}>
-                                {/* LINE STYLE */}
-                                <div className = {index === (recentActivitiesInfo.activities.length-1) ? "DeFlowLine DeFlowLineEnd":  "DeFlowLine"}></div>
-                                {/* Activity Text */}
-                                { activity.invokedBy ? 
-                                    <p>
-                                        {/* INVOKEDBY NAME -> TITLES */}
-                                        {activity.invokedBy._id === userID ? 
-                                            <span className = "AP_Username">You </span> :  
-                                            <span className = "AP_Username">{activity.invokedBy.name} </span>
-                                        }
-                                        {/* Check for CREATED_VALUE group activity or bill activity  or userActivity*/}
-                                           {/* ACTIVITY */}
-                                        {   
-                                            activity.activityUserId ? 
-                                                <>
-                                                <span
-                                                    className = "AP_Activity AP_Blue"
-                                                >  {
-                                                        activity.activity === "signedIn" ? "logged in" :
-                                                        activity.activity === "signedUp" ? "Signed up" :
-                                                        "Updated"
-                                                    }
-                                                </span> at </>: 
-                                            activity.activityGroupId ? 
-                                                <span 
-                                                    className = {
-                                                        activity.activity === "created" ? "AP_Activity AP_Green": 
-                                                        activity.activity === "deleted" ? "AP_Activity AP_Red":
-                                                        activity.activity === "added" ? "AP_Activity AP_Green":
-                                                        "AP_Activity AP_Yellow"
-                                                    }>{activity.activity}
-                                                </span>: 
-                                            " "
-                                        }
-                                        {/* AFTER ACTIVITY*/}
-                                        {/* <span className = "AP_Member_name"> {activity.member.name}</span> */}
-                                        {/* <span className = "AP_Member_name">{activity.member.name}</span> */}
-                                        {
-                                            (activity.activityGroupId && (activity.activity === "created" || activity.activity === "deleted")) ? <> a group <span className = "AP_GroupName">{activity.groupName}</span> at </> :
-                                            (activity.activityGroupId && activity.activity === "added") ? <> 
-                                                {activity.groupParties.filter(item => item._id.toString() === userID.toString())
-                                                    .map(item => {
-                                                            if(item._id.toString() !== activity.invokedBy._id.toString()){
-                                                                return <span className = "AP_Member_name"> You </span>
-                                                            }else{
-                                                                return <span className = "AP_Member_name"> {activity.member.name} </span>
-                                                            }
-                                                    })
-                                                } 
-                                            to the group  <span className = "AP_GroupName">{activity.groupName}</span> at </> :
-                                            (activity.activityGroupId && activity.activity === "removed") ? <> 
-                                               {activity.groupParties.filter(item => item._id.toString() === userID.toString())
-                                                    .map(item => {
-                                                            if(item._id.toString() !== activity.invokedBy._id.toString()){
-                                                                return <span className = "AP_Member_name"> You </span>
-                                                            }else{
-                                                                return <span className = "AP_Member_name"> {activity.member.name} </span>
-                                                            }
-                                                    })
-                                                }                                             
-                                            from the group  <span className = "AP_GroupName">{activity.groupName}</span> at </> :
-                                            (activity.activityUserId && activity.acitvity === "updated") ? "your details":  
-                                            ''
-                                        }
-                                        {/* ACTIVITY TIME*/}                                 
-                                         <span className = "AP_Date">{new Date(activity.createdAt).toLocaleString() }</span>                 
-                                    </p> : 
-                                    " "
-                                }
-                            </li>)
-                return list
-            })}
-            
-            {/* Load More Button */}
-            {(recentActivitiesInfo && recentActivitiesInfo.stepInfo.exists )  ? 
-                <li className = {loadActivity ? "loadMoreList loadMoreListBUTTONFix": "loadMoreList"}>
-                    {/* LoaderButton */}
-                    {loadActivity &&
-                        <LoaderButton fix = "ACTIVITY_FIX" color = "Button_Blue_color"/>
-                    }
-
-                    {!loadActivity
-                        &&
-                           <button 
-                           onClick = {() => {
-                                   getAdditionalActivityData()
-                           }}>Load More</button>
-
-                    }
-                </li> : 
-                null}
-        </ul>
-    )
-}
 
 
 

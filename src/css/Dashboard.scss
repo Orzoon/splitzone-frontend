@@ -189,7 +189,7 @@ $font-color-yellow: #F9B71D;
     @include commmonDahsboard;
     display: grid;
     grid-template-columns: repeat(1,1fr);
-    grid-auto-rows: 40px auto auto;
+    grid-auto-rows: 40px repeat(5, auto);
     grid-row-gap: 15px;
  
     & h1 {
@@ -197,7 +197,6 @@ $font-color-yellow: #F9B71D;
         font-size: 24px;
         font-weight: 700;
     }
-
     & div.DLineChart_SummaryOverlay{
         border-radius: 8px;
         padding: 18px;
@@ -267,7 +266,74 @@ $font-color-yellow: #F9B71D;
             }
         }
     }
+    & div.DPieChart_Container{
+        padding: 18px;
+        position: relative;
+        height: auto;
+        width: 100%;
+        background: #fff;
+        @include commmonDahsboard;
+        overflow: hidden;
+        /// layout
 
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-auto-rows: auto;
+
+        & h1 {
+            grid-area: 1/1/2/3;
+            font-size: 14px;
+            font-weight: 600;
+            color: #3a426b;
+            margin-bottom: 15px;
+        }
+        & div.DPieChart{
+            grid-area: 2/1/3/3;
+            overflow: hidden;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            // control the height of the piechart from here
+            height: 200px;
+        }
+
+        & ul {
+            grid-area: 3/1/4/3;
+            padding-top:15px;
+            list-style-type: none;
+            width: 100%;
+            height: auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: auto;
+            & li {
+                padding-top:5px;
+                width: 100%;
+                height: auto;
+                border-right: 1px solid #ddd;
+                border-top: 1px solid #ddd;
+                &:nth-child(3){
+                    border-right: 0px solid #ddd;
+                }
+                & h1.pieB_h1 {
+                    color: #3a426b;
+                    font-size: 14px;
+                    font-weight: 600;
+                    text-align: center !important;
+                    margin-bottom: 0px;
+                }
+                & p {
+                    margin-top: 2px;
+                    font-weight: 400;
+                    font-size: 14px;
+                    color: #2F3355;
+                    text-align: center;
+                }
+               
+            }
+        }
+    }
     & div.DLineChart_container{
         padding: 30px 15px 25px 15px;
         position: relative;
@@ -578,7 +644,8 @@ $font-color-yellow: #F9B71D;
     
         display: grid;
         grid-template-columns: repeat(1,1fr);
-        grid-auto-rows: 40px auto auto;
+        //grid-auto-rows: 40px auto auto;
+        grid-auto-rows: 40px repeat(5, auto);
         grid-row-gap: 15px;
         & h1 {
         }
@@ -662,9 +729,8 @@ $font-color-yellow: #F9B71D;
                     "DS"
                     "DLineChartWrapper"
                     "DRecentActivitywrapper";
-            
     }
-    
+
     .dashboardContainer > * {
     }
     /* STANDALONE MAINCOMPONENTS */
@@ -781,7 +847,8 @@ $font-color-yellow: #F9B71D;
     
         display: grid;
         grid-template-columns: repeat(1,1fr);
-        grid-auto-rows: 40px auto auto;
+        //grid-auto-rows: 40px auto auto;
+        grid-auto-rows: 40px repeat(5, auto);
         grid-row-gap: 15px;
         & h1 {
         }
@@ -848,9 +915,40 @@ $font-color-yellow: #F9B71D;
         }
     
     }
-
 }
 
+// break points for the pieChart
+@media only screen and (min-width: 600px){
+    .DLineChart_wrapper{
+        grid-area: "DLineChartWrapper";
+    
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+        grid-auto-rows: 40px repeat(4, auto);
+        grid-row-gap: 15px;
+        grid-column-gap: 15px;
+        & h1 {
+            grid-area: 1/1/2/3;
+            font-size: 25px;
+        }
+        
+        /* Giving separate grid area to two pieCharts */
+        & div.DPieChart_Container_first{
+            grid-area: 2/1/3/2;
+        }
+        & div.DPieChart_Container_second{
+            grid-area: 2/2/3/3;
+        }
+        // contd ....
+        & div.DLineChart_SummaryOverlay{
+            grid-area: 3/1/4/3;
+        }
+        & div.DLineChart_container{
+            grid-area: 4/1/5/3;
+            padding: 30px 18px 25px 18px;
+        }
+    }
+}
 // graph and DS Fix
 @media only screen and (min-width: 630px){
     .DS_container{
@@ -905,21 +1003,52 @@ $font-color-yellow: #F9B71D;
     
     }
     
+    // .DLineChart_wrapper{
+    //     grid-area: "DLineChartWrapper";
+    
+    //     display: grid;
+    //     grid-template-columns: repeat(1,1fr);
+    //     grid-auto-rows: 40px repeat(5, auto);
+    //     grid-row-gap: 15px;
+    //     & h1 {
+    //         font-size: 25px;
+    //     }
+    
+    //     & div.DLineChart_container{
+    //         padding: 30px 18px 25px 18px;
+    //     }
+    // }
+
     .DLineChart_wrapper{
         grid-area: "DLineChartWrapper";
     
         display: grid;
-        grid-template-columns: repeat(1,1fr);
-        grid-auto-rows: 40px auto auto;
+        grid-template-columns: repeat(2,1fr);
+        grid-auto-rows: 40px repeat(4, auto);
         grid-row-gap: 15px;
+        grid-column-gap: 15px;
         & h1 {
+            grid-area: 1/1/2/3;
             font-size: 25px;
         }
-    
+        
+        /* Giving separate grid area to two pieCharts */
+        & div.DPieChart_Container_first{
+            grid-area: 2/1/3/2;
+        }
+        & div.DPieChart_Container_second{
+            grid-area: 2/2/3/3;
+        }
+        // contd ....
+        & div.DLineChart_SummaryOverlay{
+            grid-area: 3/1/4/3;
+        }
         & div.DLineChart_container{
+            grid-area: 4/1/5/3;
             padding: 30px 18px 25px 18px;
         }
     }
+    
     .DRecentActivity_wrapper{
         grid-area: "DRecentActivitywrapper";
         display: grid;
@@ -1166,5 +1295,4 @@ $font-color-yellow: #F9B71D;
 }
 // above 1200
 @media only screen and (min-width: 1200px){
-
 }

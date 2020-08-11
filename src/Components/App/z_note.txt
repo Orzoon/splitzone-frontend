@@ -1,0 +1,12 @@
+/*
+App folder contains top level components
+
+ -- App.js -- Entry
+|
+ -- Leftnav.js
+|
+ -- Rightnav.js
+|
+-- Topbar.js
+
+*/

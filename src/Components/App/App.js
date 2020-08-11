@@ -33,9 +33,9 @@ if(tokenToDecode){
 const HOST = 'http://localhost:5000';
 function App(){
     const socket = io(HOST, {
-        'reconnection delay': 800, // defaults to 500
-        'reconnection limit': 100, // defaults to Infinity
-        'max reconnection attempts': Infinity,
+        // 'reconnection delay': 800, // defaults to 500
+        // 'reconnection limit': 100, // defaults to Infinity
+        // 'max reconnection attempts': Infinity,
         query: `userID=${decodedUserID}` // defaults to 10
       });
     const [user,setUser] = useState('');
