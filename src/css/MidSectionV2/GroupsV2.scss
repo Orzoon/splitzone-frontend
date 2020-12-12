@@ -1,0 +1,109 @@
+
+@mixin commonPadding{
+    padding: 18px;
+}
+
+
+// Main_Conatiner
+.groupsV2_mainContainer{
+    min-height: 0;
+    min-width: 0;
+    height: auto;
+    position: relative;
+    width: 100% !important;
+    padding: 10px 5px 30px 5px;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+   //grid-row-gap: 30px;
+
+
+   & .GV2_Heading{
+       margin-top: 13px;
+   }
+}
+
+
+// individual subContainers
+
+.GV2_Heading{
+    position: relative;
+    width: 100%;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    display: grid;
+    align-items: center;
+}
+
+.GV2_topBannerContainer{
+    @include commonPadding;
+    height: 200px;
+    width: 100%;
+    padding: 18px;
+    background: #fff;
+    border-radius: 8px;
+    margin-top: 10px;
+
+}
+
+.GV2_optionsBarContainer{
+    margin-top: 30px;
+    display: grid;
+    width: 100%;
+    height: auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+
+}
+
+.GV2_groupList{
+    list-style-type: none;
+    margin-top: 22px;
+    width: 100%;
+    // main container common
+    //background: #fff;
+    background: rgb(243,241,249) !important;
+    border-radius: 8px;
+    // grid
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+    grid-row-gap: 5px;
+    justify-content: center;
+    align-content: center;
+    justify-items: center;
+    align-items: center;
+
+  
+}
+
+
+
+
+// between 320 and 479
+@media only screen and (min-width: 320px){
+
+
+}
+
+
+// between 480 and 767
+@media only screen and (min-width: 480px){
+    .groupsV2_mainContainer{
+        padding: 20px 15px 30px 15px;
+    }
+}
+
+// Friends double column
+@media only screen and (min-width: 660px){
+
+}
+
+@media only screen and (min-width: 758px){
+
+}
+
+
+@media only screen and (min-width: 992px){
+
+}

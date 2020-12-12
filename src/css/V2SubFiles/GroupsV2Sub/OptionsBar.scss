@@ -1,0 +1,23 @@
+.GV2_optionsBarContainer{
+    & button.GV2_ButtonListCardView{
+        font-size: 36px;
+        width: 40px;
+        height: 40px;
+        justify-self: end;
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        justify-items: center;
+        align-items: center;
+        background: #fff;
+        border-radius: 6px;
+        margin-right: 3px;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        color: #0f4b9b;
+        box-shadow: 0px 0px 3px #c6d3e4;
+    
+    }
+
+}

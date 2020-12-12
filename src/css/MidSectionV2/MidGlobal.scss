@@ -1,0 +1,19 @@
+@mixin GlobalCommonButton{
+    //padding: 10px 5px;
+    padding: 8px 16px !important;
+    width: auto;
+    height: auto;
+    text-transform: uppercase;
+    background: #fff;
+    border: none;
+    cursor: pointer;
+    background: #0f4b9b;
+    color: #FFF;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 1px;
+    outline: none;
+    border-radius: 6px;
+}
+
+

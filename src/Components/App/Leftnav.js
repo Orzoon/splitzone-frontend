@@ -12,6 +12,8 @@ import
 /* MID CONTAINER COMPONENTS */
 import Dashboard from '../MidSection/Dashboard';
 import Friends from '../MidSection/Friends';
+import FriendsV2 from "../MidSectionV2/FriendsV2";
+import GroupsV2 from "../MidSectionV2/GroupsV2";
 import Groups from '../MidSection/Groups';
 import Bills from '../MidSection/Bills';
 import News from '../MidSection/News';
@@ -131,8 +133,19 @@ export default function LeftNaV(props) {
                             <MdPerson/>
                         </CustomNavLink>
                     </li>
-                    <li className = "navLogout">
 
+                    {/* friends version2 */}
+                    <li>
+                        <CustomNavLink to = {`${url}/friendsV2`}  linkName = "friendsV2" activeOnlyWhenExact = {false}>
+                            <MdCollectionsBookmark />
+                        </CustomNavLink>
+                    </li>
+                    <li>
+                        <CustomNavLink to = {`${url}/groupsV2`}  linkName = "groupsV2" activeOnlyWhenExact = {false}>
+                            <MdCollectionsBookmark />
+                        </CustomNavLink>
+                    </li>
+                    <li className = "navLogout">
                         {logOutprocess ? <LoaderButton fix = "LogOutButtonFIX" color = "Button_Blue_color"/> : 
                             <button onClick = {handleLogout}>
                                 {tryAgain ? "Try again": "Logout"}
@@ -164,6 +177,8 @@ export default function LeftNaV(props) {
                         <Route path =  {`${path}/friends`} component = {Friends} />
                         <Route path =  {`${path}/profile`} component = {Profile} />
                         <Route path =  {`${path}/news`} component = {News}/>  
+                        <Route path = {`${path}/friendsV2`} component = {FriendsV2} />
+                        <Route path = {`${path}/groupsV2`} component = {GroupsV2} />
                     </Switch>
             </div>
         </React.Fragment>

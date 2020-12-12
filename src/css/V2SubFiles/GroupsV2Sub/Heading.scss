@@ -1,0 +1,37 @@
+@import "../../MidSectionV2/MidGlobal.scss";
+
+.GV2_Heading {
+    & h1 {
+        font-size: 25px;
+        font-family: 'Open Sans', sans-serif;
+        color: rgb(71, 79, 119);
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    & button.GV2_createGroupBtn{
+        justify-self: end;
+        margin-right: 3px;
+        @include GlobalCommonButton;
+        
+        display: grid;
+        grid-template-columns: auto auto;
+        justify-items: center;
+        align-items: center;
+        grid-column-gap: 10px;
+        & .buttonIcon{
+            width: 100%;
+            height: auto;
+            font-size: 24px;
+            padding: 0px;
+            margin: 0px;
+            align-self:center;
+            justify-self: center;
+            line-height: 1;
+        }
+    }
+
+
+
+
+}

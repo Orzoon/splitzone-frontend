@@ -1,0 +1,201 @@
+
+
+
+.GV2_groupList{
+
+    & li.GV2_listHeading{
+        background: rgb(243,241,249) !important;
+        border-radius: 0px;
+        height: auto;
+        padding-bottom: 6px;
+        & h2{
+            font-size: 15px;
+            font-weight: 600;
+            //text-transform: uppercase;
+            //color: #474f77;
+            color: rgba(0,0,0,0.7);
+            //color:#262B2C;
+        }
+        border: none;
+    }
+
+
+    & li {
+
+        padding: 0px 20px;
+        
+        width: 100%;
+        height: 68px;
+        display: grid;
+        grid-template-columns: 1fr 1fr 100px 100px;
+        align-items: center;
+        background: #fff;
+        border-radius: 8px;
+        grid-column-gap: 5px;
+        border: 1px solid #eee;
+
+        & div.nameContainer {
+            overflow: hidden;
+            width: 100%;
+            display: grid;
+            grid-template-columns:1fr;
+            grid-template-rows: 1fr 1fr;
+            grid-column-gap: 10px;
+            align-items: center;
+            & h1 {
+                align-self: end;
+                font-weight: 700;
+                font-size: 16px;
+                color:#262B2C;
+                word-break:break-word;
+            }
+            & h2 {
+                align-self: start;
+                font-size: 12px;
+                font-weight: 400;
+                color:#262B2C;
+                word-break:break-word;
+            }
+
+        }
+
+
+        & div.members {
+        width: 100%;
+         display: grid;
+         grid-template-rows: 1fr;
+         grid-template-columns: auto  1fr;
+        justify-content: start;
+
+        & ul {
+            grid-area: 1/1/2/2;
+            justify-self: center;
+            align-self: center;
+            height: 46px;
+            width: auto;
+            list-style-type:none;
+            position: relative;
+            background: red;
+
+            // grid
+            display: grid;
+            grid-auto-columns: auto;
+
+
+            & li {
+                position: absolute;
+                height: 46px;
+                width: 46px;
+                border-radius: 50%;
+                background: #0f4b9b;
+                color: #fff;
+                font-size: 16px;
+                font-weight: 700;
+                text-align: center;
+                display: flex;
+                justify-content: center;
+                text-transform: uppercase;
+                top: 0px;
+                left: 0px;
+                border: none;
+                
+                &:nth-child(2){
+                    left: 36px;
+                    background: green;
+                }
+
+                &:nth-child(3){
+                    left: 72px;
+                    background: tomato;
+                }
+
+                &:nth-child(4){
+                    left: 118px;
+                    color: #000;
+                    background: #fff;
+                    border: none;
+                    font-size: 12px;
+                    font-weight: 600;
+                    width: 30px;
+                }
+            }
+
+        }      
+
+         & h2 {
+            grid-area: 1/2/2/3;
+            align-self: start;
+            font-size: 12px;
+            font-weight: 400;
+            color:#262B2C;
+            word-break:break-word;
+            display: grid;
+            justify-self: start;
+            align-self: center;
+         }
+
+
+
+        }
+
+        & h1.bills{
+            font-weight: 700;
+            font-size: 16px;
+            color:#262B2C;
+            word-break:break-word;
+        }
+
+        & button.FV2_viewDetails{
+            justify-self: start;
+            padding: 8px 16px !important;
+            width: 100px;
+            height: auto;
+            text-transform: uppercase;
+            background: #fff;
+            border: none;
+            cursor: pointer;
+            background: #0f4b9b;
+            color: #FFF;
+            font-weight: 600;   
+            font-size: 13px;
+            letter-spacing: 1px;
+            outline: none;
+            border-radius: 6px;
+            height: 42px;
+        }        
+    }
+
+
+
+
+
+}
+
+
+
+
+// between 320 and 479
+@media only screen and (min-width: 320px){
+
+
+}
+
+
+// between 480 and 767
+@media only screen and (min-width: 480px){
+ 
+}
+
+// Friends double column
+@media only screen and (min-width: 660px){
+
+}
+
+@media only screen and (min-width: 758px){
+
+}
+
+
+@media only screen and (min-width: 992px){
+
+}

@@ -160,6 +160,7 @@ function useSignupForm(initialValues){
                 
             }catch(error){
                 let errorObj = {};
+                console.log("this is the error", error)
                 // catch for serverSideErrors
                 if(error.statusCode === 400 && error.hasOwnProperty('message') && Array.isArray(error.message)){
                             const messageArray = error.message;
